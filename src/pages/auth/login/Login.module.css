@@ -1,0 +1,132 @@
+.loginContainer {
+  /* min-height: 100vh; */
+  display: flex;
+}
+
+.leftSection {
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  border-right: 1px solid #e8e8e8;
+}
+
+.illustration {
+  max-width: 400px;
+}
+
+.illustration img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 2rem;
+}
+
+.tagline {
+  text-align: center;
+}
+
+.tagline h2 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.hashtag {
+  color: #1890ff;
+}
+
+.rightSection {
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.loginWrapper {
+  width: 100%;
+  max-width: 400px;
+  padding: 0 1rem;
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  height: 32px;
+  margin-right: 0.5rem;
+}
+
+.logoText {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.welcomeTitle {
+  margin-bottom: 0.5rem !important;
+}
+
+.subtitle {
+  color: #666;
+  display: block;
+  margin-bottom: 2rem;
+}
+
+.loginForm {
+  margin-top: 1.5rem;
+}
+
+.rememberForgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.forgotLink {
+  color: #1890ff;
+}
+
+.loginButton {
+  height: 40px;
+  font-weight: 500;
+}
+
+.footer {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.copyright {
+  display: block;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.links {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.links a {
+  color: #666;
+}
+
+.dot {
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .leftSection {
+    display: none;
+  }
+  
+  .rightSection {
+    padding: 1rem;
+  }
+}
