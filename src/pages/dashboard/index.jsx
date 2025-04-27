@@ -12,6 +12,7 @@ import {
 import Logo from '../../assets/images/logo/Logo.png';
 import { BellOutlined } from '@ant-design/icons';
 import { InfoCircleOutlined } from '@ant-design/icons';
+import { Select } from 'antd';
 const { Sider } = Layout;
 
 const Sidebar = () => (
@@ -192,13 +193,44 @@ const CustomerStatsCard = () => (
   </div>
 );
 
+const OverviewHeader = () => (
+  <div
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '32px 32px 0 32px',
+      background: '#fff',
+    }}
+  >
+    <span style={{ fontWeight: 600, color: '#757575', fontSize: 16 }}>Overview</span>
+    <Select
+      defaultValue="last7"
+      style={{
+        width: 150,
+        background: '#fafafa',
+        borderRadius: 8,
+        fontWeight: 600,
+      }}
+      dropdownStyle={{ borderRadius: 8 }}
+      bordered={false}
+      options={[
+        { value: 'last7', label: <span style={{ fontWeight: 600, color: '#757575' }}>Last 7 Days</span> },
+        { value: 'last30', label: <span style={{ fontWeight: 600, color: '#757575' }}>Last 30 Days</span> },
+        { value: 'thisMonth', label: <span style={{ fontWeight: 600, color: '#757575' }}>This Month</span> },
+      ]}
+    />
+  </div>
+);
+
 const Dashboard = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sidebar />
       <Layout>
         <DashboardHeader />
-        <div style={{ padding: 32 }}>
+        <OverviewHeader />
+        <div style={{ padding: 32, backgroundColor:'#fff'}}>
           <CustomerStatsCard />
         </div>
       </Layout>
