@@ -1,10 +1,16 @@
-import { theme } from 'antd';
+import { theme } from "antd";
 
 export const themeConfig = {
   algorithm: theme.defaultAlgorithm,
   token: {
-    colorPrimary: '#1890ff',
+    colorPrimary: "rgba(0, 0, 0, 0.6)",
     borderRadius: 6,
+    colorLink: "rgba(0, 0, 0, 0.6)",
+    colorText: "rgba(0, 0, 0, 0.6)",          // Primary text color
+    colorTextSecondary: "rgba(0, 0, 0, 0.6)", // Secondary text color
+    colorTextTertiary: "rgba(0, 0, 0, 0.6)",  // Tertiary text color
+    colorTextHeading: "rgba(0, 0, 0, 0.6)",   // Heading text color
+    colorTextLabel: "rgba(0, 0, 0, 0.6)",
     // You can customize other token values here
   },
   components: {
@@ -15,5 +21,6 @@ export const themeConfig = {
     Card: {
       borderRadius: 8,
     },
+
   },
 };

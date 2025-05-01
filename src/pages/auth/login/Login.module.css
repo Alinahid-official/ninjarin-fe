@@ -74,19 +74,27 @@
   color: #666;
   display: block;
   margin-bottom: 2rem;
+  font-size: 18px;
 }
 
 .loginForm {
   margin-top: 1.5rem;
 }
 
-.rememberForgot {
+.remember {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
 }
 
+.forgot{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  font-weight: 500;
+}
 .forgotLink {
   color: #1890ff;
 }
