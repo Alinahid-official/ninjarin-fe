@@ -1,14 +1,11 @@
 import React from "react";
 import { Flex, Layout } from "antd";
-import { UserOutlined } from "@ant-design/icons";
-import { BellOutlined } from "@ant-design/icons";
+import { UserOutlined, BellOutlined } from "@ant-design/icons";
 import { Select } from "antd";
 import Sidebar from "../../components/layout/Sidebar";
-import ProjectTable from "./ProjectTable";
-import CustomerStatsCard from "./components/CustomerStatsCard";
-import ProjectStatsCard from "./components/ProjectStatsCard";
+import CustomerTable from './components/CustomerTable';
 
-const DashboardHeader = () => (
+const CustomersHeader = () => (
   <div
     style={{
       display: "flex",
@@ -19,7 +16,7 @@ const DashboardHeader = () => (
     }}
   >
     <span style={{ fontSize: 22, color: "#757575", fontWeight: 500 }}>
-      Dashboard
+      Customers
     </span>
     <div style={{ display: "flex", gap: 16 }}>
       <div
@@ -58,20 +55,16 @@ const OverviewHeader = () => (
     style={{
       display: "flex",
       alignItems: "center",
-      justifyContent: "space-between",
       padding: "16px",
       background: "#fff",
     }}
   >
-    <span style={{ fontWeight: 600, color: "#757575", fontSize: 16 }}>
-      Overview
-    </span>
+    <span style={{ color: "#000000", fontSize: 16 }}>Overview</span>
     <Select
-      className="nz-select-square"
       defaultValue="last7"
       style={{
-        width: 150,
-        border: "1px solid #e0e0e0",
+        width: 120,
+        border: "none",
       }}
       dropdownStyle={{ borderRadius: 8 }}
       bordered={false}
@@ -101,30 +94,19 @@ const OverviewHeader = () => (
   </div>
 );
 
-const Dashboard = () => {
+const Customers = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sidebar />
       <Layout>
-        <DashboardHeader />
+        <CustomersHeader />
         <div className="nz-padding-p nz-bg-w">
           <OverviewHeader />
-          <Flex
-            justify="flex-start"
-            style={{
-              width: "100%",
-              marginBottom: 24,
-            }}
-            gap={16}
-          >
-            <CustomerStatsCard />
-            <ProjectStatsCard />
-          </Flex>
-          <ProjectTable />
+          <CustomerTable />
         </div>
       </Layout>
     </Layout>
   );
 };
 
-export default Dashboard;
+export default Customers;

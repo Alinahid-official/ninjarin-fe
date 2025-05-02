@@ -3,33 +3,35 @@ import ForgotPassword from "../pages/auth/forgotPassword";
 import LoginPage from "../pages/auth/login";
 import ResetPassword from "../pages/auth/resetPassword";
 import Dashboard from "../pages/dashboard";
+import Customers from "../pages/customers";
 
 const router = createBrowserRouter([
-
   {
-    path: '/',
+    path: "/",
     element: <Dashboard />,
   },
 
   {
-    path: '/login',
+    path: "/login",
     element: <LoginPage />,
   },
 
   {
-    path: '/forgot-password',
+    path: "/forgot-password",
     element: <ForgotPassword />,
   },
 
   {
-    path: '/reset-password',
+    path: "/reset-password",
     element: <ResetPassword />,
   },
-
+  {
+    path: "/customers",
+    element: <Customers />,
+  },
 ]);
 
 const AppRoutes = () => {
-
   return <RouterProvider router={router} />;
 };
 

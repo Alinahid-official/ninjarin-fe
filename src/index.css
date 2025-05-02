@@ -1,3 +1,45 @@
 .ant-form-item-label > label {
     font-weight: 600 !important;
   }
+
+.nz-border {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+.nz-border-radius {
+    border-radius: 8px;
+  }
+
+.nz-padding-p {
+    padding: 16px;
+  }
+.nz-bg-w{
+  background-color: #fff;
+}
+
+.nz-table .ant-table-container{
+  border-radius: 0px !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+
+.nz-select-square .ant-select-selector{
+  border-radius: 0px!important;
+}
+
+.nz-input-square .ant-input{
+  border-radius: 0px!important;
+}
+
+.nz-no-shadow{
+  box-shadow: none!important;
+}
+
+.nz-table-footer .ant-pagination{
+    background-color: rgba(0, 0, 0, 0.02) !important;
+    padding: 16px !important;
+    margin: 0 !important;
+}
+.nz-table-footer .ant-table-pagination-right{
+    justify-content: flex-start!important;
+}
