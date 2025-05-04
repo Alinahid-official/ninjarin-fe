@@ -3,14 +3,27 @@ import { Form, Input, Button, Checkbox, Row, Col, Typography } from "antd";
 import styles from "./Login.module.css";
 import TeamWorkImage from "../../../assets/images/login/Team_Work.png";
 import Logo from "../../../assets/images/logo/Logo.png";
+import { useDispatch, useSelector } from "react-redux";
+import SessionActions from "../../../redux/session/action";
+import requestingSelector from "@/redux/requesting/requestingSelector";
+import { makeSelectErrorModel } from "@/redux/error/errorSelector";
 
 const { Title, Text, Link } = Typography;
-
+const selectError = makeSelectErrorModel();
 const LoginPage = () => {
+  const dispatch = useDispatch();
+  const loading = useSelector((state) =>
+    requestingSelector(state, [SessionActions.REQUEST_LOGIN])
+  );
+  const error = useSelector((state) =>
+    selectError(state, [SessionActions.REQUEST_LOGIN_FINISHED])
+  );
   const onFinish = (values) => {
     console.log("Success:", values);
+    dispatch(SessionActions.login(values));
   };
 
+  console.log("loading", loading, error);
   return (
     <>
       <Row style={{ padding: "20px 30px" }}>
@@ -103,6 +116,7 @@ const LoginPage = () => {
                   block
                   size="large"
                   className={styles.loginButton}
+                  loading={loading}
                 >
                   Login
                 </Button>

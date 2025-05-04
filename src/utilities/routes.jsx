@@ -5,7 +5,7 @@ import ResetPassword from "../pages/auth/resetPassword";
 import Dashboard from "../pages/dashboard";
 import Customers from "../pages/customers";
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: "/",
     element: <Dashboard />,
