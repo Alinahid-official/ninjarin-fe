@@ -1,4 +1,3 @@
-import set from "lodash/set";
 import { getKeyForAction } from "@/utilities/actionUtility";
 import XMLToJSON from "@/utilities/XMLToJSON";
 import { createSelector } from "@reduxjs/toolkit";
@@ -46,15 +45,15 @@ export const getFieldErrors = (errorModel) => {
   return fieldErrors;
 };
 
-export const getFieldErrorsInNestedForm = (errorModel) => {
-  const fieldErrors = {};
-  if (errorModel && errorModel.errors)
-    errorModel.errors.forEach((err) => {
-      if (err.location && err.message)
-        set(fieldErrors, err.location, err.message);
-    });
-  return fieldErrors;
-};
+// export const getFieldErrorsInNestedForm = (errorModel) => {
+//   const fieldErrors = {};
+//   if (errorModel && errorModel.errors)
+//     errorModel.errors.forEach((err) => {
+//       if (err.location && err.message)
+//         set(fieldErrors, err.location, err.message);
+//     });
+//   return fieldErrors;
+// };
 
 export const makeSelectFieldErrors = () =>
   createSelector(makeSelectErrorModel(), getFieldErrors);
@@ -134,8 +133,8 @@ export const getCountOfFields = (fieldCount, ...fields) => {
   }, 0);
 };
 
-export const makeSelectFieldErrorsInNestedForm = () =>
-  createSelector(makeSelectErrorModel(), getFieldErrorsInNestedForm);
+// export const makeSelectFieldErrorsInNestedForm = () =>
+//   createSelector(makeSelectErrorModel(), getFieldErrorsInNestedForm);
 
 export const getErrorsFromModel = (errorModel) => {
   if (errorModel && errorModel.errors) {
