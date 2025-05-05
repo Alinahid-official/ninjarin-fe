@@ -43,3 +43,8 @@
 .nz-table-footer .ant-table-pagination-right{
     justify-content: flex-start!important;
 }
+
+.nz-project-modal .ant-modal-content{
+  border-radius: 20px!important;
+  padding: 0!important;
+}

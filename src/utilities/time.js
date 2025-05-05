@@ -127,3 +127,7 @@ export function convertSeconds(totalSeconds) {
     seconds
   };
 }
+
+export const formatToMonthDayYear = (dateString) => {
+  return dayjs(dateString).format('MMM DD, YYYY');
+};

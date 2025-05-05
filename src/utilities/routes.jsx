@@ -4,6 +4,7 @@ import LoginPage from "../pages/auth/login";
 import ResetPassword from "../pages/auth/resetPassword";
 import Dashboard from "../pages/dashboard";
 import Customers from "../pages/customers";
+import Projects from "@/pages/projects";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([
   {
     path: "/customers",
     element: <Customers />,
+  },
+  {
+    path: "/projects",
+    element: <Projects />,
   },
 ]);
 
