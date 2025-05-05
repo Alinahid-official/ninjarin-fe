@@ -179,6 +179,7 @@ export async function get(endpoint, params, requestConfig, isAuthenticated) {
 
 export function post(endpoint, data, requestConfig = {}, isAuthenticated) {
   const config = data || null ? { data, ...requestConfig } : undefined;
+  console.log("post config", config, data);
   return doRequest(
     {
       url: endpoint,

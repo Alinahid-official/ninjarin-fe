@@ -1,6 +1,6 @@
-// Update the import path
-import { createAction } from "../../utilities/createActionUtility";
+import { createAction } from "@/utilities/actionUtility";
 
+// Update the import path
 const SessionActions = {
   REQUEST_LOGIN: "session/REQUEST_LOGIN",
   REQUEST_LOGIN_FINISHED: "session/REQUEST_LOGIN_FINISHED",

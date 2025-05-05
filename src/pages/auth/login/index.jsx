@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SessionActions from "../../../redux/session/action";
 import requestingSelector from "@/redux/requesting/requestingSelector";
 import { makeSelectErrorModel } from "@/redux/error/errorSelector";
+import AlertError from "@/components/error/AlertError";
 
 const { Title, Text, Link } = Typography;
 const selectError = makeSelectErrorModel();
@@ -19,11 +20,9 @@ const LoginPage = () => {
     selectError(state, [SessionActions.REQUEST_LOGIN_FINISHED])
   );
   const onFinish = (values) => {
-    console.log("Success:", values);
     dispatch(SessionActions.login(values));
   };
 
-  console.log("loading", loading, error);
   return (
     <>
       <Row style={{ padding: "20px 30px" }}>
@@ -76,6 +75,7 @@ const LoginPage = () => {
                   Log in to your account & transform<br></br> your workforce.
                 </Text>
               </div>
+              {error && <AlertError error={error} />}
               <Form
                 requiredMark={false}
                 name="login"
