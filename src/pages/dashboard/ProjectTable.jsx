@@ -1,9 +1,22 @@
-import React from "react";
-import { Table, Select, Input, Space, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, Select, Input, Space, Button, Modal } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import TableFooter from "./TableFooter";
+import { useDispatch, useSelector } from "react-redux";
+import ProjectSelectors from "@/redux/project/selectors";
+import requestingSelector from "@/redux/requesting/requestingSelector";
+import ProjectActions from "@/redux/project/actions";
+import { formatToMonthDayYear } from "@/utilities/time";
+import ProjectActivityHistory from "../projects/components/ProjectActivityHistory";
 
 const ProjectTable = () => {
+  const dispatch = useDispatch();
+  const projects = useSelector(ProjectSelectors.getProjects);
+  const loading = useSelector((state) =>
+    requestingSelector(state, [ProjectActions.GET_PROJECTS])
+  );
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
   const columns = [
     {
       title: "Organization",
@@ -13,8 +26,8 @@ const ProjectTable = () => {
     },
     {
       title: "Project Name",
-      dataIndex: "projectName",
-      key: "projectName",
+      dataIndex: "name",
+      key: "name",
       width: 200,
     },
     {
@@ -52,16 +65,24 @@ const ProjectTable = () => {
       dataIndex: "dueDate",
       key: "dueDate",
       width: 150,
+      render: (date) => formatToMonthDayYear(date),
     },
     {
       title: "Activity History",
       dataIndex: "activityHistory",
       key: "activityHistory",
       width: 150,
-      render: () => (
-        <a href="#" style={{ color: "#1677ff" }}>
+      render: (_, record) => (
+        <Button
+          type="link"
+          style={{ color: "#1677ff", padding: 0 }}
+          onClick={() => {
+            setSelectedProject(record);
+            setIsActivityModalOpen(true);
+          }}
+        >
           View all activity
-        </a>
+        </Button>
       ),
     },
     {
@@ -110,34 +131,36 @@ const ProjectTable = () => {
     return colors[type] || "#757575";
   };
 
-  const data = [
-    {
-      key: "1",
-      organization: "Accenture",
-      projectName: "Wipro Supernova",
-      cxOwner: "Om prakash sao",
-      programManager: "Om prakash sao",
-      projectStage: "Consulting",
-      dueDate: "May 25, 2023",
-      projectType: "Career Mapping",
-      cxAdmin: "Om prakash sao",
-      startDate: "May 25, 2023",
-    },
-    {
-      key: "2",
-      organization: "Deloitte Consulting",
-      projectName: "West Bengal Data Center",
-      cxOwner: "Neilsan mando",
-      programManager: "Neilsan mando",
-      projectStage: "Design",
-      dueDate: "May 25, 2023",
-      projectType: "Recruitment",
-      cxAdmin: "Neilsan mando",
-      startDate: "May 25, 2023",
-    },
-    // Add more data as needed
-  ];
-
+  // const data = [
+  //   {
+  //     key: "1",
+  //     organization: "Accenture",
+  //     projectName: "Wipro Supernova",
+  //     cxOwner: "Om prakash sao",
+  //     programManager: "Om prakash sao",
+  //     projectStage: "Consulting",
+  //     dueDate: "May 25, 2023",
+  //     projectType: "Career Mapping",
+  //     cxAdmin: "Om prakash sao",
+  //     startDate: "May 25, 2023",
+  //   },
+  //   {
+  //     key: "2",
+  //     organization: "Deloitte Consulting",
+  //     projectName: "West Bengal Data Center",
+  //     cxOwner: "Neilsan mando",
+  //     programManager: "Neilsan mando",
+  //     projectStage: "Design",
+  //     dueDate: "May 25, 2023",
+  //     projectType: "Recruitment",
+  //     cxAdmin: "Neilsan mando",
+  //     startDate: "May 25, 2023",
+  //   },
+  //   // Add more data as needed
+  // ];
+  useEffect(() => {
+    dispatch(ProjectActions.getProjects());
+  }, []);
   return (
     <div
       className="nz-border nz-border-radius"
@@ -181,15 +204,36 @@ const ProjectTable = () => {
       </div>
       <div style={{ overflow: "auto" }}>
         <Table
+          loading={loading}
           className="nz-table nz-table-footer"
           bordered
           columns={columns}
-          dataSource={data}
+          dataSource={projects}
           pagination={false}
           footer={() => <TableFooter />}
           scroll={{ x: 1500 }}
         />
       </div>
+      <Modal
+        className="nz-project-modal"
+        title="Activity History"
+        open={isActivityModalOpen}
+        onCancel={() => setIsActivityModalOpen(false)}
+        footer={null}
+        width={500}
+        height={600}
+        style={{ top: 150 }}
+        styles={{
+          header: {
+            padding: 20,
+            backgroundColor: "#0000000D",
+          },
+        }}
+      >
+        {selectedProject && (
+          <ProjectActivityHistory project={selectedProject} />
+        )}
+      </Modal>
     </div>
   );
 };

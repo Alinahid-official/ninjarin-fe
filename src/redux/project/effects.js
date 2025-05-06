@@ -1,5 +1,5 @@
 import api from "@/utilities/api";
-import { get, post } from "@/utilities/httpClient";
+import { del, get, post } from "@/utilities/httpClient";
 
 export default class ProjectEffects {
   static getProjectById(id) {
@@ -15,5 +15,9 @@ export default class ProjectEffects {
 
   static updateProject(id, update) {
     return post(`${api.PROJECTS}/${id}`, update);
+  }
+
+  static deleteProject(id) {
+    return del(`${api.PROJECTS}/${id}`);
   }
 }

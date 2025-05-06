@@ -1,9 +1,18 @@
-import React from "react";
-import { Flex, Layout } from "antd";
+import React, { useEffect, useState } from "react";
+import { Layout } from "antd";
 import { UserOutlined, BellOutlined } from "@ant-design/icons";
-import { Select } from "antd";
 import Sidebar from "../../components/layout/Sidebar";
-import CustomerTable from './components/CustomerTable';
+import CustomerTable from "./components/CustomerTable";
+import BlankList from "@/components/common/BlankList";
+import { useDispatch, useSelector } from "react-redux";
+import CustomerActions from "@/redux/customer/actions";
+import requestingSelector from "@/redux/requesting/requestingSelector";
+import { makeSelectErrorModel } from "@/redux/error/errorSelector";
+import FullAlertError from "@/components/error/FullAlertError";
+import CommonDrawer from "@/components/common/Drawer";
+import CustomerForm from "./components/CustomerForm";
+
+const selectError = makeSelectErrorModel();
 
 const CustomersHeader = () => (
   <div
@@ -50,61 +59,55 @@ const CustomersHeader = () => (
   </div>
 );
 
-const OverviewHeader = () => (
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      padding: "16px",
-      background: "#fff",
-    }}
-  >
-    <span style={{ color: "#000000", fontSize: 16 }}>Overview</span>
-    <Select
-      defaultValue="last7"
-      style={{
-        width: 120,
-        border: "none",
-      }}
-      dropdownStyle={{ borderRadius: 8 }}
-      bordered={false}
-      options={[
-        {
-          value: "last7",
-          label: <span style={{ color: "#757575" }}>Last 7 Days</span>,
-        },
-        {
-          value: "last30",
-          label: (
-            <span style={{ fontWeight: 600, color: "#757575" }}>
-              Last 30 Days
-            </span>
-          ),
-        },
-        {
-          value: "thisMonth",
-          label: (
-            <span style={{ fontWeight: 600, color: "#757575" }}>
-              This Month
-            </span>
-          ),
-        },
-      ]}
-    />
-  </div>
-);
-
 const Customers = () => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const loading = useSelector((state) =>
+    requestingSelector(state, [CustomerActions.GET_CUSTOMERS])
+  );
+  const error = useSelector((state) =>
+    selectError(state, [CustomerActions.GET_CUSTOMERS_FINISHED])
+  );
+  const dispatch = useDispatch();
+
+  const handleAddCustomer = () => {
+    setIsDrawerOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setIsDrawerOpen(false);
+  };
+
+  const handleCustomerSubmit = (values) => {
+    dispatch(CustomerActions.addCustomer(values));
+  };
+
+  useEffect(() => {
+    dispatch(CustomerActions.getCustomers());
+  }, []);
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sidebar />
       <Layout>
+        {error && <FullAlertError error={error} />}
         <CustomersHeader />
         <div className="nz-padding-p nz-bg-w">
-          <OverviewHeader />
-          <CustomerTable />
+          {loading && <BlankList isLoading />}
+          {!loading && <CustomerTable handleAddCustomer={handleAddCustomer} />}
         </div>
       </Layout>
+
+      <CommonDrawer
+        title="Add Customer"
+        subTitle="Fill all the required field to add client."
+        open={isDrawerOpen}
+        onClose={handleDrawerClose}
+      >
+        <CustomerForm
+          onSubmit={handleCustomerSubmit}
+          onCancel={handleDrawerClose}
+        />
+      </CommonDrawer>
     </Layout>
   );
 };

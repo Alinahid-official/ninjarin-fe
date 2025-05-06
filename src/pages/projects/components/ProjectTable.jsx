@@ -1,17 +1,29 @@
 import React, { useState } from "react";
-import { Table, Select, Input, Button, Flex, Tabs, Modal } from "antd";
+import {
+  Table,
+  Select,
+  Input,
+  Button,
+  Flex,
+  Tabs,
+  Modal,
+  Popconfirm,
+} from "antd";
 import {
   SearchOutlined,
   UnorderedListOutlined,
   AppstoreOutlined,
   PlusOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import TableFooter from "../../dashboard/TableFooter";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ProjectSelectors from "@/redux/project/selectors";
 import BlankList from "@/components/common/BlankList";
 import { formatToMonthDayYear } from "@/utilities/time";
 import ProjectActivityHistory from "./ProjectActivityHistory";
+import { GoPencil } from "react-icons/go";
+import ProjectActions from "@/redux/project/actions";
 const OverviewHeader = ({ onClick }) => (
   <Flex justify="space-between" style={{ padding: 16 }}>
     <div
@@ -68,6 +80,7 @@ const OverviewHeader = ({ onClick }) => (
   </Flex>
 );
 const ProjectTable = ({ handleAddProject }) => {
+  const dispatch = useDispatch();
   const [selectionType, _] = useState("checkbox");
   const [selectedProject, setSelectedProject] = useState(null);
   const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
@@ -216,7 +229,7 @@ const ProjectTable = ({ handleAddProject }) => {
       title: "Project Type",
       dataIndex: "projectType",
       key: "projectType",
-      width: 210,
+      width: 230,
       render: (type) => (
         <span
           style={{
@@ -245,15 +258,32 @@ const ProjectTable = ({ handleAddProject }) => {
     {
       title: "Actions",
       key: "actions",
-      width: 120,
-      render: () => (
+      width: 140,
+      render: (record) => (
         <div style={{ display: "flex", gap: 16 }}>
-          <Button type="link" style={{ padding: 0 }}>
+          <Button
+            icon={<GoPencil />}
+            type="link"
+            style={{ padding: 0, color: "#1677ff" }}
+          >
             Edit
           </Button>
-          <Button type="link" style={{ padding: 0, color: "#ff4d4f" }}>
-            Delete
-          </Button>
+          <Popconfirm
+            title={"Are you sure?"}
+            okText={"Yes"}
+            cancelText={"No"}
+            onConfirm={() => {
+              dispatch(ProjectActions.deleteProject(record._id));
+            }}
+          >
+            <Button
+              icon={<DeleteOutlined />}
+              type="link"
+              style={{ padding: 0, color: "#1677ff" }}
+            >
+              Delete
+            </Button>
+          </Popconfirm>
         </div>
       ),
     },
