@@ -24,11 +24,21 @@ const LoginPage = () => {
   };
 
   return (
-    <>
+    <div
+      style={{
+        background: "linear-gradient(0deg, #EEE6FF 0%, #FFFFFF 100%)",
+        minHeight: "100vh",
+      }}
+    >
       <Row style={{ padding: "20px 30px" }}>
         <img src={Logo} alt="Growth Illustration" />
       </Row>
-      <Row className={styles.loginContainer}>
+      <Row
+        className={styles.loginContainer}
+        style={{
+          height: "75vh",
+        }}
+      >
         <Col xs={24} sm={24} md={12} className={styles.leftSection}>
           {/* <div className={styles.illustration}>
           
@@ -44,13 +54,12 @@ const LoginPage = () => {
             <Title
               level={2}
               style={{
-                color: "#757575",
                 marginBottom: 0,
                 fontWeight: 600,
                 lineHeight: 1.1,
               }}
             >
-              The Future of Talent
+              The Future of Talent is
               <br />
               #EverythingSkills
             </Title>
@@ -107,7 +116,13 @@ const LoginPage = () => {
                 </Form.Item>
 
                 <div className={styles.remember}>
-                  <Checkbox>Remember me</Checkbox>
+                  <Checkbox
+                    style={{
+                      color: "#961FFF",
+                    }}
+                  >
+                    Remember me
+                  </Checkbox>
                 </div>
 
                 <Button
@@ -137,14 +152,22 @@ const LoginPage = () => {
             <Text className={styles.copyright}>
               © 2025 Ninzarin, All rights reserved{" "}
               <Link
-                style={{ fontWeight: 600, textDecoration: "underline" }}
+                style={{
+                  fontWeight: 600,
+                  textDecoration: "underline",
+                  color: "#FD9AB0",
+                }}
                 href="/terms"
               >
                 Terms
               </Link>
               <span className={styles.dot}>, </span>
               <Link
-                style={{ fontWeight: 600, textDecoration: "underline" }}
+                style={{
+                  fontWeight: 600,
+                  textDecoration: "underline",
+                  color: "#FD9AB0",
+                }}
                 href="/privacy-policy"
               >
                 Privacy Policy
@@ -153,7 +176,7 @@ const LoginPage = () => {
           </div>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 

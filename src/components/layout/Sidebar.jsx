@@ -45,11 +45,11 @@ const Sidebar = () => {
       style={{
         background: "#fff",
         minHeight: "100vh",
-        borderRight: "1px solid #f0f0f0",
+        borderRight: "1px solid #FEF0F2",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        padding: "0 15px",
+        // padding: "0 15px",
       }}
       className="dashboard-sidebar"
     >
@@ -73,6 +73,7 @@ const Sidebar = () => {
           </div>
           <Menu
             mode="inline"
+            className="nz-menu-item"
             selectedKeys={[getSelectedKey(currentPath)]}
             style={{ borderRight: 0, marginTop: 32, flex: 1 }}
             items={[

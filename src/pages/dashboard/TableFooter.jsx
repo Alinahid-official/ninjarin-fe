@@ -17,8 +17,9 @@ const TableFooter = () => {
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <Select
+          className="nz-selector-pink"
           defaultValue="10"
-          style={{ width: 70 }}
+          style={{ width: 70, border: "none" }}
           options={[
             { value: "10", label: "10" },
             { value: "20", label: "20" },
@@ -35,7 +36,8 @@ const TableFooter = () => {
             justifyContent: "center",
             minWidth: "32px",
             padding: "0 8px",
-            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            color: "#240246",
+            backgroundColor: "#FEF0F2",
           }}
         />
         <Button
@@ -47,7 +49,8 @@ const TableFooter = () => {
             justifyContent: "center",
             minWidth: "32px",
             padding: "0 8px",
-            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            backgroundColor: "#FEF0F2",
+            color: "#240246",
           }}
         />
       </div>

@@ -63,11 +63,11 @@ const CustomerStatsCard = () => {
   return (
     <div
       style={{
-        border: "1px solid #e0e0e0",
+        border: "1px solid #FEF0F2",
         borderRadius: 24,
-        padding: "16px 24px",
+        padding: "16px 0px",
         background: "#fff",
-        width: 370,
+        width: 500,
         boxSizing: "border-box",
         boxShadow: "0 0 0 0 transparent",
         margin: "0 auto",
@@ -75,38 +75,46 @@ const CustomerStatsCard = () => {
     >
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          padding: "0px 24px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <TbUserHexagon style={{ fontSize: 24, color: "#bdbdbd" }} />
-          <span style={{ fontWeight: 600, color: "#9e9e9e", fontSize: 16 }}>
-            Total Customers
-          </span>
-          <InfoCircleOutlined style={{ color: "#bdbdbd", marginLeft: 4 }} />
-        </div>
-        <RightOutlined style={{ color: "#000000", fontSize: 16 }} />
-      </div>
-      <div style={{ marginTop: 10, marginBottom: 8 }}>
-        <span style={{ fontSize: 28, fontWeight: 700, color: "#444" }}>53</span>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
-        <span
+        <div
           style={{
-            color: "#2979ff",
-            fontWeight: 600,
-            fontSize: 18,
-            marginRight: 4,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <span style={{ fontSize: 18, verticalAlign: "middle" }}>↑</span> 12%
-        </span>
-        <span style={{ color: "#9e9e9e", fontWeight: 500, marginLeft: 8 }}>
-          vs last 7 days
-        </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <TbUserHexagon style={{ fontSize: 24 }} />
+            <span style={{ fontWeight: 600, fontSize: 16 }}>
+              Total Customers
+            </span>
+            <InfoCircleOutlined style={{ color: "#961FFF", marginLeft: 4 }} />
+          </div>
+          <RightOutlined style={{ color: "#961FFF", fontSize: 16 }} />
+        </div>
+        <div style={{ marginTop: 10, marginBottom: 8 }}>
+          <span style={{ fontSize: 28, fontWeight: 700, color: "#444" }}>
+            53
+          </span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+          <span
+            style={{
+              fontWeight: 500,
+              fontSize: 18,
+              marginRight: 4,
+            }}
+          >
+            <span style={{ fontSize: 18, verticalAlign: "middle" }}>↑</span> 12%
+          </span>
+          <span style={{ color: "#596780", fontWeight: 500, marginLeft: 8 }}>
+            vs last 7 days
+          </span>
+        </div>
       </div>
+
       <div style={{ marginTop: 16 }}>
         <ReactApexChart
           options={chartOptions}

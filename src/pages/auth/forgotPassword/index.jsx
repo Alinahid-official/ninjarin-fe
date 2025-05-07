@@ -12,11 +12,21 @@ const ForgotPassword = () => {
   };
 
   return (
-    <>
+    <div
+      style={{
+        background: "linear-gradient(0deg, #EEE6FF 0%, #FFFFFF 100%)",
+        minHeight: "100vh",
+      }}
+    >
       <Row style={{ padding: "20px 30px" }}>
         <img src={Logo} alt="Growth Illustration" />
       </Row>
-      <Row className={styles.loginContainer}>
+      <Row
+        className={styles.loginContainer}
+        style={{
+          height: "75vh",
+        }}
+      >
         <Col xs={24} sm={24} md={12} className={styles.leftSection}>
           <div style={{ textAlign: "left", marginTop: "2rem" }}>
             <div className={styles.illustration}>
@@ -25,14 +35,12 @@ const ForgotPassword = () => {
             <Title
               level={2}
               style={{
-                color: "#757575",
                 marginBottom: 0,
                 fontWeight: 600,
                 lineHeight: 1.1,
               }}
             >
-              All-In-One{" "}
-              <span style={{ color: "#757575" }}>#EverythingSkills</span>
+              All-In-One <span>#EverythingSkills</span>
               <br />
               Ecosystem.
             </Title>
@@ -52,7 +60,6 @@ const ForgotPassword = () => {
                 <Title
                   level={3}
                   style={{
-                    color: "#757575",
                     fontWeight: 600,
                     marginBottom: 10,
                   }}
@@ -61,7 +68,7 @@ const ForgotPassword = () => {
                 </Title>
                 <Text
                   style={{
-                    color: "#757575",
+                    color: "#596780",
                     display: "block",
                     marginBottom: "2rem",
                     fontSize: "18px",
@@ -117,14 +124,22 @@ const ForgotPassword = () => {
             <Text className={styles.copyright}>
               © 2025 Ninzarin, All rights reserved{" "}
               <Link
-                style={{ fontWeight: 600, textDecoration: "underline" }}
+                style={{
+                  fontWeight: 600,
+                  textDecoration: "underline",
+                  color: "#FD9AB0",
+                }}
                 href="/terms"
               >
                 Terms
               </Link>
               <span className={styles.dot}>, </span>
               <Link
-                style={{ fontWeight: 600, textDecoration: "underline" }}
+                style={{
+                  fontWeight: 600,
+                  textDecoration: "underline",
+                  color: "#FD9AB0",
+                }}
                 href="/privacy-policy"
               >
                 Privacy Policy
@@ -133,7 +148,7 @@ const ForgotPassword = () => {
           </div>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 

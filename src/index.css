@@ -3,7 +3,7 @@
   }
 
 .nz-border {
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid #FEF0F2;
   }
 .nz-border-horizontal {
     border-left: 0;
@@ -50,4 +50,38 @@
 .nz-project-modal .ant-modal-content{
   border-radius: 20px!important;
   padding: 0!important;
+}
+
+.nz-color-pink{
+  color: #FD9AB0!important;
+}
+
+.nz-background-pink{
+  background-color: #FD9AB0!important;
+}
+
+.nz-menu-item .ant-menu-item-selected{
+  border-right:2px solid #9D45FF !important;
+}
+.nz-menu-item .ant-menu-item{
+  margin-right: 0 !important;
+  border-radius: 0 !important;
+}
+
+.nz-text-p{
+  color: #596780 !important;
+  font-weight: 300!important;
+}
+
+.nz-table .ant-table-cell{
+  border-inline-end: 1px solid #FEF0F2!important;
+  border-bottom: 1px solid #FEF0F2 !important;
+}
+
+.nz-table .ant-table-footer{
+  background-color: #fff;
+}
+
+.nz-selector-pink{
+  
 }
