@@ -9,14 +9,17 @@ import {
 import CommonDrawer from "@/components/common/Drawer";
 import OrganizationDesignForm from "./OrganizationDesignForm";
 import AddOrganizationDesignForm from "./AddOrganizationDesignForm"; // Ensure this is correctly imported
+import { useSelector } from "react-redux";
+import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
+import EditableInputField from "@/components/common/EditableInputField";
+import EditableLabelField from "./EditableLabelField";
 
 const { Title } = Typography;
 
 const SkillTable = () => {
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
-  // const [isAddModalOpen, setIsAddModalOpen] = useState(false); // Will be replaced by isAddDrawerOpen
-  const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false); // New state for Add Design Drawer
-
+  const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
+  const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const handleUpdateDesign = () => {
     setIsUpdateDrawerOpen(true);
   };
@@ -552,247 +555,114 @@ const SkillTable = () => {
       assigned: "",
     },
   ];
+  const getColumns = () => {
+    if (!labels) {
+      return columns; // Use default columns if labels is null
+    }
 
+    // Filter out unwanted keys and create columns dynamically
+    const excludedKeys = ["_id", "customerId", "createdAt", "updatedAt", "__v"];
+    return Object.entries(labels)
+      .filter(([key, value]) => !excludedKeys.includes(key) && value !== null)
+      .map(([key, value]) => {
+        return {
+          title: (
+            <Flex
+              align="center"
+              style={{
+                padding: "12px 16px",
+                background: "#FFFFFF",
+                borderRadius: "8px",
+              }}
+            >
+              <ApartmentOutlined
+                style={{
+                  marginRight: 8,
+                  fontSize: "20px",
+                  color: "#6B7280",
+                  background: "#EFF6FF",
+                  padding: "8px",
+                  borderRadius: "6px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
+              <div>
+                <div
+                  style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}
+                >
+                  Label
+                </div>
+                <div style={{ fontWeight: 600 }}>
+                  <EditableLabelField
+                    name={key}
+                    value={value}
+                    customerId={labels.customerId}
+                    labelId={labels._id}
+                  />
+                </div>
+              </div>
+            </Flex>
+          ),
+          dataIndex: key,
+          key: key,
+          render: (text) => (
+            <Flex justify="space-between" align="center">
+              {key === "assigned" ? (
+                <Button
+                  type="primary"
+                  style={{
+                    background: "#EDE9FE",
+                    color: "#8C5BF2",
+                    borderColor: "#8C5BF2",
+                    width: "100%",
+                  }}
+                >
+                  Assign Skill
+                </Button>
+              ) : (
+                <>
+                  <span>{text}</span>
+                  <Button type="text" icon={<MoreOutlined />} size="small" />
+                </>
+              )}
+            </Flex>
+          ),
+        };
+      });
+  };
   // Add row component for the "add" buttons
-  const AddRow = () => (
-    <tr>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE", // Updated background to light purple
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px", // Added padding for better appearance
-            borderRadius: "6px", // Added border radius
-            border: "none", // Ensure no default border interferes
-            boxShadow: "none", // Ensure no default shadow interferes
-          }}
-        >
-          Industry
-        </Button>
-      </td>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE", // Updated background to light purple
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px", // Added padding
-            borderRadius: "6px",
-            border: "none",
-            boxShadow: "none",
-          }}
-        >
-          Organization
-        </Button>
-      </td>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE", // Updated background to light purple
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px", // Added padding
-            borderRadius: "6px",
-            border: "none",
-            boxShadow: "none",
-          }}
-        >
-          Line of Business
-        </Button>
-      </td>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE", // Updated background to light purple
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px", // Added padding
-            borderRadius: "6px",
-            border: "none",
-            boxShadow: "none",
-          }}
-        >
-          Function
-        </Button>
-      </td>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE",
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            border: "none",
-            boxShadow: "none",
-          }}
-        >
-          Sub-function / Verticals
-        </Button>
-      </td>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE",
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            border: "none",
-            boxShadow: "none",
-          }}
-        >
-          Bands
-        </Button>
-      </td>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE",
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            border: "none",
-            boxShadow: "none",
-          }}
-        >
-          Grades
-        </Button>
-      </td>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE",
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            border: "none",
-            boxShadow: "none",
-          }}
-        >
-          Roles
-        </Button>
-      </td>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE",
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            border: "none",
-            boxShadow: "none",
-          }}
-        >
-          Type of Role
-        </Button>
-      </td>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE",
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            border: "none",
-            boxShadow: "none",
-          }}
-        >
-          Skills
-        </Button>
-      </td>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE",
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            border: "none",
-            boxShadow: "none",
-          }}
-        >
-          Sub Skills
-        </Button>
-      </td>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE",
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            border: "none",
-            boxShadow: "none",
-          }}
-        >
-          Description
-        </Button>
-      </td>
-      <td>
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          style={{
-            color: "#8C5BF2",
-            background: "#EDE9FE",
-            width: "100%",
-            textAlign: "left",
-            padding: "8px 12px",
-            borderRadius: "6px",
-            border: "none",
-            boxShadow: "none",
-          }}
-        >
-          Assigned
-        </Button>
-      </td>
-    </tr>
-  );
-
+  const AddRow = () => {
+    // console.log("columns", getColumns());
+    return (
+      <tr>
+        {getColumns().map((column) => {
+          // console.log("col", column);
+          return (
+            <td key={column.key}>
+              <Button
+                type="text"
+                icon={<PlusOutlined />}
+                style={{
+                  color: "#8C5BF2",
+                  background: "#EDE9FE",
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "8px 12px",
+                  borderRadius: "6px",
+                  border: "none",
+                  boxShadow: "none",
+                }}
+              >
+                {labels ? labels[column.key] : column.key}
+              </Button>
+            </td>
+          );
+        })}
+      </tr>
+    );
+  };
   return (
     <div>
       <Flex justify="space-between" align="center" style={{ marginBottom: 16 }}>
@@ -820,7 +690,7 @@ const SkillTable = () => {
       >
         <Table
           bordered // Kept the bordered prop as per your recent change
-          columns={columns}
+          columns={getColumns()}
           dataSource={data}
           pagination={false}
           components={{

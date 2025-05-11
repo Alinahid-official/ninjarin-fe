@@ -25,6 +25,8 @@ import { GoPencil } from "react-icons/go";
 import CustomerActions from "@/redux/customer/actions";
 import CustomerCard from "./CustomerCard";
 import TableFooter from "@/pages/dashboard/TableFooter";
+import { Link } from "react-router-dom";
+import { router } from "@/utilities/routes";
 
 const OverviewHeader = ({ onClick }) => (
   <Flex justify="space-between" style={{ padding: 16 }}>
@@ -78,6 +80,7 @@ const CustomerTable = ({ handleAddCustomer }) => {
   const dispatch = useDispatch();
   const customers = useSelector(CustomerSelectors.getCustomers);
   const [viewType, setViewType] = React.useState("list"); // Add state for view type
+
   const tabItems = [
     {
       key: "all",
@@ -134,7 +137,7 @@ const CustomerTable = ({ handleAddCustomer }) => {
       title: "Customer",
       dataIndex: "name",
       key: "customer",
-      render: (text) => (
+      render: (text, record) => (
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div
             style={{
@@ -149,7 +152,14 @@ const CustomerTable = ({ handleAddCustomer }) => {
           >
             {text.charAt(0)}
           </div>
-          <span style={{ color: "#1677ff" }}>{text}</span>
+          <span
+            onClick={() => {
+              onCustomerClick(record);
+            }}
+            style={{ color: "#1677ff", cursor: "pointer" }}
+          >
+            {text}
+          </span>
         </div>
       ),
     },
@@ -273,6 +283,11 @@ const CustomerTable = ({ handleAddCustomer }) => {
       "Change Management": { bg: "#fff8e1", text: "#f9a825" },
     };
     return colors[type] || { bg: "#f5f5f5", text: "#757575" };
+  };
+
+  const onCustomerClick = (customer) => {
+    dispatch(CustomerActions.setCurrentCustomer(customer));
+    router.navigate(`/customers/${customer._id}`);
   };
 
   // const data = [

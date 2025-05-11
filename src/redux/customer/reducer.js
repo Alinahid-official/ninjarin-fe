@@ -7,6 +7,7 @@ import { produce } from "immer";
 export const initialState = {
   customers: null,
   selectedCustomer: null,
+  currentCustomer: null,
 };
 
 const customerList = new schema.Entity("Customers", {}, { idAttribute: "_id" });
@@ -37,6 +38,13 @@ export default BaseReducer(initialState, {
     return {
       ...state,
       customers: updatedCustomers,
+    };
+  },
+  [CustomerActions.SET_CURRENT_CUSTOMER](state, action) {
+    const data = action.payload;
+    return {
+      ...state,
+      currentCustomer: data,
     };
   },
 });

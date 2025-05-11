@@ -34,15 +34,15 @@ export const router = createBrowserRouter([
     element: <Customers />,
   },
   {
-    path: "/customers/home",
+    path: "/customers/:customerId",
     element: <CustomerManagementHome />,
   },
   {
-    path: "/customers/cx-skills-architecture",
+    path: "/customers/:customerId/cx-skills-architecture",
     element: <CXSkillArchitecture />,
   },
-  { // Add this new route
-    path: "/customers/cx-skills-architecture/assign",
+  {
+    path: "/customers/:customerId/cx-skills-architecture/assign",
     element: <CXSkillArchitectureAssign />,
   },
   {

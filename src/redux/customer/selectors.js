@@ -8,6 +8,10 @@ class CustomerSelectors {
   static getCustomers(state) {
     return denormalizeSchema(state.customers.customers, customerListSchema);
   }
+
+  static getCurrentCustomer(state) {
+    return state.customers.currentCustomer;
+  }
 }
 
 export default CustomerSelectors;

@@ -19,8 +19,8 @@ import { useState, useEffect } from "react";
 
 const { Sider } = Layout;
 const { Title, Text, Link } = Typography;
-const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
+const Sidebar = ({ isCollapsed }) => {
+  const [collapsed, setCollapsed] = useState(isCollapsed);
   const location = useLocation();
   const currentPath = location.pathname;
 

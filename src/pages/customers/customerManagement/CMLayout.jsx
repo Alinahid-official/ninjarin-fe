@@ -11,7 +11,7 @@ const CMLayout = ({ children }) => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar />
+      <Sidebar isCollapsed={true} />
       <Layout>
         <CMSidebar />
         <Layout>

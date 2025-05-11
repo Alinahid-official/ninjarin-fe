@@ -5,6 +5,7 @@ import error from "./error/errorReducer";
 import session from "./session/reducer";
 import projects from "./project/reducer";
 import customers from "./customer/reducer";
+import skillArchitecture from "./skillArchitecture/reducer";
 
 const appReducer = combineReducers({
   requesting,
@@ -12,6 +13,7 @@ const appReducer = combineReducers({
   session,
   projects,
   customers,
+  skillArchitecture,
 });
 
 const rootReducer = (state, action) => {

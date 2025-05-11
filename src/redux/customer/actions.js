@@ -11,6 +11,8 @@ const CustomerActions = {
   UPDATE_CUSTOMER_FINISHED: "customer/UPDATE_CUSTOMER_FINISHED",
   GET_CUSTOMER: "customer/GET_CUSTOMER",
   GET_CUSTOMER_FINISHED: "customer/GET_CUSTOMER_FINISHED",
+  SET_CURRENT_CUSTOMER: "customer/SET_CURRENT_CUSTOMER",
+
   getCustomers: () => createAction(CustomerActions.GET_CUSTOMERS),
   addCustomer: (customer) =>
     createAction(CustomerActions.ADD_CUSTOMER, customer),
@@ -20,6 +22,8 @@ const CustomerActions = {
     createAction(CustomerActions.UPDATE_CUSTOMER, customer),
   getCustomer: (customerId) =>
     createAction(CustomerActions.GET_CUSTOMER, customerId),
+  setCurrentCustomer: (customer) =>
+    createAction(CustomerActions.SET_CURRENT_CUSTOMER, customer),
 };
 
 export default CustomerActions;

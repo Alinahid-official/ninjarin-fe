@@ -23,24 +23,37 @@ const CMSidebar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
 
+  // Extract customer ID from URL if it exists
+  const customerId = currentPath
+    .split("/")
+    .find(
+      (segment, index, arr) =>
+        arr[index - 1] === "customers" && segment !== "customers"
+    );
+
   // Get the selected key based on current path
   const getSelectedKey = (path) => {
-    switch (path) {
-      case "/":
+    // Extract the last meaningful segment of the path
+    const pathSegments = path.split("/");
+    const lastSegment = pathSegments[pathSegments.length - 1];
+
+    // Map path segments to menu keys
+    switch (lastSegment) {
+      case "home":
         return "home";
-      case "/skill-architecture":
+      case "cx-skills-architecture":
         return "skill-architecture";
-      case "/inventory":
+      case "inventory":
         return "inventory";
-      case "/users":
+      case "users":
         return "users";
-      case "/projects":
+      case "projects":
         return "projects";
-      case "/reports":
+      case "reports":
         return "reports";
-      case "/manage-access":
+      case "manage-access":
         return "manage-access";
-      case "/settings":
+      case "settings":
         return "settings";
       default:
         return "home";
@@ -111,7 +124,9 @@ const CMSidebar = () => {
                 icon: <HomeOutlined />,
                 label: <span style={{ fontWeight: 600 }}>Home</span>,
                 onClick: () => {
-                  router.navigate("/");
+                  router.navigate(
+                    customerId ? `/customers/${customerId}/home` : "/"
+                  );
                 },
               },
               {
@@ -119,7 +134,11 @@ const CMSidebar = () => {
                 icon: <GoProjectSymlink />,
                 label: "CX Skill Architecture",
                 onClick: () => {
-                  router.navigate("/skill-architecture");
+                  router.navigate(
+                    customerId
+                      ? `/customers/${customerId}/cx-skills-architecture`
+                      : "/skill-architecture"
+                  );
                 },
               },
               {
@@ -127,7 +146,11 @@ const CMSidebar = () => {
                 icon: <PiBookOpenTextBold />,
                 label: "Inventory",
                 onClick: () => {
-                  router.navigate("/inventory");
+                  router.navigate(
+                    customerId
+                      ? `/customers/${customerId}/inventory`
+                      : "/inventory"
+                  );
                 },
               },
               {
@@ -135,7 +158,9 @@ const CMSidebar = () => {
                 icon: <TbUserHexagon />,
                 label: "Users",
                 onClick: () => {
-                  router.navigate("/users");
+                  router.navigate(
+                    customerId ? `/customers/${customerId}/users` : "/users"
+                  );
                 },
               },
               {
@@ -143,7 +168,11 @@ const CMSidebar = () => {
                 icon: <GoProjectSymlink />,
                 label: "Projects",
                 onClick: () => {
-                  router.navigate("/projects");
+                  router.navigate(
+                    customerId
+                      ? `/customers/${customerId}/projects`
+                      : "/projects"
+                  );
                 },
               },
               {
@@ -151,7 +180,9 @@ const CMSidebar = () => {
                 icon: <PiBookOpenTextBold />,
                 label: "Reports",
                 onClick: () => {
-                  router.navigate("/reports");
+                  router.navigate(
+                    customerId ? `/customers/${customerId}/reports` : "/reports"
+                  );
                 },
               },
               {
@@ -159,7 +190,11 @@ const CMSidebar = () => {
                 icon: <LuCrown />,
                 label: "Mange Access",
                 onClick: () => {
-                  router.navigate("/manage-access");
+                  router.navigate(
+                    customerId
+                      ? `/customers/${customerId}/manage-access`
+                      : "/manage-access"
+                  );
                 },
               },
               {
@@ -167,7 +202,11 @@ const CMSidebar = () => {
                 icon: <SettingOutlined />,
                 label: "Settings",
                 onClick: () => {
-                  router.navigate("/settings");
+                  router.navigate(
+                    customerId
+                      ? `/customers/${customerId}/settings`
+                      : "/settings"
+                  );
                 },
               },
             ]}
