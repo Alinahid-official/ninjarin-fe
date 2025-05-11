@@ -68,15 +68,7 @@ const OverviewHeader = ({ onClick }) => (
         ]}
       />
     </div>
-    <Button
-      type="primary"
-      icon={<PlusOutlined />}
-      onClick={onClick}
-      style={{
-        background: "#595959",
-        borderColor: "#595959",
-      }}
-    >
+    <Button type="primary" icon={<PlusOutlined />} onClick={onClick}>
       Add Customer
     </Button>
   </Flex>
@@ -189,10 +181,8 @@ const CustomerTable = ({ handleAddCustomer }) => {
       key: "cxAdmin",
       render: (admin) => (
         <div>
-          <div>{admin}</div>
-          <div style={{ color: "#9e9e9e", fontSize: 12 }}>
-            {"admin@gmail.com"}
-          </div>
+          <div>{admin.name}</div>
+          <div style={{ color: "#9e9e9e", fontSize: 12 }}>{admin.email}</div>
         </div>
       ),
     },
@@ -213,6 +203,27 @@ const CustomerTable = ({ handleAddCustomer }) => {
               }}
             >
               {project.projectType}
+            </span>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "Service Type",
+      dataIndex: "serviceType",
+      key: "serviceType",
+      render: (serviceTypes) => (
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {serviceTypes?.map((type, index) => (
+            <span
+              key={index}
+              style={{
+                color: "#596780",
+                fontSize: "14px",
+                lineHeight: "20px",
+              }}
+            >
+              {type}
             </span>
           ))}
         </div>

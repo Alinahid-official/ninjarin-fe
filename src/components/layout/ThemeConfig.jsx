@@ -21,6 +21,7 @@ export const themeConfig = {
     Button: {
       borderRadius: 4,
       primaryShadow: "none",
+      colorPrimary: "#961FFF",
     },
     Card: {
       borderRadius: 8,
@@ -34,6 +35,12 @@ export const themeConfig = {
       activeBorderColor: "#961FFF",
       hoverBorderColor: "#961FFF",
       colorBorder: "#FD9AB0",
+    },
+    Select: {
+      colorBorder: "#FD9AB0",
+      colorPrimary: "#961FFF",
+      colorPrimaryHover: "#961FFF",
+      controlOutline: "rgba(150, 31, 255, 0.1)",
     },
   },
 };

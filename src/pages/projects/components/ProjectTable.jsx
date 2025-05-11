@@ -81,6 +81,7 @@ const OverviewHeader = ({ onClick }) => (
 );
 const ProjectTable = ({ handleAddProject }) => {
   const dispatch = useDispatch();
+  const stageCounts = useSelector(ProjectSelectors.getProjectStageCounts);
   const [selectionType, _] = useState("checkbox");
   const [selectedProject, setSelectedProject] = useState(null);
   const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
@@ -103,7 +104,8 @@ const ProjectTable = ({ handleAddProject }) => {
       key: "all",
       label: (
         <span>
-          All Projects <span style={{ marginLeft: 4 }}>24</span>
+          All Projects{" "}
+          <span style={{ marginLeft: 4 }}>{projects?.length || 0}</span>
         </span>
       ),
     },
@@ -111,7 +113,8 @@ const ProjectTable = ({ handleAddProject }) => {
       key: "consulting",
       label: (
         <span>
-          Consulting <span style={{ marginLeft: 4 }}>4</span>
+          Consulting{" "}
+          <span style={{ marginLeft: 4 }}>{stageCounts.Consulting || 0}</span>
         </span>
       ),
     },
@@ -119,7 +122,8 @@ const ProjectTable = ({ handleAddProject }) => {
       key: "design",
       label: (
         <span>
-          Design <span style={{ marginLeft: 4 }}>4</span>
+          Design{" "}
+          <span style={{ marginLeft: 4 }}>{stageCounts.Design || 0}</span>
         </span>
       ),
     },
@@ -127,7 +131,8 @@ const ProjectTable = ({ handleAddProject }) => {
       key: "development",
       label: (
         <span>
-          Development <span style={{ marginLeft: 4 }}>4</span>
+          Development{" "}
+          <span style={{ marginLeft: 4 }}>{stageCounts.Development || 0}</span>
         </span>
       ),
     },
@@ -135,7 +140,8 @@ const ProjectTable = ({ handleAddProject }) => {
       key: "delivered",
       label: (
         <span>
-          Delivered <span style={{ marginLeft: 4 }}>4</span>
+          Delivered{" "}
+          <span style={{ marginLeft: 4 }}>{stageCounts.Delivered || 0}</span>
         </span>
       ),
     },
@@ -143,15 +149,17 @@ const ProjectTable = ({ handleAddProject }) => {
       key: "service",
       label: (
         <span>
-          Service <span style={{ marginLeft: 4 }}>4</span>
+          Services{" "}
+          <span style={{ marginLeft: 4 }}>{stageCounts.Services || 0}</span>
         </span>
       ),
     },
     {
-      key: "servicing",
+      key: "maintenance",
       label: (
         <span>
-          Servicing <span style={{ marginLeft: 4 }}>4</span>
+          Maintenance{" "}
+          <span style={{ marginLeft: 4 }}>{stageCounts.Maintenance || 0}</span>
         </span>
       ),
     },
@@ -163,6 +171,7 @@ const ProjectTable = ({ handleAddProject }) => {
       dataIndex: "organization",
       key: "organization",
       width: 150,
+      render: (organization) => organization.name,
     },
     {
       title: "Project Name",
@@ -252,8 +261,9 @@ const ProjectTable = ({ handleAddProject }) => {
     {
       title: "Start Date",
       dataIndex: "startDate",
-      key: "startDate",
+      key: "createdAt",
       width: 150,
+      render: (date) => formatToMonthDayYear(date),
     },
     {
       title: "Actions",

@@ -7,52 +7,7 @@ import Sidebar from "../../components/layout/Sidebar";
 import ProjectTable from "./ProjectTable";
 import CustomerStatsCard from "./components/CustomerStatsCard";
 import ProjectStatsCard from "./components/ProjectStatsCard";
-
-const DashboardHeader = () => (
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: "20px 32px 0 32px",
-      background: "#fff",
-    }}
-  >
-    <span style={{ fontSize: 22, color: "#757575", fontWeight: 500 }}>
-      Dashboard
-    </span>
-    <div style={{ display: "flex", gap: 16 }}>
-      <div
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: "50%",
-          border: "1px solid #e0e0e0",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#fff",
-        }}
-      >
-        <BellOutlined style={{ fontSize: 22, color: "#757575" }} />
-      </div>
-      <div
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: "50%",
-          background: "#ddd",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <UserOutlined style={{ fontSize: 22, color: "#fff" }} />
-      </div>
-    </div>
-  </div>
-);
-
+import Header from "@/components/common/Header";
 const OverviewHeader = () => (
   <div
     style={{
@@ -106,7 +61,7 @@ const Dashboard = () => {
     <Layout style={{ minHeight: "100vh" }}>
       <Sidebar />
       <Layout>
-        <DashboardHeader />
+        <Header breadcrumbPath="Dashboard" />
         <div className="nz-padding-p nz-bg-w">
           <OverviewHeader />
           <Flex

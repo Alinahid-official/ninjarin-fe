@@ -5,6 +5,9 @@ import ResetPassword from "../pages/auth/resetPassword";
 import Dashboard from "../pages/dashboard";
 import Customers from "../pages/customers";
 import Projects from "@/pages/projects";
+import CustomerManagementHome from "../pages/customers/customerManagement/home";
+import CXSkillArchitecture from "@/pages/customers/customerManagement/CXSkillArchitecture";
+import CXSkillArchitectureAssign from "@/pages/customers/customerManagement/CXSkillArchitecture/assign"; // Add this import
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +32,18 @@ export const router = createBrowserRouter([
   {
     path: "/customers",
     element: <Customers />,
+  },
+  {
+    path: "/customers/home",
+    element: <CustomerManagementHome />,
+  },
+  {
+    path: "/customers/cx-skills-architecture",
+    element: <CXSkillArchitecture />,
+  },
+  { // Add this new route
+    path: "/customers/cx-skills-architecture/assign",
+    element: <CXSkillArchitectureAssign />,
   },
   {
     path: "/projects",

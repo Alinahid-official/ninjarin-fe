@@ -56,15 +56,7 @@ const BlankList = ({
             {description}
           </Text>
 
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={onClick}
-            style={{
-              background: "#595959",
-              borderColor: "#595959",
-            }}
-          >
+          <Button type="primary" icon={<PlusOutlined />} onClick={onClick}>
             {buttonText}
           </Button>
         </>

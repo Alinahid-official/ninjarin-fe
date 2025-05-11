@@ -18,6 +18,12 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
     selectError(state, [CustomerActions.ADD_CUSTOMER_FINISHED])
   );
 
+  const serviceTypes = [
+    { value: "SaaS Platform", label: "SaaS Platform" },
+    { value: "Consulting", label: "Consulting" },
+    { value: "Value-added-services", label: "Value-added-services" },
+  ];
+
   const industries = [
     { value: "Technology", label: "Technology" },
     { value: "Healthcare", label: "Healthcare" },
@@ -25,14 +31,6 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
     { value: "Manufacturing", label: "Manufacturing" },
     { value: "Retail", label: "Retail" },
     { value: "Education", label: "Education" },
-  ];
-
-  const users = [
-    { value: "Om prakash sao", label: "Om prakash sao" },
-    { value: "Neilsan mando", label: "Neilsan mando" },
-    { value: "Tivonty priya", label: "Tivonty priya" },
-    { value: "Martie hannery", label: "Martie hannery" },
-    { value: "Sukamar rao", label: "Sukamar rao" },
   ];
 
   const handleSubmit = async () => {
@@ -59,8 +57,9 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
       initialValues={{
         name: "Wipro",
         industry: "Technology",
-        cxAdmin: "Om prakash sao",
-        adminEmail: "admin@gmail.com",
+        serviceType: ["SaaS Platform", "Consulting"],
+        cxAdminName: "John Doe",
+        cxAdminEmail: "john.doe@wipro.com",
       }}
     >
       {error && <FullAlertError error={error} />}
@@ -91,6 +90,21 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
         </Form.Item>
 
         <Form.Item
+          label="Service Type"
+          name="serviceType"
+          rules={[{ required: true, message: "Please select service type" }]}
+        >
+          <Select
+            size="large"
+            placeholder="Select Type"
+            options={serviceTypes}
+            mode="multiple" // Enable multi-select
+            maxTagCount="responsive" // Show tags responsively
+            defaultValue={["Consulting", "Implementation"]}
+          />
+        </Form.Item>
+
+        <Form.Item
           label="Industry"
           name="industry"
           rules={[{ required: true, message: "Please select industry" }]}
@@ -104,23 +118,15 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
 
         <Form.Item
           label="Admin Name"
-          name="cxAdmin"
-          rules={[{ required: true, message: "Please select admin name" }]}
+          name="cxAdminName"
+          rules={[{ required: true, message: "Please enter admin name" }]}
         >
-          <Select
-            size="large"
-            placeholder="Enter admin name"
-            options={users}
-            showSearch
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-          />
+          <Input size="large" placeholder="Enter admin name" />
         </Form.Item>
 
         <Form.Item
           label="Admin Email"
-          name="adminEmail"
+          name="cxAdminEmail"
           rules={[
             { required: true, message: "Please enter admin email" },
             { type: "email", message: "Please enter a valid email" },
@@ -138,7 +144,6 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
           borderTop: "1px solid #f0f0f0",
           padding: "24px 0",
           right: 0,
-          backgroundColor: "#F7F7F7",
         }}
       >
         <Flex

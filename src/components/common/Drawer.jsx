@@ -54,7 +54,7 @@ const CommonDrawer = ({
         </div>
       }
       style={{
-        backgroundColor: "#F7F7F7",
+        backgroundColor: "#fff",
       }}
       styles={{
         header: {

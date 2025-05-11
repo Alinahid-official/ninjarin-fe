@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Layout } from "antd";
-import { UserOutlined, BellOutlined } from "@ant-design/icons";
 import Sidebar from "../../components/layout/Sidebar";
+import Header from "../../components/common/Header";
 import CustomerTable from "./components/CustomerTable";
 import BlankList from "@/components/common/BlankList";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,51 +13,6 @@ import CommonDrawer from "@/components/common/Drawer";
 import CustomerForm from "./components/CustomerForm";
 
 const selectError = makeSelectErrorModel();
-
-const CustomersHeader = () => (
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: "20px 32px 0 32px",
-      background: "#fff",
-    }}
-  >
-    <span style={{ fontSize: 22, color: "#757575", fontWeight: 500 }}>
-      Customers
-    </span>
-    <div style={{ display: "flex", gap: 16 }}>
-      <div
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: "50%",
-          border: "1px solid #e0e0e0",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#fff",
-        }}
-      >
-        <BellOutlined style={{ fontSize: 22, color: "#757575" }} />
-      </div>
-      <div
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: "50%",
-          background: "#ddd",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <UserOutlined style={{ fontSize: 22, color: "#fff" }} />
-      </div>
-    </div>
-  </div>
-);
 
 const Customers = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -90,7 +45,7 @@ const Customers = () => {
       <Sidebar />
       <Layout>
         {error && <FullAlertError error={error} />}
-        <CustomersHeader />
+        <Header breadcrumbPath="Customers" />
         <div className="nz-padding-p nz-bg-w">
           {loading && <BlankList isLoading />}
           {!loading && <CustomerTable handleAddCustomer={handleAddCustomer} />}

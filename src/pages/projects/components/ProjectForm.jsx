@@ -5,16 +5,21 @@ import requestingSelector from "@/redux/requesting/requestingSelector";
 import { Form, Input, Select, DatePicker, Button, Space, Flex } from "antd";
 import dayjs from "dayjs";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import CustomerSelectors from "@/redux/customer/selectors";
+import CustomerActions from "@/redux/customer/actions";
+
 const selectError = makeSelectErrorModel();
 const ProjectForm = ({ onSubmit, onCancel }) => {
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
   const loading = useSelector((state) =>
     requestingSelector(state, [ProjectActions.ADD_PROJECT])
   );
   const error = useSelector((state) =>
     selectError(state, [ProjectActions.ADD_PROJECT_FINISHED])
   );
+  const customers = useSelector(CustomerSelectors.getCustomers);
 
   const projectTypes = [
     { value: "Career Mapping", label: "Career Mapping" },
@@ -35,21 +40,6 @@ const ProjectForm = ({ onSubmit, onCancel }) => {
     { value: "Maintenance", label: "Maintenance" },
   ];
 
-  const organizations = [
-    { value: "Accenture", label: "Accenture" },
-    { value: "Deloitte Consulting", label: "Deloitte Consulting" },
-    {
-      value: "Cognizant Technology Solutions",
-      label: "Cognizant Technology Solutions",
-    },
-    { value: "Capgemini", label: "Capgemini" },
-    { value: "TCS", label: "TCS (Tata Consultancy Services)" },
-    { value: "Infosys", label: "Infosys" },
-    { value: "PwC", label: "PwC (PricewaterhouseCoopers)" },
-    { value: "IBM Global Services", label: "IBM Global Services" },
-    { value: "EY", label: "EY (Ernst & Young)" },
-  ];
-
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
@@ -68,10 +58,20 @@ const ProjectForm = ({ onSubmit, onCancel }) => {
   ];
 
   useEffect(() => {
+    dispatch(CustomerActions.getCustomers());
+  }, []);
+
+  useEffect(() => {
     if (loading !== false && !error) {
       onCancel();
     }
   }, [loading]);
+
+  const customerOptions = customers?.map((customer) => ({
+    value: customer._id,
+    label: customer.name,
+  }));
+
   return (
     <Form
       form={form}
@@ -80,13 +80,13 @@ const ProjectForm = ({ onSubmit, onCancel }) => {
       requiredMark={false}
       initialValues={{
         name: "New Project",
-        organization: "Accenture",
+        organization: customerOptions ? customerOptions[0].value : "",
         cxOwner: "Om prakash sao",
         programManager: "Om prakash sao",
         cxAdmin: "Om prakash sao",
         projectType: "Career Mapping",
         projectStage: "Consulting",
-        dueDate: dayjs().add(30, "days"), // 30 days from now
+        dueDate: dayjs().add(30, "days"),
       }}
     >
       {error && <FullAlertError error={error} />}
@@ -107,7 +107,8 @@ const ProjectForm = ({ onSubmit, onCancel }) => {
           <Select
             size="large"
             placeholder="Select clients"
-            options={organizations}
+            options={customerOptions}
+            // loading={!customers.length}
           />
         </Form.Item>
 

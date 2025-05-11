@@ -7,6 +7,8 @@ import { produce } from "immer";
 export const initialState = {
   projects: null,
   selectedProject: null,
+  projectTypeCounts: null,
+  projectStageCounts: null,
 };
 const projectList = new schema.Entity("Projects", {}, { idAttribute: "_id" });
 const projectListSchema = [projectList];
@@ -16,6 +18,8 @@ export default BaseReducer(initialState, {
     return {
       ...state,
       projects: normalizeSchema(data.data, projectListSchema),
+      projectTypeCounts: data.projectTypeCounts,
+      projectStageCounts: data.projectStageCounts,
     };
   },
   [ProjectActions.ADD_PROJECT_FINISHED](state, action) {
@@ -31,8 +35,6 @@ export default BaseReducer(initialState, {
       delete draft.entities.Projects[data._id];
       draft.result = draft.result.filter((item) => item !== data._id);
     });
-
-    console.log(updatedProjects);
 
     return {
       ...state,

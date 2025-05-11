@@ -1,10 +1,8 @@
 import { Button, Layout, Menu, Typography } from "antd";
 import Logo from "../../assets/images/logo/Logo.png";
-import LogoSmall from "../../assets/images/logo/Logo-s.png";
 import "./layout.css";
 import {
-  AppstoreOutlined,
-  QuestionCircleOutlined,
+  HomeOutlined,
   SettingOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -15,31 +13,27 @@ import { PiBookOpenTextBold } from "react-icons/pi";
 import { LuCrown } from "react-icons/lu";
 import { router } from "@/utilities/routes";
 import { useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const { Sider } = Layout;
 const { Title, Text, Link } = Typography;
-const Sidebar = () => {
+
+const CMSidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const currentPath = location.pathname;
-
-  useEffect(() => {
-    // Auto collapse sidebar if path includes customers/
-    if (currentPath.includes("customers/")) {
-      setCollapsed(true);
-    } else {
-      setCollapsed(false);
-    }
-  }, [currentPath]);
 
   // Get the selected key based on current path
   const getSelectedKey = (path) => {
     switch (path) {
       case "/":
-        return "dashboard";
-      case "/customers":
-        return "customers";
+        return "home";
+      case "/skill-architecture":
+        return "skill-architecture";
+      case "/inventory":
+        return "inventory";
+      case "/users":
+        return "users";
       case "/projects":
         return "projects";
       case "/reports":
@@ -49,7 +43,7 @@ const Sidebar = () => {
       case "/settings":
         return "settings";
       default:
-        return "dashboard";
+        return "home";
     }
   };
 
@@ -88,7 +82,7 @@ const Sidebar = () => {
             }}
           >
             <img
-              src={collapsed ? LogoSmall : Logo}
+              src={Logo}
               alt="Ninzarin Logo"
               style={{
                 height: collapsed ? "30px" : "auto",
@@ -113,19 +107,35 @@ const Sidebar = () => {
             style={{ borderRight: 0, marginTop: 32, flex: 1 }}
             items={[
               {
-                key: "dashboard",
-                icon: <AppstoreOutlined />,
-                label: <span style={{ fontWeight: 600 }}>Dashboard</span>,
+                key: "home",
+                icon: <HomeOutlined />,
+                label: <span style={{ fontWeight: 600 }}>Home</span>,
                 onClick: () => {
                   router.navigate("/");
                 },
               },
               {
-                key: "customers",
-                icon: <TbUserHexagon />,
-                label: "Customers",
+                key: "skill-architecture",
+                icon: <GoProjectSymlink />,
+                label: "CX Skill Architecture",
                 onClick: () => {
-                  router.navigate("/customers");
+                  router.navigate("/skill-architecture");
+                },
+              },
+              {
+                key: "inventory",
+                icon: <PiBookOpenTextBold />,
+                label: "Inventory",
+                onClick: () => {
+                  router.navigate("/inventory");
+                },
+              },
+              {
+                key: "users",
+                icon: <TbUserHexagon />,
+                label: "Users",
+                onClick: () => {
+                  router.navigate("/users");
                 },
               },
               {
@@ -163,65 +173,9 @@ const Sidebar = () => {
             ]}
           />
         </div>
-        {!collapsed && (
-          <div>
-            <div style={{ padding: 12 }}>
-              <div
-                style={{
-                  width: "100%",
-                  background: "#f5f5f5",
-                  color: "#757575",
-                  fontWeight: 600,
-                  fontSize: 18,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "24px 12px",
-                  borderRadius: 8,
-                }}
-              >
-                <QuestionCircleOutlined
-                  style={{ marginBottom: "20px", fontSize: "24px" }}
-                />
-                <Title
-                  level={4}
-                  style={{
-                    color: "#757575",
-                    fontWeight: 600,
-                    marginBottom: 12,
-                  }}
-                >
-                  Need Help
-                </Title>
-
-                <Text
-                  style={{
-                    color: "#757575",
-                    fontWeight: 400,
-                    textAlign: "center",
-                    marginBottom: 12,
-                  }}
-                >
-                  Our support team is ready to assist you.
-                </Text>
-                <Button
-                  type="primary"
-                  style={{
-                    backgroundColor: "#ffffff",
-                    color: "#757575",
-                    boxShadow: "none",
-                  }}
-                >
-                  Go To Help Center
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </Sider>
   );
 };
 
-export default Sidebar;
+export default CMSidebar;

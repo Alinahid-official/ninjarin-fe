@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button, Flex, Layout } from "antd";
-import { UserOutlined, BellOutlined, PlusOutlined } from "@ant-design/icons";
-import { Select } from "antd";
+import { Layout } from "antd";
 import Sidebar from "../../components/layout/Sidebar";
+import Header from "../../components/common/Header";
 import BlankList from "@/components/common/BlankList";
 import CommonDrawer from "@/components/common/Drawer";
 import ProjectForm from "./components/ProjectForm";
@@ -91,8 +90,7 @@ const Projects = () => {
       <Sidebar />
       <Layout>
         {error && <FullAlertError error={error} />}
-        <ProjectHeader />
-
+        <Header breadcrumbPath="Projects" />
         <div className="nz-padding-p nz-bg-w">
           {loading && <BlankList isLoading />}
           {!loading && <ProjectTable handleAddProject={handleAddProject} />}
