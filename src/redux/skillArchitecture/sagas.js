@@ -38,13 +38,12 @@ function* UPDATE_LABEL(action) {
 }
 
 function* SAVE_RECORD(action) {
-  const { customerId, labelKey, value } = action.payload;
+  const { customerId, value } = action.payload;
   const result = yield call(
     runEffect,
     action,
     SkillArchitectureEffects.saveRecord,
     customerId,
-    labelKey,
     value
   );
   if (resultHasError(result)) yield cancel();
@@ -83,5 +82,5 @@ export default function* skillArchitectureSaga() {
     SkillArchitectureActions.SAVE_MULTIPLE_RECORDS,
     SAVE_MULTIPLE_RECORDS
   );
-  yield takeLatest(SkillArchitectureActions.DELETE_RECORDS, DELETE_RECORDS);
+  yield takeLatest(SkillArchitectureActions.DELETE_RECORD, DELETE_RECORDS);
 }

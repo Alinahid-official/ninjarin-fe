@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Switch, Button, Typography } from "antd";
+import { useSelector } from "react-redux";
+import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
 
 const initialItems = [
   { id: "industry", label: "Industry", defaultChecked: true },
@@ -16,7 +18,6 @@ const initialItems = [
   { id: "skills", label: "Skills", defaultChecked: true },
   { id: "subSkills", label: "Sub-Skills", defaultChecked: true },
   { id: "description", label: "Description", defaultChecked: true },
-  { id: "assigned", label: "Assigned", defaultChecked: false },
 ];
 
 const FormItem = ({ id, label, checked, toggleSwitch }) => {
@@ -57,22 +58,26 @@ const OrganizationDesignForm = ({ onSubmit, onCancel }) => {
   const [formItems] = useState(initialItems);
   const [formValues, setFormValues] = useState({});
 
+  // Get labels from redux
+  const labels = useSelector(SkillArchitectureSelectors.getLabels);
+
   useEffect(() => {
-    const initialValues = {};
-    initialItems.forEach((item) => {
-      initialValues[item.id] = item.defaultChecked;
-    });
-    setFormValues(initialValues);
-    form.setFieldsValue(initialValues);
-  }, [form]);
+    if (labels) {
+      const initialValues = {};
+      formItems.forEach((item) => {
+        initialValues[item.id] = labels[item.id] || null;
+      });
+      setFormValues(initialValues);
+      form.setFieldsValue(initialValues);
+    }
+  }, [form, labels]);
 
   const handleSubmit = async () => {
     try {
-      const orderedValues = formItems.map((item) => ({
-        id: item.id,
-        label: item.label,
-        enabled: formValues[item.id],
-      }));
+      const orderedValues = formItems.reduce((acc, item) => {
+        acc[item.id] = formValues[item.id];
+        return acc;
+      }, {});
       onSubmit(orderedValues);
     } catch (error) {
       console.error("Submission failed:", error);
@@ -80,9 +85,13 @@ const OrganizationDesignForm = ({ onSubmit, onCancel }) => {
   };
 
   const toggleSwitch = (id, newCheckedState) => {
-    const newFormValues = { ...formValues, [id]: newCheckedState };
+    const item = formItems.find((item) => item.id === id);
+    const newFormValues = {
+      ...formValues,
+      [id]: newCheckedState ? item.label : null,
+    };
     setFormValues(newFormValues);
-    form.setFieldsValue({ [id]: newCheckedState });
+    form.setFieldsValue({ [id]: newCheckedState ? item.label : null });
   };
 
   return (

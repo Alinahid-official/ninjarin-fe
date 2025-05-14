@@ -2,6 +2,7 @@ import BaseReducer from "@/utilities/baseReducer";
 import SkillArchitectureActions from "./actions";
 import { schema } from "normalizr";
 import { addNormalizeSchema, normalizeSchema } from "@/utilities/normalizer";
+import { produce } from "immer";
 
 export const initialState = {
   labels: null,
@@ -57,6 +58,18 @@ export default BaseReducer(initialState, {
     return {
       ...state,
       records: normalizeSchema(data, recordListSchema),
+    };
+  },
+  [SkillArchitectureActions.DELETE_RECORD_FINISHED](state, action) {
+    const data = action.payload.data;
+    const updatedRecords = produce(state.records, (draft) => {
+      delete draft.entities.SkillArchitectureRecords[data._id];
+      draft.result = draft.result.filter((item) => item !== data._id);
+    });
+
+    return {
+      ...state,
+      records: updatedRecords,
     };
   },
 });

@@ -13,13 +13,20 @@ import { PiBookOpenTextBold } from "react-icons/pi";
 import { LuCrown } from "react-icons/lu";
 import { router } from "@/utilities/routes";
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import CustomerSelectors from "@/redux/customer/selectors";
+import CustomerActions from "@/redux/customer/actions";
+import { useDispatch } from "react-redux";
 
 const { Sider } = Layout;
 const { Title, Text, Link } = Typography;
 
 const CMSidebar = () => {
+  const dispatch = useDispatch();
   const [collapsed, setCollapsed] = useState(false);
+  const customers = useSelector(CustomerSelectors.getCustomers);
+  const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -60,6 +67,20 @@ const CMSidebar = () => {
     }
   };
 
+  useEffect(() => {
+    if (!customers) {
+      dispatch(CustomerActions.getCustomers());
+    }
+  }, [customerId]);
+  useEffect(() => {
+    if (customers && !currentCustomer) {
+      const customer = customers.find(
+        (customer) => customer._id === customerId
+      );
+      console.log("customer", customers, customer);
+      dispatch(CustomerActions.setCurrentCustomer(customer));
+    }
+  }, [customers]);
   return (
     <Sider
       width={240}

@@ -1,10 +1,23 @@
-import React, { useState } from "react";
-import { Table, Button, Typography, Flex, Card } from "antd";
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  Button,
+  Typography,
+  Flex,
+  Card,
+  Dropdown,
+  Menu,
+  Popconfirm,
+  Spin,
+} from "antd"; // Added Dropdown and Menu
 import {
   SyncOutlined,
   PlusOutlined,
   MoreOutlined,
   ApartmentOutlined, // Import the icon
+  CopyOutlined, // Added for Duplicate
+  EditOutlined, // Added for Edit
+  DeleteOutlined, // Added for Delete
 } from "@ant-design/icons";
 import CommonDrawer from "@/components/common/Drawer";
 import OrganizationDesignForm from "./OrganizationDesignForm";
@@ -13,13 +26,59 @@ import { useSelector } from "react-redux";
 import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
 import EditableInputField from "@/components/common/EditableInputField";
 import EditableLabelField from "./EditableLabelField";
+import LabelIcon from "@/assets/images/skillManagement/skill-table-label-icon.png";
+import styled from "styled-components"; // Import styled-components
+import CustomerActions from "@/redux/customer/actions";
+import requestingSelector from "@/redux/requesting/requestingSelector";
+import SkillArchitectureActions from "@/redux/skillArchitecture/actions";
+import BlankList from "@/components/common/BlankList";
+import { useDispatch } from "react-redux";
+import CustomerSelectors from "@/redux/customer/selectors";
 
 const { Title } = Typography;
 
+// Define the StyledTableCard component
+const StyledTableCard = styled(Card)`
+  // Target header cells
+  .ant-table-thead > tr > th {
+    height: 60px; // Set your desired header cell height
+    padding: 8px 16px; // Adjust padding as needed
+    vertical-align: middle; // Optional: align header text vertically
+  }
+
+  // Target body cells
+  .ant-table-tbody > tr > td {
+    height: 50px; // Set your desired body cell height
+    padding: 0px 15px; // Adjust padding as needed
+    vertical-align: middle; // Align content vertically in the cell
+  }
+
+  // You can also set a height for the entire row if needed
+  .ant-table-tbody > tr {
+    // height: 50px; // This would be redundant if td height is set
+  }
+`;
+
 const SkillTable = () => {
+  const dispatch = useDispatch();
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
+  const labelsLoading = useSelector((state) =>
+    requestingSelector(state, [SkillArchitectureActions.GET_LABELS])
+  );
+  const records = useSelector(SkillArchitectureSelectors.getRecords);
+  const recordsLoading = useSelector((state) =>
+    requestingSelector(state, [SkillArchitectureActions.GET_RECORDS])
+  );
+  const customers = useSelector(CustomerActions.getCustomers);
+  const customerLoading = useSelector((state) =>
+    requestingSelector(state, [CustomerActions.GET_CUSTOMERS])
+  );
+  const deleteLoading = useSelector((state) =>
+    requestingSelector(state, [SkillArchitectureActions.DELETE_RECORD])
+  );
+  const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
   const handleUpdateDesign = () => {
     setIsUpdateDrawerOpen(true);
   };
@@ -30,6 +89,13 @@ const SkillTable = () => {
 
   const handleUpdateDesignSubmit = (values) => {
     console.log("Update form values:", values);
+    dispatch(
+      SkillArchitectureActions.updateLabel(
+        labels._id,
+        currentCustomer._id,
+        values
+      )
+    );
     setIsUpdateDrawerOpen(false);
   };
 
@@ -43,521 +109,96 @@ const SkillTable = () => {
   };
 
   const handleAddDesignSubmit = (values) => {
-    console.log("Add form values:", values);
+    dispatch(SkillArchitectureActions.saveRecord(currentCustomer._id, values));
     // setIsAddDrawerOpen(false); // Decide if drawer should close on submit
   };
-  const columns = [
-    {
-      title: (
-        <Flex
-          align="center"
-          style={{
-            padding: "12px 16px",
-            background: "#FFFFFF",
-            borderRadius: "8px",
-          }}
-        >
-          <ApartmentOutlined
-            style={{
-              marginRight: 8,
-              fontSize: "20px",
-              color: "#6B7280",
-              background: "#EFF6FF", // Light blue background for the icon
-              padding: "8px", // Padding around the icon
-              borderRadius: "6px", // Rounded corners for the icon's background
-              display: "inline-flex", // Ensures padding and background apply correctly
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          />
-          <div>
-            <div style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}>
-              Label
-            </div>
-            <div style={{ fontWeight: 600 }}>Industry</div>
-          </div>
-        </Flex>
-      ),
-      dataIndex: "industry",
-      key: "industry",
-      render: (text) => (
-        <Flex justify="space-between" align="center">
-          <span>{text}</span>
-          <Button type="text" icon={<MoreOutlined />} size="small" />
-        </Flex>
-      ),
-    },
-    {
-      title: (
-        <Flex
-          align="center"
-          style={{
-            padding: "12px 16px",
-            background: "#FFFFFF",
-            borderRadius: "8px",
-          }}
-        >
-          <ApartmentOutlined
-            style={{
-              marginRight: 8,
-              fontSize: "20px",
-              color: "#6B7280",
-              background: "#EFF6FF", // Light blue background for the icon
-              padding: "8px", // Padding around the icon
-              borderRadius: "6px", // Rounded corners for the icon's background
-              display: "inline-flex", // Ensures padding and background apply correctly
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          />
-          <div>
-            <div style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}>
-              Label
-            </div>
-            <div style={{ fontWeight: 600 }}>Organization</div>
-          </div>
-        </Flex>
-      ),
-      dataIndex: "organization",
-      key: "organization",
-      render: (text) => (
-        <Flex justify="space-between" align="center">
-          <span>{text}</span>
-          <Button type="text" icon={<MoreOutlined />} size="small" />
-        </Flex>
-      ),
-    },
-    {
-      title: (
-        <Flex
-          align="center"
-          style={{
-            padding: "12px 16px",
-            background: "#FFFFFF",
-            borderRadius: "8px",
-          }}
-        >
-          <ApartmentOutlined
-            style={{
-              marginRight: 8,
-              fontSize: "20px",
-              color: "#6B7280",
-              background: "#EFF6FF", // Light blue background for the icon
-              padding: "8px", // Padding around the icon
-              borderRadius: "6px", // Rounded corners for the icon's background
-              display: "inline-flex", // Ensures padding and background apply correctly
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          />
-          <div>
-            <div style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}>
-              Label
-            </div>
-            <div style={{ fontWeight: 600 }}>Line of Business</div>
-          </div>
-        </Flex>
-      ),
-      dataIndex: "lineOfBusiness",
-      key: "lineOfBusiness",
-      render: (text) => (
-        <Flex justify="space-between" align="center">
-          <span>{text}</span>
-          <Button type="text" icon={<MoreOutlined />} size="small" />
-        </Flex>
-      ),
-    },
-    {
-      title: (
-        <Flex
-          align="center"
-          style={{
-            padding: "12px 16px",
-            background: "#FFFFFF",
-            borderRadius: "8px",
-          }}
-        >
-          <ApartmentOutlined
-            style={{
-              marginRight: 8,
-              fontSize: "20px",
-              color: "#6B7280",
-              background: "#EFF6FF",
-              padding: "8px",
-              borderRadius: "6px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          />
-          <div>
-            <div style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}>
-              Label
-            </div>
-            <div style={{ fontWeight: 600 }}>Bands</div>
-          </div>
-        </Flex>
-      ),
-      dataIndex: "bands",
-      key: "bands",
-      render: (text) => (
-        <Flex justify="space-between" align="center">
-          <span>{text}</span>
-          <Button type="text" icon={<MoreOutlined />} size="small" />
-        </Flex>
-      ),
-    },
-    {
-      title: (
-        <Flex
-          align="center"
-          style={{
-            padding: "12px 16px",
-            background: "#FFFFFF",
-            borderRadius: "8px",
-          }}
-        >
-          <ApartmentOutlined
-            style={{
-              marginRight: 8,
-              fontSize: "20px",
-              color: "#6B7280",
-              background: "#EFF6FF",
-              padding: "8px",
-              borderRadius: "6px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          />
-          <div>
-            <div style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}>
-              Label
-            </div>
-            <div style={{ fontWeight: 600 }}>Grades</div>
-          </div>
-        </Flex>
-      ),
-      dataIndex: "grades",
-      key: "grades",
-      render: (text) => (
-        <Flex justify="space-between" align="center">
-          <span>{text}</span>
-          <Button type="text" icon={<MoreOutlined />} size="small" />
-        </Flex>
-      ),
-    },
-    {
-      title: (
-        <Flex
-          align="center"
-          style={{
-            padding: "12px 16px",
-            background: "#FFFFFF",
-            borderRadius: "8px",
-          }}
-        >
-          <ApartmentOutlined
-            style={{
-              marginRight: 8,
-              fontSize: "20px",
-              color: "#6B7280",
-              background: "#EFF6FF",
-              padding: "8px",
-              borderRadius: "6px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          />
-          <div>
-            <div style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}>
-              Label
-            </div>
-            <div style={{ fontWeight: 600 }}>Roles</div>
-          </div>
-        </Flex>
-      ),
-      dataIndex: "roles",
-      key: "roles",
-      render: (text) => (
-        <Flex justify="space-between" align="center">
-          <span>{text}</span>
-          <Button type="text" icon={<MoreOutlined />} size="small" />
-        </Flex>
-      ),
-    },
-    {
-      title: (
-        <Flex
-          align="center"
-          style={{
-            padding: "12px 16px",
-            background: "#FFFFFF",
-            borderRadius: "8px",
-          }}
-        >
-          <ApartmentOutlined
-            style={{
-              marginRight: 8,
-              fontSize: "20px",
-              color: "#6B7280",
-              background: "#EFF6FF",
-              padding: "8px",
-              borderRadius: "6px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          />
-          <div>
-            <div style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}>
-              Label
-            </div>
-            <div style={{ fontWeight: 600 }}>Type of Role</div>
-          </div>
-        </Flex>
-      ),
-      dataIndex: "typeOfRole",
-      key: "typeOfRole",
-      render: (text) => (
-        <Flex justify="space-between" align="center">
-          <span>{text}</span>
-          <Button type="text" icon={<MoreOutlined />} size="small" />
-        </Flex>
-      ),
-    },
-    {
-      title: (
-        <Flex
-          align="center"
-          style={{
-            padding: "12px 16px",
-            background: "#FFFFFF",
-            borderRadius: "8px",
-          }}
-        >
-          <ApartmentOutlined
-            style={{
-              marginRight: 8,
-              fontSize: "20px",
-              color: "#6B7280",
-              background: "#EFF6FF",
-              padding: "8px",
-              borderRadius: "6px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          />
-          <div>
-            <div style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}>
-              Label
-            </div>
-            <div style={{ fontWeight: 600 }}>Skills</div>
-          </div>
-        </Flex>
-      ),
-      dataIndex: "skills",
-      key: "skills",
-      render: (text) => (
-        <Flex justify="space-between" align="center">
-          <span>{text}</span>
-          <Button type="text" icon={<MoreOutlined />} size="small" />
-        </Flex>
-      ),
-    },
-    {
-      title: (
-        <Flex
-          align="center"
-          style={{
-            padding: "12px 16px",
-            background: "#FFFFFF",
-            borderRadius: "8px",
-          }}
-        >
-          <ApartmentOutlined
-            style={{
-              marginRight: 8,
-              fontSize: "20px",
-              color: "#6B7280",
-              background: "#EFF6FF",
-              padding: "8px",
-              borderRadius: "6px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          />
-          <div>
-            <div style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}>
-              Label
-            </div>
-            <div style={{ fontWeight: 600 }}>Sub Skills</div>
-          </div>
-        </Flex>
-      ),
-      dataIndex: "subSkills",
-      key: "subSkills",
-      render: (text) => (
-        <Flex justify="space-between" align="center">
-          <span>{text}</span>
-          <Button type="text" icon={<MoreOutlined />} size="small" />
-        </Flex>
-      ),
-    },
-    {
-      title: (
-        <Flex
-          align="center"
-          style={{
-            padding: "12px 16px",
-            background: "#FFFFFF",
-            borderRadius: "8px",
-          }}
-        >
-          <ApartmentOutlined
-            style={{
-              marginRight: 8,
-              fontSize: "20px",
-              color: "#6B7280",
-              background: "#EFF6FF",
-              padding: "8px",
-              borderRadius: "6px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          />
-          <div>
-            <div style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}>
-              Label
-            </div>
-            <div style={{ fontWeight: 600 }}>Description</div>
-          </div>
-        </Flex>
-      ),
-      dataIndex: "description",
-      key: "description",
-      render: (text) => (
-        <Flex justify="space-between" align="center">
-          <span
-            style={{
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              maxWidth: 150,
-            }}
-          >
-            {text}
-          </span>
-          <Button type="text" icon={<MoreOutlined />} size="small" />
-        </Flex>
-      ),
-    },
-    {
-      title: (
-        <Flex
-          align="center"
-          style={{
-            padding: "12px 16px",
-            background: "#FFFFFF",
-            borderRadius: "8px",
-          }}
-        >
-          <ApartmentOutlined
-            style={{
-              marginRight: 8,
-              fontSize: "20px",
-              color: "#6B7280",
-              background: "#EFF6FF",
-              padding: "8px",
-              borderRadius: "6px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          />
-          <div>
-            <div style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}>
-              Label
-            </div>
-            <div style={{ fontWeight: 600 }}>Assigned</div>
-          </div>
-        </Flex>
-      ),
-      key: "assigned",
-      dataIndex: "assigned",
-      render: () => (
-        <Button
-          type="primary"
-          style={{
-            background: "#EDE9FE",
-            color: "#8C5BF2",
-            borderColor: "#8C5BF2",
-            width: "100%",
-          }}
-        >
-          Assign Skill
-        </Button>
-      ),
-    },
-  ];
 
-  const data = [
-    {
-      key: "1",
-      industry: "IT Tech",
-      organization: "Wipro",
-      lineOfBusiness: "SaaS Development",
-      function: "Technology (IT)",
-      subFunctionVerticals: "Delivery",
-      bands: "3-4",
-      grades: "E-0",
-      roles: "Delivery Head",
-      typeOfRole: "-",
-      skills: "Delivery Excellence",
-      subSkills: "Project Management",
-      description: "Has requisite project management knowledge...",
-      assigned: "",
-    },
-    {
-      key: "2",
-      industry: "IT Tech",
-      organization: "Wipro",
-      lineOfBusiness: "SaaS Development",
-      function: "Technology (IT)",
-      subFunctionVerticals: "Delivery",
-      bands: "3-4",
-      grades: "E-0",
-      roles: "Delivery Head",
-      typeOfRole: "-",
-      skills: "Delivery Excellence",
-      subSkills: "Project Management",
-      description: "Has requisite project management knowledge...",
-      assigned: "",
-    },
-    {
-      key: "3",
-      industry: "IT Tech",
-      organization: "Wipro",
-      lineOfBusiness: "SaaS Development",
-      function: "Technology (IT)",
-      subFunctionVerticals: "Delivery",
-      bands: "3-4",
-      grades: "E-0",
-      roles: "Delivery Head",
-      typeOfRole: "-",
-      skills: "Delivery Excellence",
-      subSkills: "Project Management",
-      description: "Has requisite project management knowledge...",
-      assigned: "",
-    },
-  ];
+  const handleMenuClick = (e, record, keyType) => {
+    if (e.key === "delete") {
+      dispatch(
+        SkillArchitectureActions.deleteRecord(currentCustomer._id, record._id)
+      );
+    } else if (e.key === "duplicate") {
+      // Create a new record object without _id, __v, and createdAt
+      const { _id, __v, createdAt, ...recordToDuplicate } = record;
+
+      dispatch(
+        SkillArchitectureActions.saveRecord(
+          currentCustomer._id,
+          recordToDuplicate
+        )
+      );
+    }
+    // e.key will be 'duplicate', 'edit', or 'delete'
+    // record will be the data for the current row
+    // keyType will be the dataIndex of the column (e.g., 'industry', 'organization')
+    console.log(`Clicked ${e.key} for ${keyType}:`, record);
+    // Implement actual logic for duplicate, edit, delete here
+    // For example:
+    // if (e.key === 'edit') { /* open edit modal with record data */ }
+    // if (e.key === 'delete') { /* show confirmation and delete record */ }
+  };
+
+  const getMenuItems = (record, keyType) => (
+    <Menu onClick={(e) => handleMenuClick(e, record, keyType)}>
+      <Menu.Item key="duplicate" icon={<CopyOutlined />}>
+        Duplicate
+      </Menu.Item>
+      <Menu.Item key="edit" icon={<EditOutlined />}>
+        Edit
+      </Menu.Item>
+      <Menu.Item key="delete" icon={<DeleteOutlined />}>
+        <Popconfirm
+          title="Delete Record"
+          description="Are you sure you want to delete this record?"
+          onConfirm={() =>
+            dispatch(
+              SkillArchitectureActions.deleteRecord(
+                currentCustomer._id,
+                record[keyType]
+              )
+            )
+          }
+          okText="Yes"
+          cancelText="No"
+        >
+          Delete
+          {deleteLoading && (
+            <span>
+              <Spin indicator={<LoadingOutlined spin />} size="small" />
+            </span>
+          )}
+        </Popconfirm>
+      </Menu.Item>
+    </Menu>
+  );
+
+  const commonRender = (text, record, dataIndex) => (
+    <Flex justify="space-between" align="center" style={{ width: "100%" }}>
+      <span
+        style={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          maxWidth: "calc(100% - 30px)", // Adjust maxWidth to leave space for the button
+        }}
+        title={text} // Show full text on hover
+      >
+        {text}
+      </span>
+      <Dropdown
+        placement="bottomRight"
+        overlay={() => getMenuItems(record, dataIndex)}
+        trigger={["click"]}
+      >
+        <Button type="text" icon={<MoreOutlined />} size="small" />
+      </Dropdown>
+    </Flex>
+  );
+
   const getColumns = () => {
     if (!labels) {
-      return columns; // Use default columns if labels is null
+      return []; // Use default columns if labels is null
     }
 
     // Filter out unwanted keys and create columns dynamically
@@ -565,29 +206,44 @@ const SkillTable = () => {
     return Object.entries(labels)
       .filter(([key, value]) => !excludedKeys.includes(key) && value !== null)
       .map(([key, value]) => {
+        // 'value' here is the label's text, not the row data's value for this key
         return {
           title: (
             <Flex
               align="center"
               style={{
-                padding: "12px 16px",
+                padding: "5px 5px",
                 background: "#FFFFFF",
-                borderRadius: "8px",
+                borderRadius: "15px",
+                width: "200px",
               }}
             >
-              <ApartmentOutlined
+              <div
                 style={{
-                  marginRight: 8,
-                  fontSize: "20px",
-                  color: "#6B7280",
-                  background: "#EFF6FF",
-                  padding: "8px",
-                  borderRadius: "6px",
-                  display: "inline-flex",
-                  alignItems: "center",
+                  backgroundColor: "#F1FAFE",
+                  display: "flex",
                   justifyContent: "center",
+                  alignItems: "center",
+                  padding: "10px",
+                  borderRadius: "10px",
+                  marginRight: "10px",
+                  border: "1px solid #E5EDF1",
                 }}
-              />
+              >
+                <div>
+                  <img
+                    src={LabelIcon}
+                    style={{
+                      marginRight: 8,
+
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  />
+                </div>
+              </div>
+
               <div>
                 <div
                   style={{ color: "#6B7280", fontSize: 12, marginBottom: 2 }}
@@ -607,28 +263,19 @@ const SkillTable = () => {
           ),
           dataIndex: key,
           key: key,
-          render: (text) => (
-            <Flex justify="space-between" align="center">
-              {key === "assigned" ? (
-                <Button
-                  type="primary"
-                  style={{
-                    background: "#EDE9FE",
-                    color: "#8C5BF2",
-                    borderColor: "#8C5BF2",
-                    width: "100%",
-                  }}
-                >
-                  Assign Skill
-                </Button>
+          render: (cellData, record) => {
+            // cellData is record[key], which is an object like { value: ..., _id: ... }
+            // Extract the string value to be displayed.
+            const displayValue =
+              cellData && cellData !== undefined ? (
+                String(cellData)
               ) : (
-                <>
-                  <span>{text}</span>
-                  <Button type="text" icon={<MoreOutlined />} size="small" />
-                </>
-              )}
-            </Flex>
-          ),
+                <span style={{ color: "#FEC8D4", fontSize: "14px" }}>NA</span>
+              );
+            // 'key' is the dataIndex for this dynamically generated column.
+            // Pass it to commonRender as the dataIndex argument.
+            return commonRender(displayValue, record, key);
+          },
         };
       });
   };
@@ -663,49 +310,81 @@ const SkillTable = () => {
       </tr>
     );
   };
+  useEffect(() => {
+    if (currentCustomer) {
+      dispatch(SkillArchitectureActions.getLabels(currentCustomer._id));
+      dispatch(SkillArchitectureActions.getRecords(currentCustomer._id));
+    }
+  }, [currentCustomer]);
+  if (customerLoading || !customers || labelsLoading || recordsLoading) {
+    return <BlankList isLoading={true} />;
+  }
+  console.log("colums", getColumns(), records);
   return (
     <div>
-      <Flex justify="space-between" align="center" style={{ marginBottom: 16 }}>
+      <Flex
+        justify="space-between"
+        align="center"
+        style={{
+          padding: "20px",
+          border: "1px solid #0000001A",
+          borderBottom: "none",
+          borderRadius: "10px 10px 0 0",
+          marginTop: "30px",
+        }}
+      >
         <Title level={4} style={{ margin: 0 }}>
           Ninjarin Skills Architecture
         </Title>
         <Flex gap={12}>
-          <Button onClick={handleUpdateDesign} icon={<SyncOutlined />}>
+          <Button
+            onClick={handleUpdateDesign}
+            icon={<EditOutlined />}
+            style={{
+              background: "#FFFFFF",
+              color: "#8C5BF2",
+              borderColor: "#8C5BF2",
+            }}
+          >
             Update
           </Button>
           <Button
             onClick={handleOpenAddDesignDrawer}
-            type="primary"
-            style={{ background: "#8C5BF2" }}
+            style={{
+              color: "#8C5BF2",
+              borderColor: "#8C5BF2",
+            }}
           >
             Add Organization Design
           </Button>
         </Flex>
       </Flex>
 
-      <Card
+      {/* Use the StyledTableCard here instead of the regular Card */}
+      <StyledTableCard
         bodyStyle={{ padding: 0 }}
         bordered={false}
-        style={{ borderRadius: 8 }}
+        style={{ borderRadius: "0 0 8 8", overflowX: "auto", height: "70vh" }}
       >
         <Table
-          bordered // Kept the bordered prop as per your recent change
+          bordered
           columns={getColumns()}
-          dataSource={data}
+          dataSource={records}
           pagination={false}
           components={{
             body: {
               wrapper: (props) => (
                 <tbody {...props}>
-                  <AddRow /> {/* Moved AddRow to be rendered first */}
+                  <AddRow />
                   {props.children}
                 </tbody>
               ),
             },
           }}
           style={{ borderRadius: 8 }}
+          // className="custom-height-table" // This className is not needed if using StyledTableCard
         />
-      </Card>
+      </StyledTableCard>
 
       <CommonDrawer
         title="Update Organization Design"

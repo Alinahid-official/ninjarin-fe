@@ -1,17 +1,17 @@
 import React from "react";
 import CMLayout from "../CMLayout";
 import Header from "../../../../components/common/Header";
-import SkillTable from "./components/SkillTable";
+import InventoryTable from "./components/InventoryTable";
 
-const CXSkillArchitecture = () => {
+const Inventory = () => {
   return (
     <CMLayout>
-      <Header breadcrumbPath="Customer Management/CX Skill Architecture" />
+      <Header breadcrumbPath="Customer Management/Inventory" />
       <div style={{ padding: "24px" }}>
-        <SkillTable />
+        <InventoryTable />
       </div>
     </CMLayout>
   );
 };
 
-export default CXSkillArchitecture;
+export default Inventory;

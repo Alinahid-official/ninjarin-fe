@@ -17,11 +17,11 @@ export default class SkillArchitectureEffects {
     );
   }
 
-  static saveRecord(customerId, labelKey, value) {
-    return post(`${api.CUSTOMERS}/${customerId}/skill-architecture/records`, {
-      labelKey,
-      value,
-    });
+  static saveRecord(customerId, value) {
+    return post(
+      `${api.CUSTOMERS}/${customerId}/skill-architecture/records`,
+      value
+    );
   }
 
   static saveMultipleRecords(customerId, records) {
