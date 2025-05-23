@@ -3,10 +3,10 @@ import { Form, Input, Button, Flex } from "antd";
 
 const AddInventoryForm = ({ onSubmit, onCancel }) => {
   const [form] = Form.useForm();
-
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+
       onSubmit?.(values);
       form.resetFields();
     } catch (error) {
@@ -30,7 +30,7 @@ const AddInventoryForm = ({ onSubmit, onCancel }) => {
       >
         <Form.Item
           label="Function"
-          name="function"
+          name="name"
           rules={[{ required: true, message: "Please enter function name" }]}
         >
           <Input placeholder="Add Function" />

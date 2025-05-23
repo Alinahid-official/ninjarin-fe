@@ -9,6 +9,7 @@ import CustomerManagementHome from "../pages/customers/customerManagement/home";
 import CXSkillArchitecture from "@/pages/customers/customerManagement/CXSkillArchitecture";
 import CXSkillArchitectureAssign from "@/pages/customers/customerManagement/CXSkillArchitecture/assign";
 import Inventory from "@/pages/customers/customerManagement/inventory"; // Add this import
+import User from "@/pages/customers/customerManagement/user";
 
 export const router = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ export const router = createBrowserRouter([
   {
     path: "/projects",
     element: <Projects />,
+  },
+  {
+    path: "/customers/:customerId/users",
+    element: <User />,
   },
 ]);
 

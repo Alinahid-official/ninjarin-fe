@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Table, Button, Typography, Flex, Input, Tabs } from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, Button, Typography, Flex, Input, Tabs, Popconfirm } from "antd";
 import {
   SyncOutlined,
   PlusOutlined,
@@ -9,13 +9,20 @@ import {
 } from "@ant-design/icons";
 import CommonDrawer from "@/components/common/Drawer";
 import AddInventoryForm from "./AddInventoryForm";
+import { useDispatch } from "react-redux";
+import InventoryActions from "@/redux/inventory/actions";
+import { useSelector } from "react-redux";
+import InventorySelectors from "@/redux/inventory/selectors";
+import CustomerSelectors from "@/redux/customer/selectors";
 
 const { Title } = Typography;
 
 const InventoryTable = () => {
+  const dispatch = useDispatch();
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
-
+  const inventories = useSelector(InventorySelectors.getInventories);
+  const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
   const columns = [
     {
       title: "",
@@ -26,8 +33,8 @@ const InventoryTable = () => {
     },
     {
       title: "Function",
-      dataIndex: "function",
-      key: "function",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Description",
@@ -42,23 +49,28 @@ const InventoryTable = () => {
     {
       title: "Actions",
       key: "actions",
-      render: () => (
+      render: (_, record) => (
         <Flex gap={8}>
           <Button type="text" icon={<MoreOutlined />} />
-          <Button type="text" danger icon={<DeleteOutlined />} />
+          <Popconfirm
+            title={"Are you sure?"}
+            okText={"Yes"}
+            cancelText={"No"}
+            onConfirm={() => {
+              dispatch(InventoryActions.deleteInventory(record._id));
+            }}
+          >
+            <Button
+              icon={<DeleteOutlined />}
+              type="link"
+              style={{ padding: 0, color: "#1677ff" }}
+            >
+              Delete
+            </Button>
+          </Popconfirm>
         </Flex>
       ),
     },
-  ];
-
-  const data = [
-    {
-      key: "1",
-      function: "Technology (IT)",
-      description: "Helps businesses to launch SaaS product",
-      creationDate: "May 25, 2023",
-    },
-    // Add more data as needed
   ];
 
   const items = [
@@ -74,9 +86,16 @@ const InventoryTable = () => {
   ];
 
   const handleAddFunction = (values) => {
-    console.log("New function values:", values);
+    values.type = "function";
+    dispatch(InventoryActions.addInventory(values));
     setIsAddDrawerOpen(false);
   };
+
+  useEffect(() => {
+    if (!inventories || (inventories.length === 0 && currentCustomer)) {
+      dispatch(InventoryActions.getInventories());
+    }
+  });
 
   return (
     <div>
@@ -110,7 +129,7 @@ const InventoryTable = () => {
 
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={inventories}
           pagination={{
             total: 240,
             pageSize: 10,

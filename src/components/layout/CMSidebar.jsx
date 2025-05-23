@@ -146,7 +146,7 @@ const CMSidebar = () => {
                 label: <span style={{ fontWeight: 600 }}>Home</span>,
                 onClick: () => {
                   router.navigate(
-                    customerId ? `/customers/${customerId}/home` : "/"
+                    customerId ? `/customers/${customerId}` : "/"
                   );
                 },
               },
