@@ -86,7 +86,6 @@ const SkillTable = () => {
   />;
 
   const handleIndustryAdd = (data) => {
-    console.log("Selected industry:", data);
     dispatch(SkillArchitectureActions.saveRecord(currentCustomer._id, data));
     // Add your industry handling logic here
     setIsInventoryModalVisible(false);
@@ -373,7 +372,7 @@ const SkillTable = () => {
   if (customerLoading || !customers || labelsLoading || recordsLoading) {
     return <BlankList isLoading={true} />;
   }
-  console.log("colums", getColumns(), records);
+
   return (
     <div>
       <Flex

@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Layout, Breadcrumb, Flex } from "antd";
 import { UserOutlined, BellOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
+import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
+import { useSelector } from "react-redux";
+import SkillArchitectureActions from "@/redux/skillArchitecture/actions";
+import CustomerSelectors from "@/redux/customer/selectors";
+import { useDispatch } from "react-redux";
+import CustomerActions from "@/redux/customer/actions";
 
 const { Header: AntHeader } = Layout;
 
 const Header = ({ breadcrumbPath }) => {
   const pathSegments = breadcrumbPath.split("/").filter((segment) => segment);
-
+  const labels = useSelector(SkillArchitectureSelectors.getLabels);
+  const dispatch = useDispatch();
+  const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
   const breadcrumbItems = pathSegments.map((segment) => {
     const formattedSegment = segment
       .split("-")
@@ -19,6 +27,11 @@ const Header = ({ breadcrumbPath }) => {
     };
   });
 
+  useEffect(() => {
+    if (!labels && currentCustomer) {
+      dispatch(SkillArchitectureActions.getLabels(currentCustomer?._id));
+    }
+  }, [currentCustomer]);
   return (
     <>
       <AntHeader

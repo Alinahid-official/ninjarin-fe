@@ -3,21 +3,23 @@ import { Modal, Button, Select, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import InventorySelectors from "@/redux/inventory/selectors";
+import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
 
 const SelectInventoryModal = ({ open, onCancel, onAdd, inventoryType }) => {
   const inventories = useSelector(InventorySelectors.getInventories);
   const [selectedInventory, setSelectedInventory] = React.useState(null);
-
+  const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const handleAdd = () => {
     if (selectedInventory) {
       onAdd({ [inventoryType]: selectedInventory });
       setSelectedInventory(null);
     }
   };
+  if (!labels) return null;
 
   return (
     <Modal
-      title="Add Industry"
+      title={labels[inventoryType]?.label || inventoryType}
       open={open}
       onCancel={onCancel}
       footer={[
@@ -37,9 +39,13 @@ const SelectInventoryModal = ({ open, onCancel, onAdd, inventoryType }) => {
       <p style={{ marginBottom: 16 }}>Select only one industry at a time</p>
 
       <div style={{ marginBottom: 24 }}>
-        <p style={{ marginBottom: 8 }}>Industry</p>
+        <p style={{ marginBottom: 8 }}>
+          {labels[inventoryType]?.label || inventoryType}
+        </p>
         <Select
-          placeholder="Select industry"
+          placeholder={`Select ${
+            labels[inventoryType]?.label || inventoryType
+          }`}
           style={{ width: "100%" }}
           onChange={(value) => setSelectedInventory(value)}
           value={selectedInventory}

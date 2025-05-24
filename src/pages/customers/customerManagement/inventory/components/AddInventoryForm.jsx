@@ -1,7 +1,10 @@
 import React from "react";
 import { Form, Input, Button, Flex } from "antd";
+import { useSelector } from "react-redux";
+import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
 
-const AddInventoryForm = ({ onSubmit, onCancel }) => {
+const AddInventoryForm = ({ onSubmit, onCancel, selectedType }) => {
+  const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const [form] = Form.useForm();
   const handleSubmit = async () => {
     try {
@@ -29,7 +32,7 @@ const AddInventoryForm = ({ onSubmit, onCancel }) => {
         }}
       >
         <Form.Item
-          label="Function"
+          label={labels[selectedType]?.label || selectedType}
           name="name"
           rules={[{ required: true, message: "Please enter function name" }]}
         >

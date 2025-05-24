@@ -15,26 +15,29 @@ import CustomerSelectors from "@/redux/customer/selectors";
 import TableFooter from "@/pages/dashboard/TableFooter";
 import { formatToMonthDayYear } from "@/utilities/time";
 import { GoPencil } from "react-icons/go";
+import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
 
 const { Title } = Typography;
 
+const excludedKeys = [
+  "_id",
+  "customerId",
+  "createdAt",
+  "updatedAt",
+  "__v",
+  "assigned",
+];
 const InventoryTable = () => {
   const dispatch = useDispatch();
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState("organization"); // Add state for selected type
+  const [selectedType, setSelectedType] = useState("industry"); // Add state for selected type
   const inventories = useSelector(InventorySelectors.getInventories);
   const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
+  const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const columns = [
     {
-      title: "",
-      dataIndex: "checkbox",
-      key: "checkbox",
-      width: 50,
-      render: () => <input type="checkbox" />,
-    },
-    {
-      title: "Function",
+      title: labels[selectedType]?.label || selectedType,
       dataIndex: "name",
       key: "name",
       width: 150,
@@ -79,34 +82,20 @@ const InventoryTable = () => {
     },
   ];
 
-  const items = [
-    {
-      label: (
-        <div
-          style={{
-            padding: "0 12px",
-          }}
-        >
-          {" "}
-          Organization
-        </div>
-      ),
-      key: "organization",
-    },
-
-    { label: "Industry", key: "industry" },
-    { label: "Line of Business", key: "lineOfBusiness" },
-    { label: "Function", key: "function" },
-    { label: "Verticals", key: "verticals" },
-    { label: "Bands", key: "bands" },
-    { label: "Grades", key: "grades" },
-    { label: "Roles", key: "roles" },
-    { label: "Skills", key: "skills" },
-
-    { label: "Sub-Skills", key: "subSkills" },
-    { label: "Description", key: "description" },
-    { label: "Type of Roles", key: "typeOfRoles" },
-  ];
+  const items = Object.entries(labels)
+    .filter(
+      ([key, value]) =>
+        !excludedKeys.includes(key) && value !== null && value["isActive"]
+    )
+    .map(([key, value], index) => ({
+      label:
+        index === 0 ? (
+          <div style={{ padding: "0 15px" }}>{value?.label || key}</div>
+        ) : (
+          value?.label || key
+        ),
+      key,
+    }));
 
   // Handle tab change
   const handleTabChange = (activeKey) => {
@@ -155,7 +144,7 @@ const InventoryTable = () => {
               icon={<PlusOutlined />}
               onClick={() => setIsAddDrawerOpen(true)}
             >
-              Add {selectedType.charAt(0).toUpperCase() + selectedType.slice(1)}
+              Add {labels[selectedType]?.label || selectedType}
             </Button>
           </Flex>
         </Flex>
@@ -180,6 +169,7 @@ const InventoryTable = () => {
           <AddInventoryForm
             onSubmit={handleAddFunction}
             onCancel={() => setIsAddDrawerOpen(false)}
+            selectedType={selectedType}
           />
         </CommonDrawer>
       </div>

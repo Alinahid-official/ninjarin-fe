@@ -1,5 +1,7 @@
 import React from "react";
 import { Form, Input, Select, Button, Checkbox, Tag, Flex } from "antd"; // Added Checkbox, Tag, Flex
+import { useSelector } from "react-redux";
+import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -15,14 +17,21 @@ const subFunctionOptions = [
 
 const AddOrganizationDesignForm = ({ onSubmit, onCancel }) => {
   const [form] = Form.useForm();
-
+  const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const handleSubmit = () => {
     form.validateFields().then((values) => {
       onSubmit(values);
       // form.resetFields(); // Keep fields or reset based on desired UX after submit
     });
   };
-
+  const excludedKeys = [
+    "_id",
+    "customerId",
+    "createdAt",
+    "updatedAt",
+    "__v",
+    "assigned",
+  ];
   return (
     <Form
       form={form}
@@ -37,18 +46,33 @@ const AddOrganizationDesignForm = ({ onSubmit, onCancel }) => {
           paddingRight: "16px",
         }}
       >
-        {" "}
+        {Object.entries(labels)
+          .filter(
+            ([key, value]) =>
+              !excludedKeys.includes(key) && value !== null && value["isActive"]
+          )
+          .map(([key, value]) => {
+            return (
+              <Form.Item name={key} label={value?.label || key}>
+                <Select
+                  placeholder={`Enter ${key}`}
+                  size="large"
+                  options={subFunctionOptions}
+                />
+              </Form.Item>
+            );
+          })}{" "}
         {/* Added padding for scrollbar */}
-        <Form.Item
+        {/* <Form.Item
           name="industry"
-          label="Industry*"
+          label={labels["Industry"]?.label || "Industry"}
           rules={[{ required: true, message: "Please input the industry" }]}
         >
           <Input placeholder="Enter industry" size="large" />
         </Form.Item>
         <Form.Item
           name="organization"
-          label="Organization*"
+          label="Organization"
           rules={[{ required: true, message: "Please input the organization" }]}
         >
           <Input placeholder="Enter organization" size="large" />
@@ -66,7 +90,7 @@ const AddOrganizationDesignForm = ({ onSubmit, onCancel }) => {
           <Select placeholder="Select Function" size="large">
             <Option value="function1">Function 1</Option>
             <Option value="function2">Function 2</Option>
-            {/* Add more options as needed */}
+            
           </Select>
         </Form.Item>
         <Form.Item name="subFunctionVerticals" label="Sub-function / Verticals">
@@ -115,26 +139,26 @@ const AddOrganizationDesignForm = ({ onSubmit, onCancel }) => {
           <Select placeholder="Select Roles" size="large">
             <Option value="role1">Role 1</Option>
             <Option value="role2">Role 2</Option>
-            {/* Add more options as needed */}
+            
           </Select>
         </Form.Item>
         <Form.Item name="typeOfRole" label="Type of Role">
           <Select placeholder="Select Role Type" size="large">
             <Option value="type1">Type 1</Option>
             <Option value="type2">Type 2</Option>
-            {/* Add more options as needed */}
+          
           </Select>
         </Form.Item>
         <Form.Item name="skills" label="Skills">
           <Select placeholder="Select Skills" size="large">
             <Option value="skill1">Skill 1</Option>
             <Option value="skill2">Skill 2</Option>
-            {/* Add more options as needed */}
+          
           </Select>
         </Form.Item>
         <Form.Item name="description" label="Description">
           <TextArea rows={4} placeholder="Enter description" />
-        </Form.Item>
+        </Form.Item> */}
       </div>
 
       <div
@@ -174,7 +198,7 @@ const AddOrganizationDesignForm = ({ onSubmit, onCancel }) => {
             }}
             size="large"
           >
-            Invite User
+            Add
           </Button>
         </Flex>
       </div>
