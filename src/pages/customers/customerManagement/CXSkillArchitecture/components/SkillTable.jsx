@@ -232,7 +232,10 @@ const SkillTable = () => {
     // Filter out unwanted keys and create columns dynamically
     const excludedKeys = ["_id", "customerId", "createdAt", "updatedAt", "__v"];
     return Object.entries(labels)
-      .filter(([key, value]) => !excludedKeys.includes(key) && value !== null)
+      .filter(
+        ([key, value]) =>
+          !excludedKeys.includes(key) && value !== null && value["isActive"]
+      )
       .map(([key, value]) => {
         // 'value' here is the label's text, not the row data's value for this key
         return {

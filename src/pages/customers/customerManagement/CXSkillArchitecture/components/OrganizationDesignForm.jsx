@@ -55,7 +55,7 @@ const FormItem = ({ id, label, checked, toggleSwitch }) => {
 
 const OrganizationDesignForm = ({ onSubmit, onCancel }) => {
   const [form] = Form.useForm();
-  const [formItems] = useState(initialItems);
+  const [formItems, setFormItems] = useState(initialItems);
   const [formValues, setFormValues] = useState({});
 
   // Get labels from redux
@@ -67,6 +67,10 @@ const OrganizationDesignForm = ({ onSubmit, onCancel }) => {
       formItems.forEach((item) => {
         initialValues[item.id] = labels[item.id] || null;
       });
+      initialItems.forEach((item) => {
+        item.label = labels[item.id]?.label || item.label;
+      });
+      setFormItems(initialItems);
       setFormValues(initialValues);
       form.setFieldsValue(initialValues);
     }
@@ -78,7 +82,7 @@ const OrganizationDesignForm = ({ onSubmit, onCancel }) => {
         acc[item.id] = formValues[item.id];
         return acc;
       }, {});
-      console.log("orderedValues", orderedValues);
+
       onSubmit(orderedValues);
     } catch (error) {
       console.error("Submission failed:", error);

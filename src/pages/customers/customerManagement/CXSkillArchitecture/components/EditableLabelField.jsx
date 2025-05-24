@@ -22,7 +22,17 @@ const EditableLabelField = ({
   const dispatch = useDispatch();
   const onSubmit = (value) => {
     dispatch(
-      SkillArchitectureActions.updateLabel(labelId, customerId, value, name)
+      SkillArchitectureActions.updateLabel(
+        labelId,
+        customerId,
+        {
+          [name]: {
+            label: value[name],
+            isActive: true,
+          },
+        },
+        name
+      )
     );
   };
 
