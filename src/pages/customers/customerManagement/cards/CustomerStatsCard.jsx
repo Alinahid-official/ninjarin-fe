@@ -82,87 +82,99 @@ const CustomerStatsCard = () => {
         width: "100%",
         borderRadius: 16,
         border: "1px solid #FEF0F2",
+        height: "340px",
       }}
-      bodyStyle={{ padding: 24 }}
+      styles={{
+        body: {
+          height: "100%",
+        },
+      }}
     >
-      <Flex justify="space-between" align="top">
-        <Flex vertical>
-          <Flex align="center" gap={8} style={{ marginBottom: 8 }}>
-            <UserOutlined style={{ fontSize: 20, color: "#4B5563" }} />
-            <Text style={{ fontSize: 16, fontWeight: 600, color: "#1F2937" }}>
-              Total Users
-            </Text>
-            <Tooltip title="Total number of active users">
-              <InfoCircleOutlined
-                style={{ color: "#8C5BF2", cursor: "pointer" }}
-              />
-            </Tooltip>
-          </Flex>
-          <Title
-            level={2}
-            style={{
-              margin: 0,
-              fontSize: 36,
-              fontWeight: "bold",
-              color: "#111827",
-            }}
-          >
-            50,000
-          </Title>
-          <Flex align="center" gap={4} style={{ marginTop: 4 }}>
-            <ArrowUpOutlined style={{ color: "#10B981", fontSize: 14 }} />
-            <Text style={{ color: "#8C5BF2", fontWeight: 500, fontSize: 14 }}>
-              12%
-            </Text>
-            <Text style={{ color: "#6B7280", fontSize: 14 }}>
-              vs last 7 days
-            </Text>
-          </Flex>
-        </Flex>
-        <div style={{ marginTop: 8 }}>
-          <MiniLineChart />
-        </div>
-      </Flex>
-
-      <Divider style={{ margin: "24px 0" }} />
-
-      <Flex justify="space-between" gap={24}>
-        <Flex vertical style={{ flex: 1 }}>
-          <Flex justify="space-between" align="center">
-            <Text style={{ color: "#4B5563", fontSize: 16 }}>Onboarded</Text>
-            <Flex align="center" gap={4}>
+      <Flex vertical justify="space-between" style={{ height: "100%" }}>
+        <Flex justify="space-between" align="top">
+          <Flex vertical>
+            <Flex align="center" gap={8} style={{ marginBottom: 8 }}>
+              <UserOutlined style={{ fontSize: 20, color: "#4B5563" }} />
+              <Text style={{ fontSize: 16, fontWeight: 600, color: "#1F2937" }}>
+                Total Users
+              </Text>
+              <Tooltip title="Total number of active users">
+                <InfoCircleOutlined
+                  style={{ color: "#8C5BF2", cursor: "pointer" }}
+                />
+              </Tooltip>
+            </Flex>
+            <Title
+              level={2}
+              style={{
+                margin: 0,
+                fontSize: 25,
+                fontWeight: "bold",
+                color: "#111827",
+              }}
+            >
+              50,000
+            </Title>
+            <Flex align="center" gap={4} style={{ marginTop: 4 }}>
               <ArrowUpOutlined style={{ color: "#10B981", fontSize: 14 }} />
-              <Text style={{ color: "#10B981", fontSize: 14 }}>25.8%</Text>
+              <Text style={{ color: "#8C5BF2", fontWeight: 500, fontSize: 14 }}>
+                12%
+              </Text>
+              <Text style={{ color: "#6B7280", fontSize: 14 }}>
+                vs last 7 days
+              </Text>
             </Flex>
           </Flex>
-          <Progress
-            percent={60}
-            strokeColor="#8C5BF2"
-            trailColor="#E5E7EB"
-            showInfo={false}
-            strokeWidth={8}
-            style={{ margin: "8px 0" }}
-          />
+          <div style={{ marginTop: 8 }}>
+            <MiniLineChart />
+          </div>
         </Flex>
 
-        <Flex vertical style={{ flex: 1 }}>
-          <Flex justify="space-between" align="center">
-            <Text style={{ color: "#4B5563", fontSize: 16 }}>
-              Skills Mapped
-            </Text>
-            <Flex align="center" gap={4}>
-              <ArrowUpOutlined style={{ color: "#10B981", fontSize: 14 }} />
-              <Text style={{ color: "#10B981", fontSize: 14 }}>25.8%</Text>
+        <Flex
+          justify="space-between"
+          gap={24}
+          style={{
+            paddingTop: 16,
+            borderTop: "1px solid #FEF0F2",
+          }}
+        >
+          <Flex vertical>
+            <Flex justify="space-between" align="center">
+              <Text style={{ color: "#4B5563", fontSize: 16 }}>Onboarded</Text>
+              <Flex align="center" gap={4}>
+                <ArrowUpOutlined style={{ color: "#10B981", fontSize: 14 }} />
+                <Text style={{ color: "#10B981", fontSize: 14 }}>25.8%</Text>
+              </Flex>
             </Flex>
+            <Progress
+              percent={60}
+              strokeColor="#8C5BF2"
+              trailColor="#E5E7EB"
+              showInfo={false}
+              style={{ margin: "8px 0" }}
+              size="small"
+            />
           </Flex>
-          <Progress
-            percent={40}
-            strokeColor="#8C5BF2"
-            trailColor="#E5E7EB"
-            showInfo={false}
-            strokeWidth={8}
-            style={{ margin: "8px 0" }}
-          />
+
+          <Flex vertical>
+            <Flex justify="space-between" align="center">
+              <Text style={{ color: "#4B5563", fontSize: 16 }}>
+                Skills Mapped
+              </Text>
+              <Flex align="center" gap={4}>
+                <ArrowUpOutlined style={{ color: "#10B981", fontSize: 14 }} />
+                <Text style={{ color: "#10B981", fontSize: 14 }}>25.8%</Text>
+              </Flex>
+            </Flex>
+            <Progress
+              percent={40}
+              strokeColor="#8C5BF2"
+              trailColor="#E5E7EB"
+              showInfo={false}
+              style={{ margin: "8px 0" }}
+              size="small"
+            />
+          </Flex>
         </Flex>
       </Flex>
     </Card>

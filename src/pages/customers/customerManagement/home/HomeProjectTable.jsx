@@ -9,77 +9,17 @@ import {
   Modal,
   Popconfirm,
 } from "antd";
-import {
-  SearchOutlined,
-  UnorderedListOutlined,
-  AppstoreOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
-import TableFooter from "../../dashboard/TableFooter";
+import { SearchOutlined, DeleteOutlined } from "@ant-design/icons";
+import TableFooter from "@/pages/dashboard/TableFooter";
 import { useDispatch, useSelector } from "react-redux";
 import ProjectSelectors from "@/redux/project/selectors";
 import BlankList from "@/components/common/BlankList";
 import { formatToMonthDayYear } from "@/utilities/time";
-import ProjectActivityHistory from "./ProjectActivityHistory";
+import ProjectActivityHistory from "@/pages/projects/components/ProjectActivityHistory";
 import { GoPencil } from "react-icons/go";
 import ProjectActions from "@/redux/project/actions";
-const OverviewHeader = ({ onClick }) => (
-  <Flex justify="space-between" style={{ padding: 16 }}>
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        background: "#fff",
-      }}
-    >
-      <span style={{ color: "#000000", fontSize: 16 }}>Overview</span>
-      <Select
-        defaultValue="last7"
-        style={{
-          width: 120,
-          border: "none",
-        }}
-        dropdownStyle={{ borderRadius: 8 }}
-        bordered={false}
-        options={[
-          {
-            value: "last7",
-            label: <span style={{ color: "#757575" }}>Last 7 Days</span>,
-          },
-          {
-            value: "last30",
-            label: (
-              <span style={{ fontWeight: 600, color: "#757575" }}>
-                Last 30 Days
-              </span>
-            ),
-          },
-          {
-            value: "thisMonth",
-            label: (
-              <span style={{ fontWeight: 600, color: "#757575" }}>
-                This Month
-              </span>
-            ),
-          },
-        ]}
-      />
-    </div>
-    <Button
-      type="primary"
-      icon={<PlusOutlined />}
-      onClick={onClick}
-      style={{
-        background: "#595959",
-        borderColor: "#595959",
-      }}
-    >
-      Add Project
-    </Button>
-  </Flex>
-);
-const ProjectTable = ({ handleAddProject }) => {
+
+const HomeProjectTable = () => {
   const dispatch = useDispatch();
   const stageCounts = useSelector(ProjectSelectors.getProjectStageCounts);
   const [selectionType, _] = useState("checkbox");
@@ -99,71 +39,6 @@ const ProjectTable = ({ handleAddProject }) => {
       name: record.name,
     }),
   };
-  const tabItems = [
-    {
-      key: "all",
-      label: (
-        <span>
-          All Projects{" "}
-          <span style={{ marginLeft: 4 }}>{projects?.length || 0}</span>
-        </span>
-      ),
-    },
-    {
-      key: "consulting",
-      label: (
-        <span>
-          Consulting{" "}
-          <span style={{ marginLeft: 4 }}>{stageCounts.Consulting || 0}</span>
-        </span>
-      ),
-    },
-    {
-      key: "design",
-      label: (
-        <span>
-          Design{" "}
-          <span style={{ marginLeft: 4 }}>{stageCounts.Design || 0}</span>
-        </span>
-      ),
-    },
-    {
-      key: "development",
-      label: (
-        <span>
-          Development{" "}
-          <span style={{ marginLeft: 4 }}>{stageCounts.Development || 0}</span>
-        </span>
-      ),
-    },
-    {
-      key: "delivered",
-      label: (
-        <span>
-          Delivered{" "}
-          <span style={{ marginLeft: 4 }}>{stageCounts.Delivered || 0}</span>
-        </span>
-      ),
-    },
-    {
-      key: "service",
-      label: (
-        <span>
-          Services{" "}
-          <span style={{ marginLeft: 4 }}>{stageCounts.Services || 0}</span>
-        </span>
-      ),
-    },
-    {
-      key: "maintenance",
-      label: (
-        <span>
-          Maintenance{" "}
-          <span style={{ marginLeft: 4 }}>{stageCounts.Maintenance || 0}</span>
-        </span>
-      ),
-    },
-  ];
 
   const columns = [
     {
@@ -312,20 +187,10 @@ const ProjectTable = ({ handleAddProject }) => {
     return colors[type] || "#757575";
   };
 
-  if (!projects?.length) {
-    return <BlankList onClick={handleAddProject} />;
-  }
-
   return (
     <>
-      <OverviewHeader onClick={handleAddProject} />
       <div className="nz-border nz-border-radius">
         <div style={{ padding: "16px", borderBottom: "1px solid #f0f0f0" }}>
-          <Tabs
-            items={tabItems}
-            defaultActiveKey="all"
-            onChange={(key) => console.log(key)}
-          />
           <Flex gap="middle" align="center" style={{ marginTop: 16 }}>
             <Select
               className="nz-select-square"
@@ -388,4 +253,4 @@ const ProjectTable = ({ handleAddProject }) => {
   );
 };
 
-export default ProjectTable;
+export default HomeProjectTable;
