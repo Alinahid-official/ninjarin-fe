@@ -14,6 +14,8 @@ const SkillArchitectureActions = {
     "skillArchitecture/SAVE_MULTIPLE_RECORDS_FINISHED",
   DELETE_RECORD: "skillArchitecture/DELETE_RECORD",
   DELETE_RECORD_FINISHED: "skillArchitecture/DELETE_RECORD_FINISHED",
+  UPDATE_RECORD: "skillArchitecture/UPDATE_RECORD",
+  UPDATE_RECORD_FINISHED: "skillArchitecture/UPDATE_RECORD_FINISHED",
 
   getLabels: (customerId) =>
     createAction(SkillArchitectureActions.GET_LABELS, customerId),
@@ -46,6 +48,12 @@ const SkillArchitectureActions = {
     createAction(SkillArchitectureActions.DELETE_RECORD, {
       customerId,
       labelKey: recordId,
+    }),
+  updateRecord: (customerId, recordId, data) =>
+    createAction(SkillArchitectureActions.UPDATE_RECORD, {
+      customerId,
+      recordId,
+      data,
     }),
 };
 

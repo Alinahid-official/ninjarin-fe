@@ -42,5 +42,10 @@ export const themeConfig = {
       colorPrimaryHover: "#961FFF",
       controlOutline: "rgba(150, 31, 255, 0.1)",
     },
+    Table: {
+      rowSelectedBg: "transparent",
+      rowSelectedHoverBg: "transparent",
+      rowHoverBg: "rgba(150, 31, 255, 0.05)",
+    },
   },
 };

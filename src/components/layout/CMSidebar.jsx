@@ -40,16 +40,23 @@ const CMSidebar = () => {
 
   // Get the selected key based on current path
   const getSelectedKey = (path) => {
-    // Extract the last meaningful segment of the path
+    // Extract the path segments
     const pathSegments = path.split("/");
-    const lastSegment = pathSegments[pathSegments.length - 1];
 
-    // Map path segments to menu keys
+    // Check if the path contains cx-skills-architecture or assign
+    if (
+      pathSegments.includes("cx-skills-architecture") ||
+      (pathSegments.includes("assign") &&
+        pathSegments.includes("cx-skills-architecture"))
+    ) {
+      return "skill-architecture";
+    }
+
+    // Map other path segments to menu keys
+    const lastSegment = pathSegments[pathSegments.length - 1];
     switch (lastSegment) {
       case "home":
         return "home";
-      case "cx-skills-architecture":
-        return "skill-architecture";
       case "inventory":
         return "inventory";
       case "users":

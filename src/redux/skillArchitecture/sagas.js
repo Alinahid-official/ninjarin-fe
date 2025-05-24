@@ -73,6 +73,19 @@ function* DELETE_RECORDS(action) {
   if (resultHasError(result)) yield cancel();
 }
 
+function* UPDATE_RECORD(action) {
+  const { customerId, recordId, data } = action.payload;
+  const result = yield call(
+    runEffect,
+    action,
+    SkillArchitectureEffects.updateRecord,
+    customerId,
+    recordId,
+    data
+  );
+  if (resultHasError(result)) yield cancel();
+}
+
 export default function* skillArchitectureSaga() {
   yield takeLatest(SkillArchitectureActions.GET_LABELS, GET_LABELS);
   yield takeLatest(SkillArchitectureActions.GET_RECORDS, GET_RECORDS);
@@ -83,4 +96,5 @@ export default function* skillArchitectureSaga() {
     SAVE_MULTIPLE_RECORDS
   );
   yield takeLatest(SkillArchitectureActions.DELETE_RECORD, DELETE_RECORDS);
+  yield takeLatest(SkillArchitectureActions.UPDATE_RECORD, UPDATE_RECORD);
 }

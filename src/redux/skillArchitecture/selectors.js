@@ -16,6 +16,11 @@ class SkillArchitectureSelectors {
   static getRecords(state) {
     return denormalizeSchema(state.skillArchitecture.records, recordListSchema);
   }
+  static getRecordById(state, id) {
+    return state.skillArchitecture.records?.entities[
+      "SkillArchitectureRecords"
+    ][id];
+  }
 }
 
 export default SkillArchitectureSelectors;

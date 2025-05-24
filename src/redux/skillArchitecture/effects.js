@@ -36,4 +36,11 @@ export default class SkillArchitectureEffects {
       `${api.CUSTOMERS}/${customerId}/skill-architecture/records/${labelKey}`
     );
   }
+
+  static updateRecord(customerId, recordId, data) {
+    return patch(
+      `${api.CUSTOMERS}/${customerId}/skill-architecture/records/${recordId}`,
+      data
+    );
+  }
 }

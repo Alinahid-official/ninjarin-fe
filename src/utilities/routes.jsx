@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
     element: <CXSkillArchitecture />,
   },
   {
-    path: "/customers/:customerId/cx-skills-architecture/assign",
+    path: "/customers/:customerId/cx-skills-architecture/:id/assign",
     element: <CXSkillArchitectureAssign />,
   },
   {

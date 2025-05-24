@@ -1,13 +1,16 @@
 import React from "react";
 import { Modal, Button, Select, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { useSelector } from "react-redux";
+import InventorySelectors from "@/redux/inventory/selectors";
 
-const SelectInventoryModal = ({ open, onCancel, onAdd }) => {
+const SelectInventoryModal = ({ open, onCancel, onAdd, inventoryType }) => {
+  const inventories = useSelector(InventorySelectors.getInventories);
   const [selectedInventory, setSelectedInventory] = React.useState(null);
 
   const handleAdd = () => {
     if (selectedInventory) {
-      onAdd(selectedInventory);
+      onAdd({ [inventoryType]: selectedInventory });
       setSelectedInventory(null);
     }
   };
@@ -40,10 +43,13 @@ const SelectInventoryModal = ({ open, onCancel, onAdd }) => {
           style={{ width: "100%" }}
           onChange={(value) => setSelectedInventory(value)}
           value={selectedInventory}
+          showSearch
         >
-          <Select.Option value="technology">Technology</Select.Option>
-          <Select.Option value="healthcare">Healthcare</Select.Option>
-          <Select.Option value="finance">Finance</Select.Option>
+          {inventories?.map((inventory) => (
+            <Select.Option key={inventory._id} value={inventory.name}>
+              {inventory.name}
+            </Select.Option>
+          ))}
           {/* Add more industries as needed */}
         </Select>
       </div>

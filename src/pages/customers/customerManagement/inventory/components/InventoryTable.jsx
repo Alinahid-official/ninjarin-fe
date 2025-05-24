@@ -22,7 +22,7 @@ const InventoryTable = () => {
   const dispatch = useDispatch();
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState("function"); // Add state for selected type
+  const [selectedType, setSelectedType] = useState("organization"); // Add state for selected type
   const inventories = useSelector(InventorySelectors.getInventories);
   const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
   const columns = [

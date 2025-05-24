@@ -35,6 +35,7 @@ import BlankList from "@/components/common/BlankList";
 import { useDispatch } from "react-redux";
 import CustomerSelectors from "@/redux/customer/selectors";
 import SelectInventoryModal from "./SelectInventoryModal";
+import { router } from "@/utilities/routes";
 const { Title } = Typography;
 
 // Define the StyledTableCard component
@@ -63,26 +64,32 @@ const SkillTable = () => {
   const dispatch = useDispatch();
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
-  const [isIndustryModalVisible, setIsIndustryModalVisible] = useState(false);
+  const [isInventoryModalVisible, setIsInventoryModalVisible] = useState(false);
   const [selectedColumnKey, setSelectedColumnKey] = useState(null);
 
   // Add this before the return statement
   const handleModalAdd = (selectedInventory) => {
     // Handle the selected inventory with the column key
-    console.log('Selected inventory for column:', selectedColumnKey, selectedInventory);
-    setIsIndustryModalVisible(false);
+    console.log(
+      "Selected inventory for column:",
+      selectedColumnKey,
+      selectedInventory
+    );
+    setIsInventoryModalVisible(false);
   };
 
   // Add this inside the main return statement
   <SelectInventoryModal
-    open={isIndustryModalVisible}
-    onCancel={() => setIsIndustryModalVisible(false)}
+    open={isInventoryModalVisible}
+    onCancel={() => setIsInventoryModalVisible(false)}
     onAdd={handleModalAdd}
-  />
-  const handleIndustryAdd = (industry) => {
-    console.log("Selected industry:", industry);
+  />;
+
+  const handleIndustryAdd = (data) => {
+    console.log("Selected industry:", data);
+    dispatch(SkillArchitectureActions.saveRecord(currentCustomer._id, data));
     // Add your industry handling logic here
-    setIsIndustryModalVisible(false);
+    setIsInventoryModalVisible(false);
   };
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const labelsLoading = useSelector((state) =>
@@ -285,8 +292,29 @@ const SkillTable = () => {
           dataIndex: key,
           key: key,
           render: (cellData, record) => {
-            // cellData is record[key], which is an object like { value: ..., _id: ... }
-            // Extract the string value to be displayed.
+            if (key === "assigned") {
+              return (
+                <Button
+                  onClick={() => {
+                    router.navigate(
+                      `/customers/${currentCustomer._id}/cx-skills-architecture/${record._id}/assign`
+                    );
+                  }}
+                  type="default"
+                  style={{
+                    border: "1px solid #8C5BF2",
+                    color: "#8C5BF2",
+                    backgroundColor: "#F6F1FF",
+
+                    width: "100%",
+                  }}
+                >
+                  Assigned 2K+
+                </Button>
+              );
+            }
+
+            // For other columns, use the existing rendering logic
             const displayValue =
               cellData && cellData !== undefined ? (
                 String(cellData)
@@ -309,7 +337,7 @@ const SkillTable = () => {
             <td key={column.key}>
               <Button
                 onClick={() => {
-                  setIsIndustryModalVisible(true);
+                  setIsInventoryModalVisible(true);
                   setSelectedColumnKey(column.key); // Add state for selected column key
                 }}
                 type="text"
@@ -435,9 +463,10 @@ const SkillTable = () => {
         />
       </CommonDrawer>
       <SelectInventoryModal
-        open={isIndustryModalVisible}
-        onCancel={() => setIsIndustryModalVisible(false)}
+        open={isInventoryModalVisible}
+        onCancel={() => setIsInventoryModalVisible(false)}
         onAdd={handleIndustryAdd}
+        inventoryType={selectedColumnKey}
       />
     </div>
   );
