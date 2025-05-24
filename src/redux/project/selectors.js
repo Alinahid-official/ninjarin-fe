@@ -30,6 +30,10 @@ class ProjectSelectors {
       return acc;
     }, stages);
   }
+
+  static getSelectedProject(state) {
+    return state.projects.selectedProject;
+  }
 }
 
 export default ProjectSelectors;

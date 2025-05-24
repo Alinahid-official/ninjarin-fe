@@ -41,4 +41,21 @@ export default BaseReducer(initialState, {
       projects: updatedProjects,
     };
   },
+  [ProjectActions.SELECT_PROJECT](state, action) {
+    const data = action.payload;
+    return {
+      ...state,
+      selectedProject: data,
+    };
+  },
+  [ProjectActions.UPDATE_PROJECT_FINISHED](state, action) {
+    const data = action.payload.data;
+    const updatedProjects = produce(state.projects, (draft) => {
+      draft.entities.Projects[data._id] = data;
+    });
+    return {
+      ...state,
+      projects: updatedProjects,
+    };
+  },
 });

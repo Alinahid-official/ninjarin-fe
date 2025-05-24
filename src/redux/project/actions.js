@@ -11,14 +11,17 @@ const ProjectActions = {
   UPDATE_PROJECT_FINISHED: "project/UPDATE_PROJECT_FINISHED",
   GET_PROJECT: "project/GET_PROJECT",
   GET_PROJECT_FINISHED: "project/GET_PROJECT_FINISHED",
+  SELECT_PROJECT: "project/SELECT_PROJECT",
   getProjects: () => createAction(ProjectActions.GET_PROJECTS),
   addProject: (project) => createAction(ProjectActions.ADD_PROJECT, project),
   deleteProject: (projectId) =>
     createAction(ProjectActions.DELETE_PROJECT, projectId),
-  updateProject: (project) =>
-    createAction(ProjectActions.UPDATE_PROJECT, project),
+  updateProject: (projectId, project) =>
+    createAction(ProjectActions.UPDATE_PROJECT, { projectId, project }),
   getProject: (projectId) =>
     createAction(ProjectActions.GET_PROJECT, projectId),
+  selectProject: (project) =>
+    createAction(ProjectActions.SELECT_PROJECT, project),
 };
 
 export default ProjectActions;

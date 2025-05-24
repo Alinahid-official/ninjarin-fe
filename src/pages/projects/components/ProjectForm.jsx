@@ -4,20 +4,31 @@ import ProjectActions from "@/redux/project/actions";
 import requestingSelector from "@/redux/requesting/requestingSelector";
 import { Form, Input, Select, DatePicker, Button, Space, Flex } from "antd";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import CustomerSelectors from "@/redux/customer/selectors";
 import CustomerActions from "@/redux/customer/actions";
+import ProjectSelectors from "@/redux/project/selectors";
 
 const selectError = makeSelectErrorModel();
+
 const ProjectForm = ({ onSubmit, onCancel }) => {
+  const [isEdit, setIsEdit] = useState(false);
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const project = useSelector(ProjectSelectors.getSelectedProject);
+
   const loading = useSelector((state) =>
-    requestingSelector(state, [ProjectActions.ADD_PROJECT])
+    requestingSelector(state, [
+      isEdit ? ProjectActions.UPDATE_PROJECT : ProjectActions.ADD_PROJECT,
+    ])
   );
   const error = useSelector((state) =>
-    selectError(state, [ProjectActions.ADD_PROJECT_FINISHED])
+    selectError(state, [
+      isEdit
+        ? ProjectActions.UPDATE_PROJECT_FINISHED
+        : ProjectActions.ADD_PROJECT_FINISHED,
+    ])
   );
   const customers = useSelector(CustomerSelectors.getCustomers);
 
@@ -43,7 +54,11 @@ const ProjectForm = ({ onSubmit, onCancel }) => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      onSubmit(values);
+      if (isEdit && project) {
+        onSubmit({ projectId: project._id, project: values });
+      } else {
+        onSubmit(values);
+      }
     } catch (error) {
       console.error("Validation failed:", error);
     }
@@ -67,6 +82,31 @@ const ProjectForm = ({ onSubmit, onCancel }) => {
     }
   }, [loading]);
 
+  useEffect(() => {
+    if (project) {
+      setIsEdit(true);
+    } else {
+      setIsEdit(false);
+      form.resetFields();
+    }
+  }, [project]);
+
+  // Set form values when project changes
+  useEffect(() => {
+    if (isEdit && project) {
+      form.setFieldsValue({
+        name: project.name,
+        organization: project.organization?._id,
+        cxOwner: project.cxOwner,
+        programManager: project.programManager,
+        cxAdmin: project.cxAdmin,
+        projectType: project.projectType,
+        projectStage: project.projectStage,
+        dueDate: project.dueDate ? dayjs(project.dueDate) : undefined,
+      });
+    }
+  }, [isEdit, project, form]);
+
   const customerOptions = customers?.map((customer) => ({
     value: customer._id,
     label: customer.name,
@@ -78,16 +118,20 @@ const ProjectForm = ({ onSubmit, onCancel }) => {
       layout="vertical"
       style={{ height: "100%" }}
       requiredMark={false}
-      initialValues={{
-        name: "New Project",
-        organization: customerOptions ? customerOptions[0].value : "",
-        cxOwner: "Om prakash sao",
-        programManager: "Om prakash sao",
-        cxAdmin: "Om prakash sao",
-        projectType: "Career Mapping",
-        projectStage: "Consulting",
-        dueDate: dayjs().add(30, "days"),
-      }}
+      initialValues={
+        !isEdit
+          ? {
+              name: "New Project",
+              organization: customerOptions ? customerOptions[0]?.value : "",
+              cxOwner: "Om prakash sao",
+              programManager: "Om prakash sao",
+              cxAdmin: "Om prakash sao",
+              projectType: "Career Mapping",
+              projectStage: "Consulting",
+              dueDate: dayjs().add(30, "days"),
+            }
+          : {}
+      }
     >
       {error && <FullAlertError error={error} />}
       <div style={{ height: "calc(100% - 80px)", overflowY: "auto" }}>
@@ -224,7 +268,7 @@ const ProjectForm = ({ onSubmit, onCancel }) => {
             type="primary"
             onClick={handleSubmit}
           >
-            Add Project
+            {isEdit ? "Update Project" : "Add Project"}
           </Button>
         </Flex>
       </div>

@@ -64,21 +64,27 @@ const Projects = () => {
   const loading = useSelector((state) =>
     requestingSelector(state, [ProjectActions.GET_PROJECTS])
   );
-  // const loading = true;
   const error = useSelector((state) =>
     selectError(state, [ProjectActions.GET_PROJECTS_FINISHED])
   );
   const dispatch = useDispatch();
+  const selectedProject = useSelector(ProjectSelectors.getSelectedProject);
+
   const handleAddProject = () => {
     setIsDrawerOpen(true);
   };
 
   const handleDrawerClose = () => {
     setIsDrawerOpen(false);
+    dispatch(ProjectActions.selectProject(null));
   };
 
   const handleProjectSubmit = (values) => {
-    dispatch(ProjectActions.addProject(values));
+    if (selectedProject) {
+      dispatch(ProjectActions.updateProject(values.projectId, values.project));
+    } else {
+      dispatch(ProjectActions.addProject(values));
+    }
   };
 
   useEffect(() => {
@@ -98,9 +104,13 @@ const Projects = () => {
       </Layout>
 
       <CommonDrawer
-        title="Add Projects"
-        subTitle="Fill all the required field to add project."
-        open={isDrawerOpen}
+        title={selectedProject ? "Edit Project" : "Add Project"}
+        subTitle={
+          selectedProject
+            ? "Update the project details."
+            : "Fill all the required field to add project."
+        }
+        open={isDrawerOpen || selectedProject}
         onClose={handleDrawerClose}
       >
         <ProjectForm
