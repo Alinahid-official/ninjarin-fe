@@ -11,17 +11,19 @@ import {
 } from "antd";
 import { SearchOutlined, DeleteOutlined } from "@ant-design/icons";
 import TableFooter from "@/pages/dashboard/TableFooter";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import ProjectSelectors from "@/redux/project/selectors";
 import BlankList from "@/components/common/BlankList";
 import { formatToMonthDayYear } from "@/utilities/time";
 import ProjectActivityHistory from "@/pages/projects/components/ProjectActivityHistory";
 import { GoPencil } from "react-icons/go";
 import ProjectActions from "@/redux/project/actions";
+import CustomerSelectors from "@/redux/customer/selectors";
+import { useSelector } from "react-redux";
 
 const HomeProjectTable = () => {
   const dispatch = useDispatch();
-  const stageCounts = useSelector(ProjectSelectors.getProjectStageCounts);
+
   const [selectionType, _] = useState("checkbox");
   const [selectedProject, setSelectedProject] = useState(null);
   const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);

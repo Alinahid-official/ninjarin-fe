@@ -49,9 +49,15 @@ const User = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const users = useSelector(UserSelectors.getUsers);
   const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
+  const selectedUser = useSelector(UserSelectors.getSelectedUser);
   const dispatch = useDispatch();
   const handleAddUser = (values) => {
-    dispatch(UserActions.addUser(values));
+    if (selectedUser) {
+      dispatch(UserActions.updateUser(selectedUser._id, values));
+      dispatch(UserActions.setSelectedUser(null));
+    } else {
+      dispatch(UserActions.addUser(values));
+    }
     // Add logic to actually add the user to your data source
     setIsDrawerOpen(false); // Close drawer after submission
   };
@@ -130,6 +136,9 @@ const User = () => {
           <Button
             type="text"
             icon={<EditOutlined style={{ color: "#9D43FE" }} />}
+            onClick={() => {
+              dispatch(UserActions.setSelectedUser(record));
+            }}
           />
           <Popconfirm
             title="Are you sure?"
@@ -158,6 +167,11 @@ const User = () => {
       );
     }
   });
+
+  const handleDrawerClose = () => {
+    setIsDrawerOpen(false);
+    dispatch(UserActions.setSelectedUser(null));
+  };
 
   return (
     <CMLayout>
@@ -218,14 +232,11 @@ const User = () => {
       </div>
       <CommonDrawer
         title="Add User"
-        open={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+        open={isDrawerOpen || selectedUser}
+        onClose={handleDrawerClose}
         width={480} // Adjust width as needed
       >
-        <AddUserForm
-          onSubmit={handleAddUser}
-          onCancel={() => setIsDrawerOpen(false)}
-        />
+        <AddUserForm onSubmit={handleAddUser} onCancel={handleDrawerClose} />
       </CommonDrawer>
     </CMLayout>
   );

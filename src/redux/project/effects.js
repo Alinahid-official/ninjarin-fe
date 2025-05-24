@@ -5,8 +5,8 @@ export default class ProjectEffects {
   static getProjectById(id) {
     return get(`${api.PROJECTS}/${id}`);
   }
-  static getProjects() {
-    return get(`${api.PROJECTS}`);
+  static getProjects(params) {
+    return get(`${api.PROJECTS}`, params);
   }
 
   static createProject(project) {

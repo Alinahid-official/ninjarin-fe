@@ -136,30 +136,30 @@ const Sidebar = ({ isCollapsed }) => {
                   router.navigate("/projects");
                 },
               },
-              {
-                key: "reports",
-                icon: <PiBookOpenTextBold />,
-                label: "Reports",
-                onClick: () => {
-                  router.navigate("/reports");
-                },
-              },
-              {
-                key: "manage-access",
-                icon: <LuCrown />,
-                label: "Mange Access",
-                onClick: () => {
-                  router.navigate("/manage-access");
-                },
-              },
-              {
-                key: "settings",
-                icon: <SettingOutlined />,
-                label: "Settings",
-                onClick: () => {
-                  router.navigate("/settings");
-                },
-              },
+              // {
+              //   key: "reports",
+              //   icon: <PiBookOpenTextBold />,
+              //   label: "Reports",
+              //   onClick: () => {
+              //     router.navigate("/reports");
+              //   },
+              // },
+              // {
+              //   key: "manage-access",
+              //   icon: <LuCrown />,
+              //   label: "Mange Access",
+              //   onClick: () => {
+              //     router.navigate("/manage-access");
+              //   },
+              // },
+              // {
+              //   key: "settings",
+              //   icon: <SettingOutlined />,
+              //   label: "Settings",
+              //   onClick: () => {
+              //     router.navigate("/settings");
+              //   },
+              // },
             ]}
           />
         </div>

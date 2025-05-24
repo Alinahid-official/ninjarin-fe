@@ -12,7 +12,7 @@ const ProjectActions = {
   GET_PROJECT: "project/GET_PROJECT",
   GET_PROJECT_FINISHED: "project/GET_PROJECT_FINISHED",
   SELECT_PROJECT: "project/SELECT_PROJECT",
-  getProjects: () => createAction(ProjectActions.GET_PROJECTS),
+  getProjects: (params) => createAction(ProjectActions.GET_PROJECTS, params),
   addProject: (project) => createAction(ProjectActions.ADD_PROJECT, project),
   deleteProject: (projectId) =>
     createAction(ProjectActions.DELETE_PROJECT, projectId),

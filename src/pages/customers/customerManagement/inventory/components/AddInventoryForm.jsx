@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Flex } from "antd";
 import { useSelector } from "react-redux";
 import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
+import InventorySelectors from "@/redux/inventory/selectors";
 
 const AddInventoryForm = ({ onSubmit, onCancel, selectedType }) => {
-  const selectedItem = useSelector();
+  const selectedItem = useSelector(InventorySelectors.getSelectedInventory);
   const [isEdit, setIsEdit] = useState(false);
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const [form] = Form.useForm();
@@ -43,14 +44,6 @@ const AddInventoryForm = ({ onSubmit, onCancel, selectedType }) => {
       layout="vertical"
       style={{ height: "100%" }}
       requiredMark={false}
-      initialValues={
-        !isEdit
-          ? {
-              name: "",
-              description: "",
-            }
-          : {}
-      }
     >
       <div
         style={{

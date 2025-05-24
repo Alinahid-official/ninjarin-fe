@@ -203,40 +203,40 @@ const CMSidebar = () => {
                   );
                 },
               },
-              {
-                key: "reports",
-                icon: <PiBookOpenTextBold />,
-                label: "Reports",
-                onClick: () => {
-                  router.navigate(
-                    customerId ? `/customers/${customerId}/reports` : "/reports"
-                  );
-                },
-              },
-              {
-                key: "manage-access",
-                icon: <LuCrown />,
-                label: "Mange Access",
-                onClick: () => {
-                  router.navigate(
-                    customerId
-                      ? `/customers/${customerId}/manage-access`
-                      : "/manage-access"
-                  );
-                },
-              },
-              {
-                key: "settings",
-                icon: <SettingOutlined />,
-                label: "Settings",
-                onClick: () => {
-                  router.navigate(
-                    customerId
-                      ? `/customers/${customerId}/settings`
-                      : "/settings"
-                  );
-                },
-              },
+              // {
+              //   key: "reports",
+              //   icon: <PiBookOpenTextBold />,
+              //   label: "Reports",
+              //   onClick: () => {
+              //     router.navigate(
+              //       customerId ? `/customers/${customerId}/reports` : "/reports"
+              //     );
+              //   },
+              // },
+              // {
+              //   key: "manage-access",
+              //   icon: <LuCrown />,
+              //   label: "Mange Access",
+              //   onClick: () => {
+              //     router.navigate(
+              //       customerId
+              //         ? `/customers/${customerId}/manage-access`
+              //         : "/manage-access"
+              //     );
+              //   },
+              // },
+              // {
+              //   key: "settings",
+              //   icon: <SettingOutlined />,
+              //   label: "Settings",
+              //   onClick: () => {
+              //     router.navigate(
+              //       customerId
+              //         ? `/customers/${customerId}/settings`
+              //         : "/settings"
+              //     );
+              //   },
+              // },
             ]}
           />
         </div>

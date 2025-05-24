@@ -1,41 +1,60 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Flex, DatePicker, Select } from "antd";
 import moment from "moment";
 import { useSelector } from "react-redux";
-import UserActions from "@/redux/user/actions";
 import CustomerSelectors from "@/redux/customer/selectors";
+import UserSelectors from "@/redux/user/selectors";
 
 const { Option } = Select;
 
 const AddUserForm = ({ onSubmit, onCancel }) => {
+  const [isEdit, setIsEdit] = useState(false);
   const [form] = Form.useForm();
-  const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
-  // Set initial values for the form
-  const initialValues = {
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    employeeId: "EMP-001",
-    jobTitle: "Software Engineer",
-    department: "Engineering",
-    location: "New York",
-    client: "Acme Corp",
-    startDate: moment(), // Current date
-    role: "employee",
-  };
 
+  const selectedUser = useSelector(UserSelectors.getSelectedUser);
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      console.log("Form values:", values, currentCustomer);
-      values.customerId = currentCustomer?._id;
-      // Convert moment object to string for Start Date
-      onSubmit?.(values);
+
+      if (isEdit && selectedUser) {
+        onSubmit?.(values);
+      } else {
+        onSubmit?.(values);
+      }
       form.resetFields();
     } catch (error) {
       console.error("Validation failed:", error);
     }
   };
+
+  useEffect(() => {
+    if (selectedUser) {
+      setIsEdit(true);
+    } else {
+      setIsEdit(false);
+      form.resetFields();
+    }
+  }, [selectedUser]);
+
+  // Set form values when selectedUser changes
+  useEffect(() => {
+    if (isEdit && selectedUser) {
+      form.setFieldsValue({
+        firstName: selectedUser.firstName,
+        lastName: selectedUser.lastName,
+        email: selectedUser.email,
+        employeeId: selectedUser.employeeId,
+        jobTitle: selectedUser.jobTitle,
+        department: selectedUser.department,
+        location: selectedUser.location,
+        client: selectedUser.client,
+        startDate: selectedUser.startDate
+          ? moment(selectedUser.startDate)
+          : undefined,
+        role: selectedUser.role,
+      });
+    }
+  }, [isEdit, selectedUser, form]);
 
   return (
     <Form
@@ -43,7 +62,6 @@ const AddUserForm = ({ onSubmit, onCancel }) => {
       layout="vertical"
       style={{ height: "100%" }}
       requiredMark={false}
-      initialValues={initialValues} // Set the initial values here
     >
       <div
         style={{
@@ -72,7 +90,10 @@ const AddUserForm = ({ onSubmit, onCancel }) => {
             { type: "email", message: "Please enter a valid email" },
           ]}
         >
-          <Input placeholder="Enter email ID" />
+          <Input
+            placeholder="Enter email ID"
+            disabled={isEdit && selectedUser}
+          />
         </Form.Item>
 
         <Form.Item label="Employee ID" name="employeeId">
@@ -133,7 +154,7 @@ const AddUserForm = ({ onSubmit, onCancel }) => {
             Cancel
           </Button>
           <Button type="primary" onClick={handleSubmit}>
-            Add
+            {isEdit ? "Update" : "Add"}
           </Button>
         </Flex>
       </div>

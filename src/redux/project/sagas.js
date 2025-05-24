@@ -14,7 +14,12 @@ function* ADD_PROJECT(action) {
   if (resultHasError(result)) yield cancel();
 }
 function* GET_PROJECTS(action) {
-  const result = yield call(runEffect, action, ProjectEffects.getProjects);
+  const result = yield call(
+    runEffect,
+    action,
+    ProjectEffects.getProjects,
+    action.payload
+  );
   if (resultHasError(result)) yield cancel();
 }
 function* DELETE_PROJECT(action) {

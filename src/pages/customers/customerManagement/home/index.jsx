@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CMLayout from "../CMLayout";
 import Header from "../../../../components/common/Header";
 import OverviewHeader from "../../../../components/common/OverviewHeader";
@@ -6,12 +6,24 @@ import ProjectStatsCard from "../cards/ProjectStatsCard";
 import CustomerStatsCard from "../cards/CustomerStatsCard";
 import { Flex } from "antd";
 import HomeProjectTable from "./HomeProjectTable";
+import { useSelector } from "react-redux";
+import CustomerSelectors from "@/redux/customer/selectors";
+import { useDispatch } from "react-redux";
+import ProjectActions from "@/redux/project/actions";
 
 const CustomerManagementHome = () => {
+  const dispatch = useDispatch();
   const handleTimeChange = (value) => {
     console.log("Selected time period:", value);
   };
-
+  const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
+  useEffect(() => {
+    if (currentCustomer) {
+      dispatch(
+        ProjectActions.getProjects({ organization: currentCustomer?._id })
+      );
+    }
+  }, [currentCustomer]);
   return (
     <CMLayout>
       <Header breadcrumbPath="Customer Management/Home" />

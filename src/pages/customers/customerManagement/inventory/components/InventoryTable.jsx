@@ -29,12 +29,14 @@ const excludedKeys = [
 ];
 const InventoryTable = () => {
   const dispatch = useDispatch();
-  const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("industry"); // Add state for selected type
   const inventories = useSelector(InventorySelectors.getInventories);
   const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
+  const selectedInventory = useSelector(
+    InventorySelectors.getSelectedInventory
+  );
   const columns = [
     {
       title: labels[selectedType]?.label || selectedType,
@@ -62,6 +64,9 @@ const InventoryTable = () => {
           <Button
             type="text"
             icon={<GoPencil style={{ color: "#9D43FE" }} />}
+            onClick={() => {
+              dispatch(InventoryActions.setSelectedInventory(record));
+            }}
           />
           <Popconfirm
             title={"Are you sure?"}
@@ -82,6 +87,10 @@ const InventoryTable = () => {
     },
   ];
 
+  const handleCloseDrawer = () => {
+    setIsAddDrawerOpen(false);
+    dispatch(InventoryActions.setSelectedInventory(null));
+  };
   const items = Object.entries(labels)
     .filter(
       ([key, value]) =>
@@ -103,6 +112,11 @@ const InventoryTable = () => {
   };
 
   const handleAddFunction = (values) => {
+    if (selectedInventory) {
+      dispatch(InventoryActions.updateInventory(selectedInventory._id, values));
+      dispatch(InventoryActions.setSelectedInventory(null)); // Clear selected inventory after update
+      return;
+    }
     values.type = selectedType; // Use the selected type from state
     dispatch(InventoryActions.addInventory(values));
     setIsAddDrawerOpen(false);
@@ -161,14 +175,15 @@ const InventoryTable = () => {
           scroll={{ y: "calc(70vh - 120px)" }}
           footer={() => <TableFooter />}
           className="inventory-table-with-footer"
+          rowSelection={{ type: "checkbox" }}
         />
         <CommonDrawer
           title={`Add ${
             selectedType.charAt(0).toUpperCase() + selectedType.slice(1)
           }`}
           subTitle={`Fill all the required field to add ${selectedType}.`}
-          open={isAddDrawerOpen}
-          onClose={() => setIsAddDrawerOpen(false)}
+          open={isAddDrawerOpen || selectedInventory}
+          onClose={handleCloseDrawer}
         >
           <AddInventoryForm
             onSubmit={handleAddFunction}

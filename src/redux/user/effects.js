@@ -1,5 +1,5 @@
 import api from "@/utilities/api";
-import { del, get, post } from "@/utilities/httpClient";
+import { del, get, patch, post } from "@/utilities/httpClient";
 
 export default class UserEffects {
   static getUserById(id) {
@@ -15,7 +15,7 @@ export default class UserEffects {
   }
 
   static updateUser(id, update) {
-    return post(`${api.USERS}/${id}`, update);
+    return patch(`${api.USERS}/${id}`, update);
   }
 
   static deleteUser(id) {

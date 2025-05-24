@@ -1,5 +1,5 @@
 import api from "@/utilities/api";
-import { del, get, post } from "@/utilities/httpClient";
+import { del, get, patch, post } from "@/utilities/httpClient";
 import { store } from "../store";
 
 export default class InventoryEffects {
@@ -30,7 +30,7 @@ export default class InventoryEffects {
   }
 
   static updateInventory(id, update) {
-    return post(
+    return patch(
       `${
         api.CUSTOMERS
       }/${InventoryEffects.getCurrentCustomer()}/inventories/${id}`,

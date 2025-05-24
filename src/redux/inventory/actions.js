@@ -18,11 +18,14 @@ const InventoryActions = {
     createAction(InventoryActions.ADD_INVENTORY, inventory),
   deleteInventory: (inventoryId) =>
     createAction(InventoryActions.DELETE_INVENTORY, inventoryId),
-  updateInventory: (inventory) =>
-    createAction(InventoryActions.UPDATE_INVENTORY, inventory),
+  updateInventory: (inventoryId, inventory) =>
+    createAction(InventoryActions.UPDATE_INVENTORY, {
+      inventoryId,
+      inventory,
+    }),
   getInventory: (inventoryId) =>
     createAction(InventoryActions.GET_INVENTORY, inventoryId),
-  selectInventory: (inventory) =>
+  setSelectedInventory: (inventory) =>
     createAction(InventoryActions.SET_SELECTED_INVENTORY, inventory),
 };
 

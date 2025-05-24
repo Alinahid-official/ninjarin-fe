@@ -41,4 +41,17 @@ export default BaseReducer(initialState, {
       users: updatedUsers,
     };
   },
+  [UserActions.UPDATE_USER_FINISHED](state, action) {
+    const data = action.payload.data;
+    return produce(state, (draft) => {
+      draft.users.entities.Users[data._id] = data;
+    });
+  },
+
+  [UserActions.SET_SELECTED_USER](state, action) {
+    return {
+      ...state,
+      selectedUser: action.payload,
+    };
+  },
 });

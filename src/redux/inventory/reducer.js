@@ -57,7 +57,7 @@ export default BaseReducer(initialState, {
   [InventoryActions.SET_SELECTED_INVENTORY](state, action) {
     return {
       ...state,
-      selectedInventory: action.payload.data,
+      selectedInventory: action.payload,
     };
   },
 });

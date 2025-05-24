@@ -8,6 +8,9 @@ class UserSelectors {
   static getUsers(state) {
     return denormalizeSchema(state.users.users, userListSchema);
   }
+  static getSelectedUser(state) {
+    return state.users.selectedUser;
+  }
 }
 
 export default UserSelectors;

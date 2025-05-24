@@ -1,31 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Layout } from "antd";
-import Sidebar from "../../components/layout/Sidebar";
-import Header from "../../components/common/Header";
+
 import BlankList from "@/components/common/BlankList";
 import CommonDrawer from "@/components/common/Drawer";
-import ProjectForm from "./components/ProjectForm";
-import ProjectTable from "./components/ProjectTable";
+
 import { useDispatch, useSelector } from "react-redux";
 import ProjectActions from "@/redux/project/actions";
 import requestingSelector from "@/redux/requesting/requestingSelector";
-import { makeSelectErrorModel } from "@/redux/error/errorSelector";
-import FullAlertError from "@/components/error/FullAlertError";
 import ProjectSelectors from "@/redux/project/selectors";
+import CMLayout from "../CMLayout";
+import Header from "@/components/common/Header";
+import CustomerSelectors from "@/redux/customer/selectors";
+import ProjectForm from "@/pages/projects/components/ProjectForm";
+import ProjectTable from "@/pages/projects/components/ProjectTable";
 
-const selectError = makeSelectErrorModel();
-
-const Projects = () => {
+const CustomerProject = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const loading = useSelector((state) =>
     requestingSelector(state, [ProjectActions.GET_PROJECTS])
   );
-  const error = useSelector((state) =>
-    selectError(state, [ProjectActions.GET_PROJECTS_FINISHED])
-  );
+
   const dispatch = useDispatch();
   const selectedProject = useSelector(ProjectSelectors.getSelectedProject);
-
+  const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
   const handleAddProject = () => {
     setIsDrawerOpen(true);
   };
@@ -44,21 +40,20 @@ const Projects = () => {
   };
 
   useEffect(() => {
-    dispatch(ProjectActions.getProjects());
-  }, []);
+    if (currentCustomer) {
+      dispatch(
+        ProjectActions.getProjects({ organization: currentCustomer?._id })
+      );
+    }
+  }, [currentCustomer]);
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar />
-      <Layout>
-        {error && <FullAlertError error={error} />}
-        <Header breadcrumbPath="Projects" />
-        <div className="nz-padding-p nz-bg-w">
-          {loading && <BlankList isLoading />}
-          {!loading && <ProjectTable handleAddProject={handleAddProject} />}
-        </div>
-      </Layout>
-
+    <CMLayout>
+      <Header breadcrumbPath="Customer Management/Projects" />
+      <div className="nz-padding-p nz-bg-w">
+        {loading && <BlankList isLoading />}
+        {!loading && <ProjectTable handleAddProject={handleAddProject} />}
+      </div>
       <CommonDrawer
         title={selectedProject ? "Edit Project" : "Add Project"}
         subTitle={
@@ -74,8 +69,8 @@ const Projects = () => {
           onCancel={handleDrawerClose}
         />
       </CommonDrawer>
-    </Layout>
+    </CMLayout>
   );
 };
 
-export default Projects;
+export default CustomerProject;

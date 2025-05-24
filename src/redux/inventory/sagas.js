@@ -39,7 +39,8 @@ function* UPDATE_INVENTORY(action) {
     runEffect,
     action,
     InventoryEffects.updateInventory,
-    action.payload
+    action.payload.inventoryId,
+    action.payload.inventory
   );
   if (resultHasError(result)) yield cancel();
 }
