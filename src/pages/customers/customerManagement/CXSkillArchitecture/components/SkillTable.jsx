@@ -281,7 +281,7 @@ const SkillTable = () => {
                 <div style={{ fontWeight: 600 }}>
                   <EditableLabelField
                     name={key}
-                    value={value}
+                    value={value.label}
                     customerId={labels.customerId}
                     labelId={labels._id}
                   />
@@ -353,7 +353,7 @@ const SkillTable = () => {
                   boxShadow: "none",
                 }}
               >
-                {labels ? labels[column.key] : column.key}
+                {labels ? labels[column.key]["label"] : column.key}
               </Button>
             </td>
           );

@@ -78,6 +78,7 @@ const OrganizationDesignForm = ({ onSubmit, onCancel }) => {
         acc[item.id] = formValues[item.id];
         return acc;
       }, {});
+      console.log("orderedValues", orderedValues);
       onSubmit(orderedValues);
     } catch (error) {
       console.error("Submission failed:", error);
@@ -86,10 +87,12 @@ const OrganizationDesignForm = ({ onSubmit, onCancel }) => {
 
   const toggleSwitch = (id, newCheckedState) => {
     const item = formItems.find((item) => item.id === id);
+
     const newFormValues = {
       ...formValues,
-      [id]: newCheckedState ? item.label : null,
+      [id]: { label: item.label, isActive: newCheckedState },
     };
+
     setFormValues(newFormValues);
     form.setFieldsValue({ [id]: newCheckedState ? item.label : null });
   };
@@ -112,19 +115,22 @@ const OrganizationDesignForm = ({ onSubmit, onCancel }) => {
           paddingRight: "8px",
         }}
       >
-        {formItems.map((item) => (
-          <FormItem
-            key={item.id}
-            id={item.id}
-            label={item.label}
-            checked={
-              formValues[item.id] !== undefined
-                ? formValues[item.id]
-                : item.defaultChecked
-            }
-            toggleSwitch={toggleSwitch}
-          />
-        ))}
+        {formItems.map((item) => {
+          // console.log("item", formValues[item.id]);
+          return (
+            <FormItem
+              key={item.id}
+              id={item.id}
+              label={item.label}
+              checked={
+                formValues[item.id]
+                  ? formValues[item.id]["isActive"]
+                  : item.defaultChecked
+              }
+              toggleSwitch={toggleSwitch}
+            />
+          );
+        })}
       </div>
 
       <div
