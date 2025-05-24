@@ -66,7 +66,9 @@ const SkillTable = () => {
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
   const [isInventoryModalVisible, setIsInventoryModalVisible] = useState(false);
   const [selectedColumnKey, setSelectedColumnKey] = useState(null);
-
+  const [selectedRecordColumnKey, setSelectedRecordColumnKey] = useState(null);
+  const [selectedRecordValue, setSelectedRecordValue] = useState(null);
+  const [selectedRecordId, setSelectedRecordId] = useState(null);
   // Add this before the return statement
   const handleModalAdd = (selectedInventory) => {
     // Handle the selected inventory with the column key
@@ -86,7 +88,22 @@ const SkillTable = () => {
   />;
 
   const handleIndustryAdd = (data) => {
-    dispatch(SkillArchitectureActions.saveRecord(currentCustomer._id, data));
+    if (selectedRecordId) {
+      dispatch(
+        SkillArchitectureActions.updateRecord(
+          currentCustomer._id,
+          selectedRecordId,
+          data
+        )
+      );
+      setIsInventoryModalVisible(false);
+      setSelectedRecordId(null);
+      setSelectedRecordColumnKey(null);
+      setSelectedRecordValue(null);
+    } else {
+      dispatch(SkillArchitectureActions.saveRecord(currentCustomer._id, data));
+      setIsInventoryModalVisible(false);
+    }
     // Add your industry handling logic here
     setIsInventoryModalVisible(false);
   };
@@ -155,6 +172,12 @@ const SkillTable = () => {
           recordToDuplicate
         )
       );
+    } else if (e.key === "edit") {
+      console.log("edit", record, keyType);
+      setIsInventoryModalVisible(true);
+      setSelectedRecordColumnKey(keyType);
+      setSelectedRecordValue(record[keyType]);
+      setSelectedRecordId(record._id);
     }
     // e.key will be 'duplicate', 'edit', or 'delete'
     // record will be the data for the current row
@@ -465,10 +488,13 @@ const SkillTable = () => {
         />
       </CommonDrawer>
       <SelectInventoryModal
-        open={isInventoryModalVisible}
+        open={isInventoryModalVisible || selectedRecordColumnKey}
         onCancel={() => setIsInventoryModalVisible(false)}
         onAdd={handleIndustryAdd}
         inventoryType={selectedColumnKey}
+        value={selectedRecordValue}
+        recordId={selectedRecordId}
+        recordColumnKey={selectedRecordColumnKey}
       />
     </div>
   );

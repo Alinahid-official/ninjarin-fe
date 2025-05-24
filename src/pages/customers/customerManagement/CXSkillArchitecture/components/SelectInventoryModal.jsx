@@ -5,13 +5,21 @@ import { useSelector } from "react-redux";
 import InventorySelectors from "@/redux/inventory/selectors";
 import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
 
-const SelectInventoryModal = ({ open, onCancel, onAdd, inventoryType }) => {
+const SelectInventoryModal = ({
+  open,
+  onCancel,
+  onAdd,
+  inventoryType,
+  value,
+
+  recordColumnKey,
+}) => {
   const inventories = useSelector(InventorySelectors.getInventories);
-  const [selectedInventory, setSelectedInventory] = React.useState(null);
+  const [selectedInventory, setSelectedInventory] = React.useState(value);
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const handleAdd = () => {
     if (selectedInventory) {
-      onAdd({ [inventoryType]: selectedInventory });
+      onAdd({ [recordColumnKey]: selectedInventory });
       setSelectedInventory(null);
     }
   };
@@ -32,7 +40,7 @@ const SelectInventoryModal = ({ open, onCancel, onAdd, inventoryType }) => {
           onClick={handleAdd}
           style={{ backgroundColor: "#9D43FE" }}
         >
-          Add
+          {value ? "Update" : "Add"}
         </Button>,
       ]}
     >
@@ -48,7 +56,7 @@ const SelectInventoryModal = ({ open, onCancel, onAdd, inventoryType }) => {
           }`}
           style={{ width: "100%" }}
           onChange={(value) => setSelectedInventory(value)}
-          value={selectedInventory}
+          value={selectedInventory || value}
           showSearch
         >
           {inventories?.map((inventory) => (

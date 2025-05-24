@@ -15,7 +15,12 @@ function* ADD_INVENTORY(action) {
 }
 
 function* GET_INVENTORIES(action) {
-  const result = yield call(runEffect, action, InventoryEffects.getInventories);
+  const result = yield call(
+    runEffect,
+    action,
+    InventoryEffects.getInventories,
+    action.payload
+  );
   if (resultHasError(result)) yield cancel();
 }
 

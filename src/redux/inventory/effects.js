@@ -15,9 +15,10 @@ export default class InventoryEffects {
     );
   }
 
-  static getInventories() {
+  static getInventories(params) {
     return get(
-      `${api.CUSTOMERS}/${InventoryEffects.getCurrentCustomer()}/inventories`
+      `${api.CUSTOMERS}/${InventoryEffects.getCurrentCustomer()}/inventories`,
+      params
     );
   }
 

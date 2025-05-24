@@ -110,9 +110,13 @@ const InventoryTable = () => {
 
   useEffect(() => {
     if (!inventories && currentCustomer) {
-      dispatch(InventoryActions.getInventories());
+      dispatch(InventoryActions.getInventories({ type: selectedType }));
     }
-  });
+  }, [currentCustomer]);
+
+  useEffect(() => {
+    dispatch(InventoryActions.getInventories({ type: selectedType }));
+  }, [selectedType]);
 
   return (
     <div className="nz-border nz-border-radius">

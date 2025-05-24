@@ -11,8 +11,10 @@ const InventoryActions = {
   UPDATE_INVENTORY_FINISHED: "inventory/UPDATE_INVENTORY_FINISHED",
   GET_INVENTORY: "inventory/GET_INVENTORY",
   GET_INVENTORY_FINISHED: "inventory/GET_INVENTORY_FINISHED",
-  getInventories: () => createAction(InventoryActions.GET_INVENTORIES),
-  addInventory: (inventory) => createAction(InventoryActions.ADD_INVENTORY, inventory),
+  getInventories: (params) =>
+    createAction(InventoryActions.GET_INVENTORIES, params),
+  addInventory: (inventory) =>
+    createAction(InventoryActions.ADD_INVENTORY, inventory),
   deleteInventory: (inventoryId) =>
     createAction(InventoryActions.DELETE_INVENTORY, inventoryId),
   updateInventory: (inventory) =>
