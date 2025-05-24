@@ -1,21 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Flex } from "antd";
 import { useSelector } from "react-redux";
 import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
 
 const AddInventoryForm = ({ onSubmit, onCancel, selectedType }) => {
+  const selectedItem = useSelector();
+  const [isEdit, setIsEdit] = useState(false);
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const [form] = Form.useForm();
+
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
 
-      onSubmit?.(values);
+      if (isEdit && selectedItem) {
+        onSubmit?.({ itemId: selectedItem._id, ...values });
+      } else {
+        onSubmit?.(values);
+      }
       form.resetFields();
     } catch (error) {
       console.error("Validation failed:", error);
     }
   };
+
+  useEffect(() => {
+    if (selectedItem) {
+      setIsEdit(true);
+      form.setFieldsValue({
+        name: selectedItem.name,
+        description: selectedItem.description,
+      });
+    } else {
+      setIsEdit(false);
+      form.resetFields();
+    }
+  }, [selectedItem, form]);
 
   return (
     <Form
@@ -23,6 +43,14 @@ const AddInventoryForm = ({ onSubmit, onCancel, selectedType }) => {
       layout="vertical"
       style={{ height: "100%" }}
       requiredMark={false}
+      initialValues={
+        !isEdit
+          ? {
+              name: "",
+              description: "",
+            }
+          : {}
+      }
     >
       <div
         style={{
@@ -71,14 +99,14 @@ const AddInventoryForm = ({ onSubmit, onCancel, selectedType }) => {
               form.resetFields();
             }}
           >
-            Save & Add New
+            Cancel
           </Button>
           <Button
             type="primary"
             style={{ width: "50%" }}
             onClick={handleSubmit}
           >
-            Save
+            {isEdit ? "Update" : "Save"}
           </Button>
         </Flex>
       </div>

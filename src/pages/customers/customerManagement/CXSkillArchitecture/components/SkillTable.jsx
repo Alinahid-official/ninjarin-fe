@@ -80,6 +80,12 @@ const SkillTable = () => {
     setIsInventoryModalVisible(false);
   };
 
+  const handleInventoryModalCancel = () => {
+    setIsInventoryModalVisible(false);
+    setSelectedRecordId(null);
+    setSelectedRecordColumnKey(null);
+    setSelectedRecordValue(null);
+  };
   // Add this inside the main return statement
   <SelectInventoryModal
     open={isInventoryModalVisible}
@@ -489,7 +495,7 @@ const SkillTable = () => {
       </CommonDrawer>
       <SelectInventoryModal
         open={isInventoryModalVisible || selectedRecordColumnKey}
-        onCancel={() => setIsInventoryModalVisible(false)}
+        onCancel={handleInventoryModalCancel}
         onAdd={handleIndustryAdd}
         inventoryType={selectedColumnKey}
         value={selectedRecordValue}

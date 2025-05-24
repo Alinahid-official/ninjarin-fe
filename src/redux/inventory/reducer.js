@@ -7,10 +7,14 @@ import { produce } from "immer";
 export const initialState = {
   inventories: null,
   selectedInventory: null,
-  inventoryTypeCounts: null
+  inventoryTypeCounts: null,
 };
 
-const inventoryList = new schema.Entity("Inventories", {}, { idAttribute: "_id" });
+const inventoryList = new schema.Entity(
+  "Inventories",
+  {},
+  { idAttribute: "_id" }
+);
 const inventoryListSchema = [inventoryList];
 
 export default BaseReducer(initialState, {
@@ -19,7 +23,7 @@ export default BaseReducer(initialState, {
     return {
       ...state,
       inventories: normalizeSchema(data.data, inventoryListSchema),
-      inventoryTypeCounts: data.inventoryTypeCounts
+      inventoryTypeCounts: data.inventoryTypeCounts,
     };
   },
 
@@ -46,9 +50,14 @@ export default BaseReducer(initialState, {
 
   [InventoryActions.UPDATE_INVENTORY_FINISHED](state, action) {
     const data = action.payload.data;
+    return produce(state, (draft) => {
+      draft.inventories.entities.Inventories[data._id] = data;
+    });
+  },
+  [InventoryActions.SET_SELECTED_INVENTORY](state, action) {
     return {
       ...state,
-      inventories: addNormalizeSchema(state.inventories, data, "Inventories"),
+      selectedInventory: action.payload.data,
     };
   },
 });

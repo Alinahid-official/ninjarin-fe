@@ -11,6 +11,7 @@ const InventoryActions = {
   UPDATE_INVENTORY_FINISHED: "inventory/UPDATE_INVENTORY_FINISHED",
   GET_INVENTORY: "inventory/GET_INVENTORY",
   GET_INVENTORY_FINISHED: "inventory/GET_INVENTORY_FINISHED",
+  SET_SELECTED_INVENTORY: "inventory/SET_SELECTED_INVENTORY",
   getInventories: (params) =>
     createAction(InventoryActions.GET_INVENTORIES, params),
   addInventory: (inventory) =>
@@ -21,6 +22,8 @@ const InventoryActions = {
     createAction(InventoryActions.UPDATE_INVENTORY, inventory),
   getInventory: (inventoryId) =>
     createAction(InventoryActions.GET_INVENTORY, inventoryId),
+  selectInventory: (inventory) =>
+    createAction(InventoryActions.SET_SELECTED_INVENTORY, inventory),
 };
 
 export default InventoryActions;

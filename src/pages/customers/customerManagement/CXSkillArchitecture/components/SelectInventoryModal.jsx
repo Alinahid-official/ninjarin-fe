@@ -1,9 +1,11 @@
-import React from "react";
-import { Modal, Button, Select, Upload } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import React, { useEffect } from "react";
+import { Modal, Button, Select, Upload, Input, Typography, Flex } from "antd";
+import { UploadOutlined, SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import InventorySelectors from "@/redux/inventory/selectors";
 import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
+import { useDispatch } from "react-redux";
+import InventoryActions from "@/redux/inventory/actions";
 
 const SelectInventoryModal = ({
   open,
@@ -11,23 +13,62 @@ const SelectInventoryModal = ({
   onAdd,
   inventoryType,
   value,
-
   recordColumnKey,
 }) => {
+  const dispatch = useDispatch();
   const inventories = useSelector(InventorySelectors.getInventories);
   const [selectedInventory, setSelectedInventory] = React.useState(value);
+  const [searchTerm, setSearchTerm] = React.useState("");
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
+
   const handleAdd = () => {
-    if (selectedInventory) {
+    if (recordColumnKey) {
       onAdd({ [recordColumnKey]: selectedInventory });
       setSelectedInventory(null);
+    } else {
+      onAdd({ [inventoryType]: selectedInventory });
     }
   };
+
+  const handleAddNew = () => {
+    dispatch(
+      InventoryActions.addInventory({
+        type: inventoryType,
+        name: searchTerm,
+      })
+    );
+  };
+  useEffect(() => {
+    if (inventoryType) {
+      dispatch(
+        InventoryActions.getInventories({
+          type: inventoryType,
+        })
+      );
+    }
+    if (recordColumnKey) {
+      dispatch(
+        InventoryActions.getInventories({
+          type: recordColumnKey,
+        })
+      );
+    }
+  }, [inventoryType, recordColumnKey]);
+
   if (!labels) return null;
 
+  const typeLabel = labels[inventoryType]?.label || inventoryType;
+  const customNotFoundContent = (
+    <Flex align="center" style={{ padding: 16 }}>
+      <div>Couldn't find the Industry?</div>
+      <Button type="link" onClick={handleAddNew}>
+        Add New
+      </Button>
+    </Flex>
+  );
   return (
     <Modal
-      title={labels[inventoryType]?.label || inventoryType}
+      title={typeLabel}
       open={open}
       onCancel={onCancel}
       footer={[
@@ -51,13 +92,13 @@ const SelectInventoryModal = ({
           {labels[inventoryType]?.label || inventoryType}
         </p>
         <Select
-          placeholder={`Select ${
-            labels[inventoryType]?.label || inventoryType
-          }`}
+          onSearch={(value) => setSearchTerm(value)}
+          placeholder={"Search or Add New"}
           style={{ width: "100%" }}
           onChange={(value) => setSelectedInventory(value)}
           value={selectedInventory || value}
           showSearch
+          notFoundContent={customNotFoundContent}
         >
           {inventories?.map((inventory) => (
             <Select.Option key={inventory._id} value={inventory.name}>
