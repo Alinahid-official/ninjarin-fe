@@ -6,8 +6,8 @@ export default class UserEffects {
     return get(`${api.USERS}/${id}`);
   }
 
-  static getUsers() {
-    return get(`${api.USERS}`);
+  static getUsers(params) {
+    return get(`${api.USERS}`, params);
   }
 
   static createUser(user) {

@@ -4,8 +4,13 @@ import UserEffects from "./effects";
 import { runEffect } from "@/utilities/actionUtility";
 import { resultHasError } from "@/utilities/onError";
 
-function* GET_USERS() {
-  const result = yield call(runEffect, null, UserEffects.getUsers);
+function* GET_USERS(action) {
+  const result = yield call(
+    runEffect,
+    action,
+    UserEffects.getUsers,
+    action.payload
+  );
   if (resultHasError(result)) yield cancel();
 }
 

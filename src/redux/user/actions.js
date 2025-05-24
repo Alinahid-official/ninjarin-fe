@@ -12,7 +12,7 @@ const UserActions = {
   GET_USER: "user/GET_USER",
   GET_USER_FINISHED: "user/GET_USER_FINISHED",
 
-  getUsers: () => createAction(UserActions.GET_USERS),
+  getUsers: (params) => createAction(UserActions.GET_USERS, params),
   addUser: (user) => createAction(UserActions.ADD_USER, user),
   deleteUser: (userId) => createAction(UserActions.DELETE_USER, userId),
   updateUser: (user) => createAction(UserActions.UPDATE_USER, user),

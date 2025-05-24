@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CMLayout from "../CMLayout";
 import Header from "../../../../components/common/Header";
 import {
@@ -13,6 +13,7 @@ import {
   Menu,
   DatePicker,
   Form,
+  Popconfirm,
 } from "antd";
 import {
   SearchOutlined,
@@ -25,6 +26,13 @@ import {
 } from "@ant-design/icons";
 import CommonDrawer from "../../../../components/common/Drawer";
 import AddUserForm from "./components/AddUserForm";
+import TableFooter from "@/pages/dashboard/TableFooter";
+import { useDispatch } from "react-redux";
+import UserActions from "@/redux/user/actions";
+import { useSelector } from "react-redux";
+import UserSelectors from "@/redux/user/selectors";
+import CustomerSelectors from "@/redux/customer/selectors";
+import { formatToMonthDayYear } from "@/utilities/time";
 
 const { TabPane } = Tabs;
 
@@ -39,9 +47,11 @@ const projectStageOptions = [
 
 const User = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
+  const users = useSelector(UserSelectors.getUsers);
+  const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
+  const dispatch = useDispatch();
   const handleAddUser = (values) => {
-    console.log("New User Data:", values);
+    dispatch(UserActions.addUser(values));
     // Add logic to actually add the user to your data source
     setIsDrawerOpen(false); // Close drawer after submission
   };
@@ -77,25 +87,25 @@ const User = () => {
       dataIndex: "department",
       key: "department",
     },
-    {
-      title: "Project Stage",
-      dataIndex: "projectStage",
-      key: "projectStage",
-      render: (text) => (
-        <Select
-          defaultValue={text}
-          style={{ width: 120 }}
-          bordered={false}
-          suffixIcon={<DownOutlined />}
-        >
-          {projectStageOptions.map((option) => (
-            <Select.Option key={option.value} value={option.value}>
-              <Tag>{option.label}</Tag>
-            </Select.Option>
-          ))}
-        </Select>
-      ),
-    },
+    // {
+    //   title: "Project Stage",
+    //   dataIndex: "projectStage",
+    //   key: "projectStage",
+    //   render: (text) => (
+    //     <Select
+    //       defaultValue={text}
+    //       style={{ width: 120 }}
+    //       bordered={false}
+    //       suffixIcon={<DownOutlined />}
+    //     >
+    //       {projectStageOptions.map((option) => (
+    //         <Select.Option key={option.value} value={option.value}>
+    //           <Tag>{option.label}</Tag>
+    //         </Select.Option>
+    //       ))}
+    //     </Select>
+    //   ),
+    // },
     {
       title: "Location",
       dataIndex: "location",
@@ -105,6 +115,7 @@ const User = () => {
       title: "Start Date",
       dataIndex: "startDate",
       key: "startDate",
+      render: (date) => formatToMonthDayYear(date),
     },
     {
       title: "Role",
@@ -114,18 +125,39 @@ const User = () => {
     {
       title: "Actions",
       key: "actions",
-      render: () => (
+      render: (_, record) => (
         <Space size="middle">
-          <Button type="link" icon={<EditOutlined />}>
-            Edit
-          </Button>
-          <Button type="link" icon={<DeleteOutlined />} danger>
-            Delete
-          </Button>
+          <Button
+            type="text"
+            icon={<EditOutlined style={{ color: "#9D43FE" }} />}
+          />
+          <Popconfirm
+            title="Are you sure?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => {
+              dispatch(UserActions.deleteUser(record._id));
+            }}
+          >
+            <Button
+              icon={<DeleteOutlined style={{ color: "#9D43FE" }} />}
+              type="link"
+              style={{ padding: 0, color: "#1677ff" }}
+            />
+          </Popconfirm>
         </Space>
       ),
     },
   ];
+  useEffect(() => {
+    if (!users && currentCustomer) {
+      dispatch(
+        UserActions.getUsers({
+          customerId: currentCustomer._id,
+        })
+      );
+    }
+  });
 
   return (
     <CMLayout>
@@ -175,19 +207,13 @@ const User = () => {
           </Space>
         </div>
         <Table
+          className="inventory-table-with-footer"
           style={{ overflow: "auto" }}
           columns={columns}
-          dataSource={null}
+          dataSource={users}
           rowSelection={{ type: "checkbox" }}
-          pagination={{
-            total: 240,
-            pageSize: 10,
-            showTotal: (total, range) =>
-              `Showing ${range[0]}-${range[1]} of ${total} Projects`,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            pageSizeOptions: ["10", "20", "50"],
-          }}
+          pagination={false}
+          footer={() => <TableFooter />}
         />
       </div>
       <CommonDrawer

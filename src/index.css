@@ -82,7 +82,25 @@
   background-color: #fff;
 }
 
-.nz-selector-pink{
-  
+.nz-pink-tab .ant-tabs-tab{
+  color: #FE6389 !important;
 }
 
+.nz-pink-tab .ant-tabs-tab-active .ant-tabs-tab-btn{
+  color: #9D43FE !important;
+}
+
+.nz-pink-tab .ant-tabs-ink-bar {
+  background: #9D43FE !important;
+}
+
+.inventory-table-with-footer .ant-table{
+  height: 70vh !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ant-table-footer{
+  background-color: #fff !important;
+}

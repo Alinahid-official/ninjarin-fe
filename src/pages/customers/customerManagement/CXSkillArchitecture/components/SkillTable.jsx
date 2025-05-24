@@ -34,7 +34,7 @@ import SkillArchitectureActions from "@/redux/skillArchitecture/actions";
 import BlankList from "@/components/common/BlankList";
 import { useDispatch } from "react-redux";
 import CustomerSelectors from "@/redux/customer/selectors";
-
+import SelectInventoryModal from "./SelectInventoryModal";
 const { Title } = Typography;
 
 // Define the StyledTableCard component
@@ -63,6 +63,27 @@ const SkillTable = () => {
   const dispatch = useDispatch();
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
+  const [isIndustryModalVisible, setIsIndustryModalVisible] = useState(false);
+  const [selectedColumnKey, setSelectedColumnKey] = useState(null);
+
+  // Add this before the return statement
+  const handleModalAdd = (selectedInventory) => {
+    // Handle the selected inventory with the column key
+    console.log('Selected inventory for column:', selectedColumnKey, selectedInventory);
+    setIsIndustryModalVisible(false);
+  };
+
+  // Add this inside the main return statement
+  <SelectInventoryModal
+    open={isIndustryModalVisible}
+    onCancel={() => setIsIndustryModalVisible(false)}
+    onAdd={handleModalAdd}
+  />
+  const handleIndustryAdd = (industry) => {
+    console.log("Selected industry:", industry);
+    // Add your industry handling logic here
+    setIsIndustryModalVisible(false);
+  };
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const labelsLoading = useSelector((state) =>
     requestingSelector(state, [SkillArchitectureActions.GET_LABELS])
@@ -281,14 +302,16 @@ const SkillTable = () => {
   };
   // Add row component for the "add" buttons
   const AddRow = () => {
-    // console.log("columns", getColumns());
     return (
       <tr>
         {getColumns().map((column) => {
-          // console.log("col", column);
           return (
             <td key={column.key}>
               <Button
+                onClick={() => {
+                  setIsIndustryModalVisible(true);
+                  setSelectedColumnKey(column.key); // Add state for selected column key
+                }}
                 type="text"
                 icon={<PlusOutlined />}
                 style={{
@@ -411,6 +434,11 @@ const SkillTable = () => {
           onCancel={handleAddDrawerClose}
         />
       </CommonDrawer>
+      <SelectInventoryModal
+        open={isIndustryModalVisible}
+        onCancel={() => setIsIndustryModalVisible(false)}
+        onAdd={handleIndustryAdd}
+      />
     </div>
   );
 };

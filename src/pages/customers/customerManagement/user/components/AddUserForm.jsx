@@ -1,19 +1,35 @@
 import React from "react";
 import { Form, Input, Button, Flex, DatePicker, Select } from "antd";
 import moment from "moment";
+import { useSelector } from "react-redux";
+import UserActions from "@/redux/user/actions";
+import CustomerSelectors from "@/redux/customer/selectors";
 
 const { Option } = Select;
 
 const AddUserForm = ({ onSubmit, onCancel }) => {
   const [form] = Form.useForm();
+  const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
+  // Set initial values for the form
+  const initialValues = {
+    firstName: "John",
+    lastName: "Doe",
+    email: "john.doe@example.com",
+    employeeId: "EMP-001",
+    jobTitle: "Software Engineer",
+    department: "Engineering",
+    location: "New York",
+    client: "Acme Corp",
+    startDate: moment(), // Current date
+    role: "employee",
+  };
 
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+      console.log("Form values:", values, currentCustomer);
+      values.customerId = currentCustomer?._id;
       // Convert moment object to string for Start Date
-      if (values.startDate) {
-        values.startDate = values.startDate.format("YYYY-MM-DD");
-      }
       onSubmit?.(values);
       form.resetFields();
     } catch (error) {
@@ -27,6 +43,7 @@ const AddUserForm = ({ onSubmit, onCancel }) => {
       layout="vertical"
       style={{ height: "100%" }}
       requiredMark={false}
+      initialValues={initialValues} // Set the initial values here
     >
       <div
         style={{
@@ -79,13 +96,16 @@ const AddUserForm = ({ onSubmit, onCancel }) => {
         </Form.Item>
 
         <Form.Item label="Start Date" name="startDate">
-          <DatePicker style={{ width: "100%" }} placeholder="Select start date" />
+          <DatePicker
+            style={{ width: "100%" }}
+            placeholder="Select start date"
+          />
         </Form.Item>
 
         <Form.Item label="Role" name="role">
           <Select placeholder="Select role">
-            <Option value="Employee">Employee</Option>
-            <Option value="Admin">Admin</Option>
+            <Option value="employee">Employee</Option>
+            <Option value="admin">Admin</Option>
             {/* Add other roles as needed */}
           </Select>
         </Form.Item>
