@@ -29,10 +29,23 @@ function* DELETE_CUSTOMER(action) {
   if (resultHasError(result)) yield cancel();
 }
 
+function* UPDATE_CUSTOMER(action) {
+  console.log("action", action.payload);
+  const result = yield call(
+    runEffect,
+    action,
+    CustomerEffects.updateCustomer,
+    action.payload.customerId,
+    action.payload.customer
+  );
+  if (resultHasError(result)) yield cancel();
+}
+
 export default function* CustomerSaga() {
   yield all([
     takeEvery(CustomerActions.ADD_CUSTOMER, ADD_CUSTOMER),
     takeEvery(CustomerActions.GET_CUSTOMERS, GET_CUSTOMERS),
     takeEvery(CustomerActions.DELETE_CUSTOMER, DELETE_CUSTOMER),
+    takeEvery(CustomerActions.UPDATE_CUSTOMER, UPDATE_CUSTOMER),
   ]);
 }

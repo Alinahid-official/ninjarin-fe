@@ -249,6 +249,9 @@ const CustomerTable = ({ handleAddCustomer }) => {
             icon={<GoPencil />}
             type="link"
             style={{ padding: 0, color: "#1677ff" }}
+            onClick={() => {
+              dispatch(CustomerActions.selectCustomer(record));
+            }}
           >
             Edit
           </Button>

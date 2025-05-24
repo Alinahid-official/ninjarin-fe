@@ -11,6 +11,7 @@ import { makeSelectErrorModel } from "@/redux/error/errorSelector";
 import FullAlertError from "@/components/error/FullAlertError";
 import CommonDrawer from "@/components/common/Drawer";
 import CustomerForm from "./components/CustomerForm";
+import CustomerSelectors from "@/redux/customer/selectors";
 
 const selectError = makeSelectErrorModel();
 
@@ -22,6 +23,7 @@ const Customers = () => {
   const error = useSelector((state) =>
     selectError(state, [CustomerActions.GET_CUSTOMERS_FINISHED])
   );
+  const customer = useSelector(CustomerSelectors.getSelectedCustomer);
   const dispatch = useDispatch();
 
   const handleAddCustomer = () => {
@@ -29,11 +31,17 @@ const Customers = () => {
   };
 
   const handleDrawerClose = () => {
+    if (customer) {
+      dispatch(CustomerActions.selectCustomer(null));
+    }
     setIsDrawerOpen(false);
   };
 
   const handleCustomerSubmit = (values) => {
-    dispatch(CustomerActions.addCustomer(values));
+    console.log("values", values);
+    if (customer) {
+      dispatch(CustomerActions.updateCustomer(customer._id, values));
+    } else dispatch(CustomerActions.addCustomer(values));
   };
 
   useEffect(() => {
@@ -55,7 +63,7 @@ const Customers = () => {
       <CommonDrawer
         title="Add Customer"
         subTitle="Fill all the required field to add client."
-        open={isDrawerOpen}
+        open={isDrawerOpen || customer}
         onClose={handleDrawerClose}
       >
         <CustomerForm

@@ -47,4 +47,21 @@ export default BaseReducer(initialState, {
       currentCustomer: data,
     };
   },
+  [CustomerActions.SELECT_CUSTOMER](state, action) {
+    const data = action.payload;
+    return {
+      ...state,
+      selectedCustomer: data,
+    };
+  },
+  [CustomerActions.UPDATE_CUSTOMER_FINISHED](state, action) {
+    const data = action.payload.data;
+    const updatedCustomers = produce(state.customers, (draft) => {
+      draft.entities.Customers[data._id] = data;
+    });
+    return {
+      ...state,
+      customers: updatedCustomers,
+    };
+  },
 });

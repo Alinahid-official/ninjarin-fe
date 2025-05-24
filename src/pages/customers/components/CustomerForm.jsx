@@ -3,19 +3,29 @@ import { makeSelectErrorModel } from "@/redux/error/errorSelector";
 import CustomerActions from "@/redux/customer/actions";
 import requestingSelector from "@/redux/requesting/requestingSelector";
 import { Form, Input, Select, Button, Upload, Flex } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { PlusOutlined } from "@ant-design/icons";
+import CustomerSelectors from "@/redux/customer/selectors";
 
 const selectError = makeSelectErrorModel();
 
 const CustomerForm = ({ onSubmit, onCancel }) => {
+  const [isEdit, setIsEdit] = useState(false);
   const [form] = Form.useForm();
+  const customer = useSelector(CustomerSelectors.getSelectedCustomer);
+
   const loading = useSelector((state) =>
-    requestingSelector(state, [CustomerActions.ADD_CUSTOMER])
+    requestingSelector(state, [
+      isEdit ? CustomerActions.UPDATE_CUSTOMER : CustomerActions.ADD_CUSTOMER,
+    ])
   );
   const error = useSelector((state) =>
-    selectError(state, [CustomerActions.ADD_CUSTOMER_FINISHED])
+    selectError(state, [
+      isEdit
+        ? CustomerActions.UPDATE_CUSTOMER_FINISHED
+        : CustomerActions.ADD_CUSTOMER_FINISHED,
+    ])
   );
 
   const serviceTypes = [
@@ -48,19 +58,34 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
     }
   }, [loading]);
 
+  useEffect(() => {
+    if (customer) {
+      setIsEdit(true);
+    } else {
+      setIsEdit(false);
+      form.resetFields();
+    }
+  }, [customer]);
+
+  // Set form values when initialData changes
+  useEffect(() => {
+    if (isEdit && customer) {
+      form.setFieldsValue({
+        name: customer.name,
+        industry: customer.industry,
+        serviceType: customer.serviceType,
+        cxAdminName: customer.cxAdmin.name,
+        cxAdminEmail: customer.cxAdmin.email,
+      });
+    }
+  }, [isEdit, customer, form]);
+
   return (
     <Form
       form={form}
       layout="vertical"
       style={{ height: "100%" }}
       requiredMark={false}
-      initialValues={{
-        name: "Wipro",
-        industry: "Technology",
-        serviceType: ["SaaS Platform", "Consulting"],
-        cxAdminName: "John Doe",
-        cxAdminEmail: "john.doe@wipro.com",
-      }}
     >
       {error && <FullAlertError error={error} />}
       <div style={{ height: "calc(100% - 80px)", overflowY: "auto" }}>
@@ -98,9 +123,8 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
             size="large"
             placeholder="Select Type"
             options={serviceTypes}
-            mode="multiple" // Enable multi-select
-            maxTagCount="responsive" // Show tags responsively
-            defaultValue={["Consulting", "Implementation"]}
+            mode="multiple"
+            maxTagCount="responsive"
           />
         </Form.Item>
 
@@ -121,7 +145,11 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
           name="cxAdminName"
           rules={[{ required: true, message: "Please enter admin name" }]}
         >
-          <Input size="large" placeholder="Enter admin name" />
+          <Input
+            size="large"
+            placeholder="Enter admin name"
+            disabled={isEdit}
+          />
         </Form.Item>
 
         <Form.Item
@@ -132,7 +160,11 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
             { type: "email", message: "Please enter a valid email" },
           ]}
         >
-          <Input size="large" placeholder="Enter official ID" />
+          <Input
+            size="large"
+            placeholder="Enter official ID"
+            disabled={isEdit}
+          />
         </Form.Item>
       </div>
 
@@ -162,7 +194,7 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
             type="primary"
             onClick={handleSubmit}
           >
-            Add Customer
+            {isEdit ? "Update Customer" : "Add Customer"}
           </Button>
         </Flex>
       </div>

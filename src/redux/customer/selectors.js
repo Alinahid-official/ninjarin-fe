@@ -12,6 +12,10 @@ class CustomerSelectors {
   static getCurrentCustomer(state) {
     return state.customers.currentCustomer;
   }
+
+  static getSelectedCustomer(state) {
+    return state.customers.selectedCustomer;
+  }
 }
 
 export default CustomerSelectors;
