@@ -151,6 +151,7 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
             onChange={(value) => form.setFieldValue("industry", value)}
             value={form.getFieldValue("industry")}
             type={"industry"}
+            url={`${API_BASE}/admin-inventories`}
           />
         </Form.Item>
 
