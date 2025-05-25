@@ -147,7 +147,7 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
             placeholder="Select Industry"
             options={industries}
           /> */}
-          <SearchableSelect
+          <AdminSearchableSelect
             onChange={(value) => form.setFieldValue("industry", value)}
             value={form.getFieldValue("industry")}
             type={"industry"}
