@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import CustomerSelectors from "@/redux/customer/selectors";
 import { useDispatch } from "react-redux";
 import ProjectActions from "@/redux/project/actions";
+import AdminInventoryActions from "@/redux/adminInventory/actions";
 
 const CustomerManagementHome = ({ isAdmin }) => {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const CustomerManagementHome = ({ isAdmin }) => {
   };
   const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
   useEffect(() => {
+    dispatch(AdminInventoryActions.getAdminInventories());
     if (currentCustomer) {
       dispatch(
         ProjectActions.getProjects({ organization: currentCustomer?._id })

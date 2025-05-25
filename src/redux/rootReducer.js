@@ -8,6 +8,7 @@ import customers from "./customer/reducer";
 import skillArchitecture from "./skillArchitecture/reducer";
 import users from "./user/reducer";
 import inventories from "./inventory/reducer";
+import adminInventory from "./adminInventory/reducer";
 
 const appReducer = combineReducers({
   requesting,
@@ -18,6 +19,7 @@ const appReducer = combineReducers({
   skillArchitecture,
   users,
   inventories,
+  adminInventory,
 });
 
 const rootReducer = (state, action) => {

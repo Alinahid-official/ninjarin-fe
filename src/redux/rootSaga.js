@@ -5,6 +5,7 @@ import customerSaga from "./customer/sagas";
 import skillArchitectureSaga from "./skillArchitecture/sagas";
 import user from "./user/sagas";
 import inventory from "./inventory/sagas";
+import AdminInventory from "./adminInventory/sagas";
 
 export default function* rootSaga() {
   yield all([
@@ -14,5 +15,6 @@ export default function* rootSaga() {
     skillArchitectureSaga(),
     user(),
     inventory(),
+    AdminInventory(),
   ]);
 }

@@ -12,6 +12,7 @@ import FullAlertError from "@/components/error/FullAlertError";
 import CommonDrawer from "@/components/common/Drawer";
 import CustomerForm from "./components/CustomerForm";
 import CustomerSelectors from "@/redux/customer/selectors";
+import AdminInventoryActions from "@/redux/adminInventory/actions";
 
 const selectError = makeSelectErrorModel();
 
@@ -38,7 +39,6 @@ const Customers = () => {
   };
 
   const handleCustomerSubmit = (values) => {
-    console.log("values", values);
     if (customer) {
       dispatch(CustomerActions.updateCustomer(customer._id, values));
     } else dispatch(CustomerActions.addCustomer(values));
@@ -46,6 +46,7 @@ const Customers = () => {
 
   useEffect(() => {
     dispatch(CustomerActions.getCustomers());
+    dispatch(AdminInventoryActions.getAdminInventories());
   }, []);
 
   return (

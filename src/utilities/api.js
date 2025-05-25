@@ -8,4 +8,5 @@ export default {
   PROJECTS: `${API_BASE}/projects`,
   CUSTOMERS: `${API_BASE}/customers`,
   INVENTORIES: `${API_BASE}/inventories`,
+  ADMIN_INVENTORIES: `${API_BASE}/admin-inventories`,
 };

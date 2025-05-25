@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { PlusOutlined } from "@ant-design/icons";
 import CustomerSelectors from "@/redux/customer/selectors";
+import SearchableSelect from "@/components/common/SearchableSelect";
 
 const selectError = makeSelectErrorModel();
 
@@ -119,12 +120,17 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
           name="serviceType"
           rules={[{ required: true, message: "Please select service type" }]}
         >
-          <Select
+          {/* <Select
             size="large"
             placeholder="Select Type"
             options={serviceTypes}
             mode="multiple"
             maxTagCount="responsive"
+          /> */}
+          <SearchableSelect
+            onChange={(value) => form.setFieldValue("serviceType", value)}
+            value={form.getFieldValue("serviceType")}
+            type={"service"}
           />
         </Form.Item>
 
@@ -133,10 +139,15 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
           name="industry"
           rules={[{ required: true, message: "Please select industry" }]}
         >
-          <Select
+          {/* <Select
             size="large"
             placeholder="Select Industry"
             options={industries}
+          /> */}
+          <SearchableSelect
+            onChange={(value) => form.setFieldValue("industry", value)}
+            value={form.getFieldValue("industry")}
+            type={"industry"}
           />
         </Form.Item>
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Layout, Breadcrumb, Flex, Dropdown } from "antd";
+import { Layout, Breadcrumb, Flex, Dropdown, Avatar } from "antd";
 import { UserOutlined, BellOutlined, LogoutOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
@@ -14,6 +14,8 @@ import SessionActions from "@/redux/session/action";
 const { Header: AntHeader } = Layout;
 
 const Header = ({ breadcrumbPath }) => {
+  const userDetails = localStorage.getItem("userDetails");
+  const parsedUserDetails = userDetails ? JSON.parse(userDetails) : null;
   const navigate = useNavigate();
   const checkCustomerIdInUrl = () => {
     const pathSegments = window.location.pathname.split("/");
@@ -120,7 +122,22 @@ const Header = ({ breadcrumbPath }) => {
                 cursor: "pointer",
               }}
             >
-              <UserOutlined style={{ fontSize: 22, color: "#fff" }} />
+              <Avatar
+                icon={
+                  parsedUserDetails?.role === "hr" ? null : <UserOutlined />
+                }
+                src={
+                  parsedUserDetails?.role === "hr"
+                    ? "/src/assets/images/Profil.png"
+                    : null
+                }
+                style={{
+                  backgroundColor: "transparent",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
             </div>
           </Dropdown>
         </div>
