@@ -133,7 +133,7 @@ const Sidebar = ({ isCollapsed }) => {
                 icon: <GoProjectSymlink />,
                 label: "Projects",
                 onClick: () => {
-                  router.navigate("/projects");
+                  router.navigate("/admin/projects");
                 },
               },
               // {
