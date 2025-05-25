@@ -74,7 +74,7 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
         name: customer.name,
         industry: customer.industry,
         serviceType: customer.serviceType,
-        cxAdminName: customer.cxAdmin.name,
+        cxAdminName: `${customer.cxAdmin.firstName} ${customer.cxAdmin.lastName}`,
         cxAdminEmail: customer.cxAdmin.email,
       });
     }
