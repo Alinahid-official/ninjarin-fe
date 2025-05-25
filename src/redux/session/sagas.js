@@ -20,7 +20,7 @@ function* REQUEST_LOGIN(action) {
   localStorage.setItem("accessToken", token);
   localStorage.setItem("userDetails", JSON.stringify(userDetails));
   if (userDetails?.role === "admin") {
-    router.navigate(`/customers/${userDetails?.customerId}/home`);
+    router.navigate(`/`);
   } else {
     router.navigate("/home");
   }
@@ -38,9 +38,21 @@ function* SET_CURRENT_CUSTOMER(action) {
   if (resultHasError(customer)) yield cancel();
   yield put(CustomerActions.setCurrentCustomer(customer.data));
 }
+
+function* RESET_PASSWORD(action) {
+  const result = yield call(
+    runEffect,
+    action,
+    SessionEffects.resetPassword,
+    action.payload
+  );
+  if (resultHasError(result)) yield cancel();
+  router.navigate("/login");
+}
 export default function* sessionSaga() {
   yield all([
     takeEvery("session/REQUEST_LOGIN", REQUEST_LOGIN),
     takeEvery("session/SET_CURRENT_CUSTOMER", SET_CURRENT_CUSTOMER),
+    takeEvery("session/RESET_PASSWORD", RESET_PASSWORD),
   ]);
 }

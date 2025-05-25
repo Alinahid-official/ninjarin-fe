@@ -3,12 +3,16 @@ import { Row, Col, Typography, Form, Input, Button } from "antd";
 import styles from "../login/Login.module.css"; // Reuse login styles for layout
 import Illustration from "../../../assets/images/login/Data Base 2.png"; // Change to your illustration if needed
 import Logo from "../../../assets/images/logo/Logo.png";
+import { useDispatch } from "react-redux";
+import SessionActions from "@/redux/session/action";
 const { Title, Text, Link } = Typography;
 
 const ResetPassword = () => {
+  const dispatch = useDispatch();
   const onFinish = (values) => {
-    // Handle password reset logic here
-    console.log("Password reset values:", values);
+    const token = location.pathname.split("/reset-password/")[1];
+    values.token = token;
+    dispatch(SessionActions.resetPassword(values));
   };
 
   return (

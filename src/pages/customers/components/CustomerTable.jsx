@@ -171,7 +171,7 @@ const CustomerTable = ({ handleAddCustomer }) => {
         <div>
           {projects.map((project, index) => (
             <div key={index} style={{ color: "#1677ff" }}>
-              {project.name}
+              {project?.name}
             </div>
           ))}
           {projects.length > 3 && (
@@ -191,7 +191,7 @@ const CustomerTable = ({ handleAddCustomer }) => {
       key: "cxAdmin",
       render: (admin) => (
         <div>
-          <div>{admin.name}</div>
+          <div>{admin.firstName}</div>
           <div style={{ color: "#9e9e9e", fontSize: 12 }}>{admin.email}</div>
         </div>
       ),
@@ -290,7 +290,7 @@ const CustomerTable = ({ handleAddCustomer }) => {
 
   const onCustomerClick = (customer) => {
     dispatch(CustomerActions.setCurrentCustomer(customer));
-    router.navigate(`/customers/${customer._id}`);
+    router.navigate(`/customers/${customer._id}/home`);
   };
 
   // const data = [

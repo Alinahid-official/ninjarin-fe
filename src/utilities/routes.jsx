@@ -29,11 +29,11 @@ export const router = createBrowserRouter([
   },
 
   {
-    path: "/reset-password",
+    path: "/reset-password/:token",
     element: <ResetPassword />,
   },
   {
-    path: "/customers/home",
+    path: "/customers",
     element: <Customers isAdmin />,
   },
   {
