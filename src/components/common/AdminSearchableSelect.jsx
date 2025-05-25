@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Select, Button, Flex } from "antd";
 import axios from "axios";
 
-const SearchableSelect = ({
+const AdminSearchableSelect = ({
   url = "admin-inventories",
   value,
   onChange,
@@ -20,8 +20,8 @@ const SearchableSelect = ({
     try {
       setSearchTerm(term);
       const res = await axios.get(`${url}?type=${type}&search=${term}`);
-      console.log(res.data.data);
-      setOptions(res.data.data);
+      console.log(res.data);
+      setOptions(res.data);
     } catch (err) {
       console.log(err);
     }
@@ -76,4 +76,4 @@ const SearchableSelect = ({
   );
 };
 
-export default SearchableSelect;
+export default AdminSearchableSelect;

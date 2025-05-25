@@ -2,6 +2,9 @@ import React from "react";
 import { Form, Input, Select, Button, Checkbox, Tag, Flex } from "antd"; // Added Checkbox, Tag, Flex
 import { useSelector } from "react-redux";
 import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
+import SearchableSelect from "@/components/common/SearchableSelect";
+import CustomerSelectors from "@/redux/customer/selectors";
+import { API_BASE } from "@/config/config";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -16,6 +19,7 @@ const subFunctionOptions = [
 ];
 
 const AddOrganizationDesignForm = ({ onSubmit, onCancel }) => {
+  const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
   const [form] = Form.useForm();
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const handleSubmit = () => {
@@ -54,10 +58,17 @@ const AddOrganizationDesignForm = ({ onSubmit, onCancel }) => {
           .map(([key, value]) => {
             return (
               <Form.Item name={key} label={value?.label || key}>
-                <Select
+                {/* <Select
                   placeholder={`Enter ${key}`}
                   size="large"
                   options={subFunctionOptions}
+                /> */}
+                <SearchableSelect
+                  type={key}
+                  onChange={(value) => form.setFieldValue(key, value)}
+                  value={form.getFieldValue(key)}
+                  customerId={currentCustomer._id}
+                  url={`${API_BASE}/customers/${currentCustomer._id}/inventories`}
                 />
               </Form.Item>
             );

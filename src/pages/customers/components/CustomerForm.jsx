@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 import { PlusOutlined } from "@ant-design/icons";
 import CustomerSelectors from "@/redux/customer/selectors";
 import SearchableSelect from "@/components/common/SearchableSelect";
+import { API_BASE } from "@/config/config";
+import AdminSearchableSelect from "@/components/common/AdminSearchableSelect";
 
 const selectError = makeSelectErrorModel();
 
@@ -127,10 +129,11 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
             mode="multiple"
             maxTagCount="responsive"
           /> */}
-          <SearchableSelect
+          <AdminSearchableSelect
             onChange={(value) => form.setFieldValue("serviceType", value)}
             value={form.getFieldValue("serviceType")}
             type={"service"}
+            url={`${API_BASE}/admin-inventories`}
           />
         </Form.Item>
 

@@ -15,6 +15,7 @@ const SelectInventoryModal = ({
   value,
   recordColumnKey,
 }) => {
+  console.log("selectedInventory", recordColumnKey);
   const dispatch = useDispatch();
   const inventories = useSelector(InventorySelectors.getInventories);
   const [selectedInventory, setSelectedInventory] = React.useState(value);
@@ -22,6 +23,7 @@ const SelectInventoryModal = ({
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
 
   const handleAdd = () => {
+    console.log("recordColumnKey", recordColumnKey);
     if (recordColumnKey) {
       onAdd({ [recordColumnKey]: selectedInventory });
       setSelectedInventory(null);
@@ -33,7 +35,7 @@ const SelectInventoryModal = ({
   const handleAddNew = () => {
     dispatch(
       InventoryActions.addInventory({
-        type: inventoryType,
+        type: inventoryType || recordColumnKey,
         name: searchTerm,
       })
     );
