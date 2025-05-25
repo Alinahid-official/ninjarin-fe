@@ -10,7 +10,7 @@ import UserActions from "@/redux/user/actions";
 import InventoryActions from "@/redux/inventory/actions";
 import CustomerSelectors from "@/redux/customer/selectors";
 
-const CXSkillArchitecture = () => {
+const CXSkillArchitecture = ({ isAdmin }) => {
   const dispatch = useDispatch();
   const users = useSelector(UserSelectors.getUsers);
   const inventories = useSelector(InventorySelectors.getInventories);
@@ -28,7 +28,7 @@ const CXSkillArchitecture = () => {
     }
   }, [currentCustomer]);
   return (
-    <CMLayout>
+    <CMLayout isAdmin={isAdmin}>
       <Header breadcrumbPath="Customer Management/CX Skill Architecture" />
       <div style={{ padding: "24px" }}>
         <SkillTable />

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { Layout, Breadcrumb, Flex } from "antd";
-import { UserOutlined, BellOutlined } from "@ant-design/icons";
+import { Layout, Breadcrumb, Flex, Dropdown } from "antd";
+import { UserOutlined, BellOutlined, LogoutOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
 import { useSelector } from "react-redux";
@@ -8,10 +8,27 @@ import SkillArchitectureActions from "@/redux/skillArchitecture/actions";
 import CustomerSelectors from "@/redux/customer/selectors";
 import { useDispatch } from "react-redux";
 import CustomerActions from "@/redux/customer/actions";
+import { useNavigate } from "react-router-dom";
+import SessionActions from "@/redux/session/action";
 
 const { Header: AntHeader } = Layout;
 
 const Header = ({ breadcrumbPath }) => {
+  const navigate = useNavigate();
+  const checkCustomerIdInUrl = () => {
+    const pathSegments = window.location.pathname.split("/");
+    const customerIdIndex = pathSegments.indexOf("customers");
+
+    if (customerIdIndex !== -1 && pathSegments[customerIdIndex + 1]) {
+      // Check if the segment after 'customers' matches MongoDB ObjectId pattern
+      const customerId = pathSegments[customerIdIndex + 1];
+      const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(customerId);
+      return isValidObjectId ? customerId : null;
+    }
+    return null;
+  };
+  const customerId = checkCustomerIdInUrl();
+  console.log("Customer ID from URL:", customerId);
   const pathSegments = breadcrumbPath.split("/").filter((segment) => segment);
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const dispatch = useDispatch();
@@ -31,7 +48,27 @@ const Header = ({ breadcrumbPath }) => {
     if (!labels && currentCustomer) {
       dispatch(SkillArchitectureActions.getLabels(currentCustomer?._id));
     }
+    if (!currentCustomer) {
+      dispatch(SessionActions.setCurrentCustomer());
+    }
   }, [currentCustomer]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/login");
+  };
+
+  const userMenuItems = {
+    items: [
+      {
+        key: "logout",
+        icon: <LogoutOutlined />,
+        label: "Logout",
+        onClick: handleLogout,
+      },
+    ],
+  };
+
   return (
     <>
       <AntHeader
@@ -70,19 +107,22 @@ const Header = ({ breadcrumbPath }) => {
           >
             <BellOutlined style={{ fontSize: 22, color: "#757575" }} />
           </div>
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: "50%",
-              background: "#ddd",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <UserOutlined style={{ fontSize: 22, color: "#fff" }} />
-          </div>
+          <Dropdown menu={userMenuItems} placement="bottomRight">
+            <div
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                background: "#ddd",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              <UserOutlined style={{ fontSize: 22, color: "#fff" }} />
+            </div>
+          </Dropdown>
         </div>
       </AntHeader>
     </>

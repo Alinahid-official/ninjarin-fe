@@ -5,13 +5,13 @@ import { useState } from "react";
 
 const { Content } = Layout;
 
-const CMLayout = ({ children }) => {
+const CMLayout = ({ children, isAdmin }) => {
   const [mainCollapsed, setMainCollapsed] = useState(false);
   const [cmCollapsed, setCmCollapsed] = useState(false);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar isCollapsed={true} />
+      {isAdmin && <Sidebar isCollapsed={true} />}
       <Layout>
         <CMSidebar />
         <Layout>

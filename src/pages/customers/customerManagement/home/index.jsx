@@ -11,7 +11,7 @@ import CustomerSelectors from "@/redux/customer/selectors";
 import { useDispatch } from "react-redux";
 import ProjectActions from "@/redux/project/actions";
 
-const CustomerManagementHome = () => {
+const CustomerManagementHome = ({ isAdmin }) => {
   const dispatch = useDispatch();
   const handleTimeChange = (value) => {
     console.log("Selected time period:", value);
@@ -25,7 +25,7 @@ const CustomerManagementHome = () => {
     }
   }, [currentCustomer]);
   return (
-    <CMLayout>
+    <CMLayout isAdmin={isAdmin}>
       <Header breadcrumbPath="Customer Management/Home" />
       <div style={{ padding: "24px" }}>
         <OverviewHeader title="Customer Stats" onChange={handleTimeChange} />

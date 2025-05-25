@@ -45,7 +45,7 @@ const projectStageOptions = [
   { label: "Maintenance", value: "Maintenance" },
 ];
 
-const User = () => {
+const User = ({ isAdmin }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const users = useSelector(UserSelectors.getUsers);
   const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
@@ -174,7 +174,7 @@ const User = () => {
   };
 
   return (
-    <CMLayout>
+    <CMLayout isAdmin={isAdmin}>
       <Header breadcrumbPath="Customer Management/Users" />
       <div style={{ padding: "24px" }}>
         <Tabs defaultActiveKey="all">

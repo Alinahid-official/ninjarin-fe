@@ -15,7 +15,7 @@ import CustomerProject from "@/pages/customers/customerManagement/project";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Dashboard />,
+    element: <Dashboard isAdmin />,
   },
 
   {
@@ -33,39 +33,59 @@ export const router = createBrowserRouter([
     element: <ResetPassword />,
   },
   {
-    path: "/customers",
-    element: <Customers />,
+    path: "/customers/home",
+    element: <Customers isAdmin />,
   },
   {
-    path: "/customers/:customerId",
-    element: <CustomerManagementHome />,
+    path: "/customers/:customerId/home",
+    element: <CustomerManagementHome isAdmin />,
   },
   {
     path: "/customers/:customerId/cx-skills-architecture",
-    element: <CXSkillArchitecture />,
+    element: <CXSkillArchitecture isAdmin />,
   },
   {
     path: "/customers/:customerId/cx-skills-architecture/:id/assign",
-    element: <CXSkillArchitectureAssign />,
+    element: <CXSkillArchitectureAssign isAdmin />,
   },
   {
     path: "/customers/:customerId/inventory",
-    element: <Inventory />,
+    element: <Inventory isAdmin />,
   },
   {
     path: "/inventory",
     element: <Inventory />,
   },
   {
-    path: "/projects",
+    path: "/admin/projects",
     element: <Projects />,
   },
   {
+    path: "/home",
+    element: <CustomerManagementHome />,
+  },
+  {
+    path: "/cx-skills-architecture",
+    element: <CXSkillArchitecture />,
+  },
+  {
+    path: "/cx-skills-architecture/:id/assign",
+    element: <CXSkillArchitectureAssign />,
+  },
+  {
     path: "/customers/:customerId/users",
-    element: <User />,
+    element: <User isAdmin />,
   },
   {
     path: "/customers/:customerId/projects",
+    element: <CustomerProject isAdmin />,
+  },
+  {
+    path: "/users",
+    element: <User />,
+  },
+  {
+    path: "/projects",
     element: <CustomerProject />,
   },
 ]);

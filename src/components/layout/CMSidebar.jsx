@@ -153,7 +153,7 @@ const CMSidebar = () => {
                 label: <span style={{ fontWeight: 600 }}>Home</span>,
                 onClick: () => {
                   router.navigate(
-                    customerId ? `/customers/${customerId}` : "/"
+                    customerId ? `/customers/${customerId}/home` : "/home"
                   );
                 },
               },
@@ -165,7 +165,7 @@ const CMSidebar = () => {
                   router.navigate(
                     customerId
                       ? `/customers/${customerId}/cx-skills-architecture`
-                      : "/skill-architecture"
+                      : "/cx-skills-architecture"
                   );
                 },
               },

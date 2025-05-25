@@ -13,7 +13,7 @@ import CustomerSelectors from "@/redux/customer/selectors";
 import ProjectForm from "@/pages/projects/components/ProjectForm";
 import ProjectTable from "@/pages/projects/components/ProjectTable";
 
-const CustomerProject = () => {
+const CustomerProject = ({ isAdmin }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const loading = useSelector((state) =>
     requestingSelector(state, [ProjectActions.GET_PROJECTS])
@@ -48,7 +48,7 @@ const CustomerProject = () => {
   }, [currentCustomer]);
 
   return (
-    <CMLayout>
+    <CMLayout isAdmin={isAdmin}>
       <Header breadcrumbPath="Customer Management/Projects" />
       <div className="nz-padding-p nz-bg-w">
         {loading && <BlankList isLoading />}
