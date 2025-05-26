@@ -59,6 +59,8 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
   useEffect(() => {
     if (prevLoading && !loading && !error) {
       onCancel();
+      form.resetFields();
+      setIsEdit(false);
     }
     setPrevLoading(loading);
   }, [loading]);
