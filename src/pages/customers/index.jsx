@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Layout } from "antd";
+import { Form, Layout } from "antd";
 import Sidebar from "../../components/layout/Sidebar";
 import Header from "../../components/common/Header";
 import CustomerTable from "./components/CustomerTable";
@@ -18,6 +18,7 @@ const selectError = makeSelectErrorModel();
 
 const Customers = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [form] = Form.useForm();
   const loading = useSelector((state) =>
     requestingSelector(state, [CustomerActions.GET_CUSTOMERS])
   );
@@ -32,6 +33,7 @@ const Customers = () => {
   };
 
   const handleDrawerClose = () => {
+    form.resetFields();
     if (customer) {
       dispatch(CustomerActions.selectCustomer(null));
     }
@@ -70,6 +72,7 @@ const Customers = () => {
         <CustomerForm
           onSubmit={handleCustomerSubmit}
           onCancel={handleDrawerClose}
+          form={form}
         />
       </CommonDrawer>
     </Layout>

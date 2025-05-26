@@ -40,7 +40,7 @@ const Sidebar = ({ isCollapsed }) => {
         return "dashboard";
       case "/customers":
         return "customers";
-      case "/projects":
+      case "/admin/projects":
         return "projects";
       case "/reports":
         return "reports";

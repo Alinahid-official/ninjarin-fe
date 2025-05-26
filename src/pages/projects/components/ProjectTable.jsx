@@ -238,7 +238,7 @@ const ProjectTable = ({ handleAddProject }) => {
       title: "Project Type",
       dataIndex: "projectType",
       key: "projectType",
-      width: 230,
+      width: 350,
       render: (type) => (
         <span
           style={{
@@ -256,7 +256,7 @@ const ProjectTable = ({ handleAddProject }) => {
       title: "CX Admin",
       dataIndex: "cxAdmin",
       key: "cxAdmin",
-      width: 150,
+      width: 200,
     },
     {
       title: "Start Date",
@@ -363,7 +363,7 @@ const ProjectTable = ({ handleAddProject }) => {
             dataSource={projects}
             pagination={false}
             footer={() => <TableFooter />}
-            scroll={{ x: 1500 }}
+            scroll={{ x: 1600 }}
           />
         </div>
       </div>

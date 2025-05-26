@@ -13,10 +13,9 @@ import AdminSearchableSelect from "@/components/common/AdminSearchableSelect";
 
 const selectError = makeSelectErrorModel();
 
-const CustomerForm = ({ onSubmit, onCancel }) => {
+const CustomerForm = ({ onSubmit, onCancel, form }) => {
   const [prevLoading, setPrevLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [form] = Form.useForm();
   const customer = useSelector(CustomerSelectors.getSelectedCustomer);
 
   const loading = useSelector((state) =>
@@ -59,7 +58,6 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
   useEffect(() => {
     if (prevLoading && !loading && !error) {
       onCancel();
-      form.resetFields();
       setIsEdit(false);
     }
     setPrevLoading(loading);
@@ -70,7 +68,6 @@ const CustomerForm = ({ onSubmit, onCancel }) => {
       setIsEdit(true);
     } else {
       setIsEdit(false);
-      form.resetFields();
     }
   }, [customer]);
 

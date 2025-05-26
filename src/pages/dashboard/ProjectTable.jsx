@@ -23,6 +23,7 @@ const ProjectTable = () => {
       dataIndex: "organization",
       key: "organization",
       width: 150,
+      render: (organization) => organization.name,
     },
     {
       title: "Project Name",
@@ -89,7 +90,7 @@ const ProjectTable = () => {
       title: "Project Type",
       dataIndex: "projectType",
       key: "projectType",
-      width: 180,
+      width: 280,
       render: (type) => (
         <span
           style={{
@@ -112,8 +113,9 @@ const ProjectTable = () => {
     {
       title: "Start Date",
       dataIndex: "startDate",
-      key: "startDate",
+      key: "createdAt",
       width: 150,
+      render: (date) => formatToMonthDayYear(date),
     },
   ];
 
@@ -211,7 +213,7 @@ const ProjectTable = () => {
           dataSource={projects}
           pagination={false}
           footer={() => <TableFooter />}
-          scroll={{ x: 1500 }}
+          scroll={{ x: 1600 }}
         />
       </div>
       <Modal
