@@ -23,7 +23,7 @@ const ProjectTable = () => {
       dataIndex: "organization",
       key: "organization",
       width: 150,
-      render: (organization) => organization.name,
+      render: (organization) => organization?.name,
     },
     {
       title: "Project Name",
