@@ -1,4 +1,5 @@
-import { Button, Layout, Menu, Typography } from "antd";
+// Add Avatar to imports
+import { Button, Layout, Menu, Typography, Avatar } from "antd";
 import Logo from "../../assets/images/logo/Logo.png";
 import "./layout.css";
 import {
@@ -116,27 +117,43 @@ const CMSidebar = () => {
         <div>
           <div
             style={{
-              padding: "24px 0 0 24px",
+              padding: "24px 0 0 12px",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
             }}
           >
-            <img
-              src={Logo}
-              alt="Ninzarin Logo"
-              style={{
-                height: collapsed ? "30px" : "auto",
-                width: "auto",
-              }}
-            />
+            <div>
+              <Avatar
+                size={collapsed ? 30 : 40}
+                style={{
+                  backgroundColor: "#8C5BF2",
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+              >
+                {currentCustomer?.name?.charAt(0)?.toUpperCase()}
+              </Avatar>
+              <span
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  textAlign: "left",
+                  marginLeft: 12,
+                }}
+              >
+                {collapsed ? "" : currentCustomer?.name}
+              </span>
+            </div>
+
             <Button
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
               onClick={() => setCollapsed(!collapsed)}
               style={{
                 fontSize: "16px",
-                width: 64,
+                paddingRight: "12px",
+                // width: 64,
                 height: 64,
               }}
             />

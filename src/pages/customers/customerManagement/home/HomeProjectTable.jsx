@@ -152,6 +152,9 @@ const HomeProjectTable = () => {
             icon={<GoPencil />}
             type="link"
             style={{ padding: 0, color: "#1677ff" }}
+            onClick={() => {
+              dispatch(ProjectActions.selectProject(record));
+            }}
           >
             Edit
           </Button>

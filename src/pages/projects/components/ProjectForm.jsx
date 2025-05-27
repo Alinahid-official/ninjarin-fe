@@ -12,9 +12,9 @@ import ProjectSelectors from "@/redux/project/selectors";
 
 const selectError = makeSelectErrorModel();
 
-const ProjectForm = ({ onSubmit, onCancel }) => {
+const ProjectForm = ({ onSubmit, onCancel, form }) => {
   const [isEdit, setIsEdit] = useState(false);
-  const [form] = Form.useForm();
+  const [prevLoading, setPrevLoading] = useState(false);
   const dispatch = useDispatch();
   const project = useSelector(ProjectSelectors.getSelectedProject);
 
@@ -77,9 +77,10 @@ const ProjectForm = ({ onSubmit, onCancel }) => {
   }, []);
 
   useEffect(() => {
-    if (loading !== false && !error) {
+    if (!loading && prevLoading && !error) {
       onCancel();
     }
+    setPrevLoading(loading);
   }, [loading]);
 
   useEffect(() => {
@@ -87,10 +88,10 @@ const ProjectForm = ({ onSubmit, onCancel }) => {
       setIsEdit(true);
     } else {
       setIsEdit(false);
-      form.resetFields();
     }
   }, [project]);
 
+  console.log("project", loading);
   // Set form values when project changes
   useEffect(() => {
     if (isEdit && project) {
@@ -118,20 +119,6 @@ const ProjectForm = ({ onSubmit, onCancel }) => {
       layout="vertical"
       style={{ height: "100%" }}
       requiredMark={false}
-      initialValues={
-        !isEdit
-          ? {
-              name: "New Project",
-              organization: customerOptions ? customerOptions[0]?.value : "",
-              cxOwner: "Om prakash sao",
-              programManager: "Om prakash sao",
-              cxAdmin: "Om prakash sao",
-              projectType: "Career Mapping",
-              projectStage: "Consulting",
-              dueDate: dayjs().add(30, "days"),
-            }
-          : {}
-      }
     >
       {error && <FullAlertError error={error} />}
       <div style={{ height: "calc(100% - 80px)", overflowY: "auto" }}>

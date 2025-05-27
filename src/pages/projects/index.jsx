@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Layout } from "antd";
+import { Form, Layout } from "antd";
 import Sidebar from "../../components/layout/Sidebar";
 import Header from "../../components/common/Header";
 import BlankList from "@/components/common/BlankList";
@@ -17,6 +17,7 @@ const selectError = makeSelectErrorModel();
 
 const Projects = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [form] = Form.useForm();
   const loading = useSelector((state) =>
     requestingSelector(state, [ProjectActions.GET_PROJECTS])
   );
@@ -33,6 +34,7 @@ const Projects = () => {
   const handleDrawerClose = () => {
     setIsDrawerOpen(false);
     dispatch(ProjectActions.selectProject(null));
+    form.resetFields();
   };
 
   const handleProjectSubmit = (values) => {
@@ -72,6 +74,7 @@ const Projects = () => {
         <ProjectForm
           onSubmit={handleProjectSubmit}
           onCancel={handleDrawerClose}
+          form={form}
         />
       </CommonDrawer>
     </Layout>

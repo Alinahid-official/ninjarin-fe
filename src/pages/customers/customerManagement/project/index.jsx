@@ -12,8 +12,10 @@ import Header from "@/components/common/Header";
 import CustomerSelectors from "@/redux/customer/selectors";
 import ProjectForm from "@/pages/projects/components/ProjectForm";
 import ProjectTable from "@/pages/projects/components/ProjectTable";
+import { Form } from "antd";
 
 const CustomerProject = ({ isAdmin }) => {
+  const [form] = Form.useForm();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const loading = useSelector((state) =>
     requestingSelector(state, [ProjectActions.GET_PROJECTS])
@@ -29,6 +31,7 @@ const CustomerProject = ({ isAdmin }) => {
   const handleDrawerClose = () => {
     setIsDrawerOpen(false);
     dispatch(ProjectActions.selectProject(null));
+    form.resetFields();
   };
 
   const handleProjectSubmit = (values) => {
@@ -65,6 +68,7 @@ const CustomerProject = ({ isAdmin }) => {
         onClose={handleDrawerClose}
       >
         <ProjectForm
+          form={form}
           onSubmit={handleProjectSubmit}
           onCancel={handleDrawerClose}
         />
