@@ -23,7 +23,6 @@ const SelectInventoryModal = ({
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
 
   const handleAdd = () => {
-    console.log("recordColumnKey", recordColumnKey);
     if (recordColumnKey) {
       onAdd({ [recordColumnKey]: selectedInventory });
       setSelectedInventory(null);
@@ -60,6 +59,7 @@ const SelectInventoryModal = ({
   if (!labels) return null;
 
   const typeLabel = labels[inventoryType]?.label || inventoryType;
+  console.log("typeLabel", typeLabel, labels[inventoryType], inventoryType);
   const customNotFoundContent = (
     <Flex align="center" style={{ padding: 16 }}>
       <div>Couldn't find the Industry?</div>

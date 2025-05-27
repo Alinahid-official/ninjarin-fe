@@ -33,6 +33,7 @@ import { useSelector } from "react-redux";
 import UserSelectors from "@/redux/user/selectors";
 import CustomerSelectors from "@/redux/customer/selectors";
 import { formatToMonthDayYear } from "@/utilities/time";
+import requestingSelector from "@/redux/requesting/requestingSelector";
 
 const { TabPane } = Tabs;
 
@@ -47,19 +48,22 @@ const projectStageOptions = [
 
 const User = ({ isAdmin }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [form] = Form.useForm();
   const users = useSelector(UserSelectors.getUsers);
   const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
   const selectedUser = useSelector(UserSelectors.getSelectedUser);
+  const loading = useSelector((state) =>
+    requestingSelector(state, [UserActions.GET_USERS])
+  );
   const dispatch = useDispatch();
   const handleAddUser = (values) => {
     if (selectedUser) {
       dispatch(UserActions.updateUser(selectedUser._id, values));
       dispatch(UserActions.setSelectedUser(null));
     } else {
+      values.customerId = currentCustomer._id;
       dispatch(UserActions.addUser(values));
     }
-    // Add logic to actually add the user to your data source
-    setIsDrawerOpen(false); // Close drawer after submission
   };
 
   const columns = [
@@ -159,18 +163,19 @@ const User = ({ isAdmin }) => {
     },
   ];
   useEffect(() => {
-    if (!users && currentCustomer) {
+    if (currentCustomer) {
       dispatch(
         UserActions.getUsers({
           customerId: currentCustomer._id,
         })
       );
     }
-  });
+  }, [currentCustomer]);
 
   const handleDrawerClose = () => {
     setIsDrawerOpen(false);
     dispatch(UserActions.setSelectedUser(null));
+    form.resetFields();
   };
 
   return (
@@ -222,6 +227,7 @@ const User = ({ isAdmin }) => {
         </div>
         <Table
           className="inventory-table-with-footer"
+          loading={loading}
           style={{ overflow: "auto" }}
           columns={columns}
           dataSource={users}
@@ -236,7 +242,11 @@ const User = ({ isAdmin }) => {
         onClose={handleDrawerClose}
         width={480} // Adjust width as needed
       >
-        <AddUserForm onSubmit={handleAddUser} onCancel={handleDrawerClose} />
+        <AddUserForm
+          onSubmit={handleAddUser}
+          onCancel={handleDrawerClose}
+          form={form}
+        />
       </CommonDrawer>
     </CMLayout>
   );

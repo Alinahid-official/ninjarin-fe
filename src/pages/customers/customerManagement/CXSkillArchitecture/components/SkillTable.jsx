@@ -70,15 +70,6 @@ const SkillTable = () => {
   const [selectedRecordValue, setSelectedRecordValue] = useState(null);
   const [selectedRecordId, setSelectedRecordId] = useState(null);
   // Add this before the return statement
-  const handleModalAdd = (selectedInventory) => {
-    // Handle the selected inventory with the column key
-    console.log(
-      "Selected inventory for column:",
-      selectedColumnKey,
-      selectedInventory
-    );
-    setIsInventoryModalVisible(false);
-  };
 
   const handleInventoryModalCancel = () => {
     setIsInventoryModalVisible(false);
@@ -86,12 +77,6 @@ const SkillTable = () => {
     setSelectedRecordColumnKey(null);
     setSelectedRecordValue(null);
   };
-  // Add this inside the main return statement
-  <SelectInventoryModal
-    open={isInventoryModalVisible}
-    onCancel={() => setIsInventoryModalVisible(false)}
-    onAdd={handleModalAdd}
-  />;
 
   const handleIndustryAdd = (data) => {
     if (selectedRecordId) {
@@ -138,7 +123,6 @@ const SkillTable = () => {
   };
 
   const handleUpdateDesignSubmit = (values) => {
-    console.log("Update form values:", values);
     dispatch(
       SkillArchitectureActions.updateLabel(
         labels._id,
@@ -170,7 +154,7 @@ const SkillTable = () => {
       );
     } else if (e.key === "duplicate") {
       // Create a new record object without _id, __v, and createdAt
-      const { _id, __v, createdAt, ...recordToDuplicate } = record;
+      const { _id, __v, _, ...recordToDuplicate } = record;
 
       dispatch(
         SkillArchitectureActions.saveRecord(
@@ -179,11 +163,11 @@ const SkillTable = () => {
         )
       );
     } else if (e.key === "edit") {
-      console.log("edit", record, keyType);
       setIsInventoryModalVisible(true);
       setSelectedRecordColumnKey(keyType);
       setSelectedRecordValue(record[keyType]);
       setSelectedRecordId(record._id);
+      setSelectedColumnKey(keyType);
     }
     // e.key will be 'duplicate', 'edit', or 'delete'
     // record will be the data for the current row

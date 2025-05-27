@@ -4,35 +4,52 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 import CustomerSelectors from "@/redux/customer/selectors";
 import UserSelectors from "@/redux/user/selectors";
+import requestingSelector from "@/redux/requesting/requestingSelector";
+import UserActions from "@/redux/user/actions";
+import { makeSelectErrorModel } from "@/redux/error/errorSelector";
+import FullAlertError from "@/components/error/FullAlertError";
 
 const { Option } = Select;
-
-const AddUserForm = ({ onSubmit, onCancel }) => {
+const selectError = makeSelectErrorModel();
+const AddUserForm = ({ onSubmit, onCancel, form }) => {
   const [isEdit, setIsEdit] = useState(false);
-  const [form] = Form.useForm();
-
+  const [prevLoading, setPrevLoading] = useState(false);
+  const loading = useSelector((state) =>
+    requestingSelector(state, [
+      isEdit ? UserActions.UPDATE_USER : UserActions.ADD_USER,
+    ])
+  );
+  const error = useSelector((state) =>
+    selectError(state, [
+      isEdit ? UserActions.UPDATE_USER_FINISHED : UserActions.ADD_USER_FINISHED,
+    ])
+  );
   const selectedUser = useSelector(UserSelectors.getSelectedUser);
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-
       if (isEdit && selectedUser) {
         onSubmit?.(values);
       } else {
         onSubmit?.(values);
       }
-      form.resetFields();
     } catch (error) {
       console.error("Validation failed:", error);
     }
   };
 
   useEffect(() => {
+    if (prevLoading && !loading && !error) {
+      onCancel();
+    }
+    setPrevLoading(loading);
+  }, [loading, form]);
+
+  useEffect(() => {
     if (selectedUser) {
       setIsEdit(true);
     } else {
       setIsEdit(false);
-      form.resetFields();
     }
   }, [selectedUser]);
 
@@ -63,6 +80,7 @@ const AddUserForm = ({ onSubmit, onCancel }) => {
       style={{ height: "100%" }}
       requiredMark={false}
     >
+      {error && <FullAlertError error={error} />}
       <div
         style={{
           height: "calc(100% - 80px)", // Adjust based on footer height
@@ -127,6 +145,7 @@ const AddUserForm = ({ onSubmit, onCancel }) => {
           <Select placeholder="Select role">
             <Option value="employee">Employee</Option>
             <Option value="admin">Admin</Option>
+            <Option value="hr">Hr</Option>
             {/* Add other roles as needed */}
           </Select>
         </Form.Item>
@@ -153,7 +172,7 @@ const AddUserForm = ({ onSubmit, onCancel }) => {
           >
             Cancel
           </Button>
-          <Button type="primary" onClick={handleSubmit}>
+          <Button type="primary" onClick={handleSubmit} loading={loading}>
             {isEdit ? "Update" : "Add"}
           </Button>
         </Flex>
