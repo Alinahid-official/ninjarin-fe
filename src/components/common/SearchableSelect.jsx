@@ -55,7 +55,6 @@ const SearchableSelect = ({
     handleSearch("");
   }, []);
 
-  console.log("options", options);
   return (
     <Select
       value={value}

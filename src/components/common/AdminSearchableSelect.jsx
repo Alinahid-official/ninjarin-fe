@@ -55,7 +55,6 @@ const AdminSearchableSelect = ({
     handleSearch("");
   }, []);
 
-  console.log("options", options);
   return (
     <Select
       value={value}

@@ -124,16 +124,29 @@ const CMSidebar = () => {
             }}
           >
             <div>
-              <Avatar
-                size={collapsed ? 30 : 40}
-                style={{
-                  backgroundColor: "#8C5BF2",
-                  color: "#fff",
-                  fontWeight: "bold",
-                }}
-              >
-                {currentCustomer?.name?.charAt(0)?.toUpperCase()}
-              </Avatar>
+              {currentCustomer?.logo ? (
+                <img
+                  src={currentCustomer.logo}
+                  alt={currentCustomer?.name}
+                  style={{
+                    width: collapsed ? 30 : 40,
+                    height: collapsed ? 30 : 40,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <Avatar
+                  size={collapsed ? 30 : 40}
+                  style={{
+                    backgroundColor: "#8C5BF2",
+                    color: "#fff",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {currentCustomer?.name?.charAt(0)?.toUpperCase()}
+                </Avatar>
+              )}
               <span
                 style={{
                   fontSize: 14,

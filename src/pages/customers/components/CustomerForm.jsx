@@ -2,10 +2,14 @@ import FullAlertError from "@/components/error/FullAlertError";
 import { makeSelectErrorModel } from "@/redux/error/errorSelector";
 import CustomerActions from "@/redux/customer/actions";
 import requestingSelector from "@/redux/requesting/requestingSelector";
-import { Form, Input, Select, Button, Upload, Flex } from "antd";
+import { Form, Input, Select, Button, Upload, Flex, message } from "antd";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { PlusOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  LoadingOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
 import CustomerSelectors from "@/redux/customer/selectors";
 import SearchableSelect from "@/components/common/SearchableSelect";
 import { API_BASE } from "@/config/config";
@@ -13,10 +17,80 @@ import AdminSearchableSelect from "@/components/common/AdminSearchableSelect";
 
 const selectError = makeSelectErrorModel();
 
+const getBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
 const CustomerForm = ({ onSubmit, onCancel, form }) => {
   const [prevLoading, setPrevLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
   const customer = useSelector(CustomerSelectors.getSelectedCustomer);
+  const logo = Form.useWatch("logo", form);
+
+  const handleRemoveImage = () => {
+    form.setFieldValue("logo", "");
+  };
+  const handleChange = async (info) => {
+    const file = info.file.originFileObj;
+    if (!file) return;
+
+    setUploadLoading(true);
+    try {
+      // Check if file is an image
+      if (!file.type.startsWith("image/")) {
+        message.error("Please upload an image file");
+        return;
+      }
+
+      // Create an image object to get dimensions
+      const img = new Image();
+      const originalBase64 = await getBase64(file);
+
+      img.src = originalBase64;
+      await new Promise((resolve) => (img.onload = resolve));
+
+      // If file size is less than 1MB, use original
+      if (file.size <= 1024 * 1024) {
+        form.setFieldValue("logo", originalBase64);
+        return;
+      }
+
+      // Downsize image if larger than 1MB
+      const canvas = document.createElement("canvas");
+      let width = img.width;
+      let height = img.height;
+
+      // Calculate new dimensions while maintaining aspect ratio
+      const maxDimension = 1024; // Reasonable max dimension
+      if (width > height && width > maxDimension) {
+        height = (height * maxDimension) / width;
+        width = maxDimension;
+      } else if (height > maxDimension) {
+        width = (width * maxDimension) / height;
+        height = maxDimension;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      // Draw and compress image
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+      const downsizedBase64 = canvas.toDataURL("image/jpeg", 0.7); // Adjust quality as needed
+      form.setFieldValue("logo", downsizedBase64);
+    } catch (error) {
+      message.error("Failed to process image");
+      console.error("Error processing image:", error);
+    } finally {
+      setUploadLoading(false);
+    }
+  };
 
   const loading = useSelector((state) =>
     requestingSelector(state, [
@@ -30,21 +104,6 @@ const CustomerForm = ({ onSubmit, onCancel, form }) => {
         : CustomerActions.ADD_CUSTOMER_FINISHED,
     ])
   );
-
-  const serviceTypes = [
-    { value: "SaaS Platform", label: "SaaS Platform" },
-    { value: "Consulting", label: "Consulting" },
-    { value: "Value-added-services", label: "Value-added-services" },
-  ];
-
-  const industries = [
-    { value: "Technology", label: "Technology" },
-    { value: "Healthcare", label: "Healthcare" },
-    { value: "Finance", label: "Finance" },
-    { value: "Manufacturing", label: "Manufacturing" },
-    { value: "Retail", label: "Retail" },
-    { value: "Education", label: "Education" },
-  ];
 
   const handleSubmit = async () => {
     try {
@@ -81,6 +140,7 @@ const CustomerForm = ({ onSubmit, onCancel, form }) => {
         serviceType: customer.serviceType,
         cxAdminName: `${customer.cxAdmin.firstName} ${customer.cxAdmin.lastName}`,
         cxAdminEmail: customer.cxAdmin.email,
+        logo: customer.logo || "",
       });
     }
   }, [isEdit, customer, form]);
@@ -92,6 +152,9 @@ const CustomerForm = ({ onSubmit, onCancel, form }) => {
       style={{ height: "100%" }}
       requiredMark={false}
     >
+      <Form.Item label="Customer Name" name="logo" style={{ display: "none" }}>
+        <Input size="large" placeholder="Enter customer legal name" />
+      </Form.Item>
       {error && <FullAlertError error={error} />}
       <div style={{ height: "calc(100% - 80px)", overflowY: "auto" }}>
         <div style={{ marginBottom: 24 }}>
@@ -100,11 +163,54 @@ const CustomerForm = ({ onSubmit, onCancel, form }) => {
             listType="picture-circle"
             className="avatar-uploader"
             showUploadList={false}
+            beforeUpload={(file) => {
+              const isImage = file.type.startsWith("image/");
+              if (!isImage) {
+                message.error("You can only upload image files!");
+                return false;
+              }
+              return true;
+            }}
+            onChange={handleChange}
           >
-            <div>
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Upload</div>
-            </div>
+            {logo ? (
+              <div
+                style={{ position: "relative", width: "100%", height: "100%" }}
+              >
+                <img
+                  src={logo}
+                  alt="avatar"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+                <Button
+                  type="text"
+                  icon={<CloseOutlined />}
+                  style={{
+                    position: "absolute",
+                    top: -8,
+                    right: -8,
+                    background: "#fff",
+                    borderRadius: "50%",
+                    padding: 4,
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveImage();
+                  }}
+                />
+              </div>
+            ) : (
+              <div>
+                {uploadLoading ? <LoadingOutlined /> : <PlusOutlined />}
+                <div style={{ marginTop: 8 }}>Upload</div>
+              </div>
+            )}
           </Upload>
           <div style={{ textAlign: "center", color: "#757575" }}>
             Customer logo
