@@ -9,12 +9,16 @@ import { useSelector, useDispatch } from "react-redux";
 import CustomerSelectors from "@/redux/customer/selectors";
 import CustomerActions from "@/redux/customer/actions";
 import ProjectSelectors from "@/redux/project/selectors";
+import axios from "axios";
+import { API_BASE } from "@/config/config";
 
 const selectError = makeSelectErrorModel();
 
-const ProjectForm = ({ onSubmit, onCancel, form }) => {
+const ProjectForm = ({ onSubmit, onCancel, form, isAdmin }) => {
+  const [userOptions, setUserOptions] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [prevLoading, setPrevLoading] = useState(false);
+  const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
   const dispatch = useDispatch();
   const project = useSelector(ProjectSelectors.getSelectedProject);
 
@@ -61,6 +65,21 @@ const ProjectForm = ({ onSubmit, onCancel, form }) => {
       }
     } catch (error) {
       console.error("Validation failed:", error);
+    }
+  };
+
+  const onOrgChange = async (value) => {
+    try {
+      const res = await axios.get(`${API_BASE}/users?customerId=${value}`);
+      const users = res.data.data;
+      const options = users.map((user) => ({
+        value: user._id,
+        label: `${user.firstName} ${user.lastName || ""}`,
+      }));
+      console.log("users", options);
+      setUserOptions(options);
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -113,6 +132,15 @@ const ProjectForm = ({ onSubmit, onCancel, form }) => {
     label: customer.name,
   }));
 
+  useEffect(() => {
+    if (currentCustomer && !isAdmin) {
+      onOrgChange(currentCustomer._id);
+      form.setFieldsValue({
+        organization: currentCustomer._id,
+      });
+    }
+  }, [currentCustomer]);
+
   return (
     <Form
       form={form}
@@ -139,6 +167,9 @@ const ProjectForm = ({ onSubmit, onCancel, form }) => {
             size="large"
             placeholder="Select clients"
             options={customerOptions}
+            onChange={onOrgChange}
+            disabled={!isAdmin}
+
             // loading={!customers.length}
           />
         </Form.Item>
@@ -151,7 +182,7 @@ const ProjectForm = ({ onSubmit, onCancel, form }) => {
           <Select
             size="large"
             placeholder="Select CX Owner"
-            options={users}
+            options={userOptions}
             showSearch
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
@@ -167,7 +198,7 @@ const ProjectForm = ({ onSubmit, onCancel, form }) => {
           <Select
             size="large"
             placeholder="Select Manager"
-            options={users}
+            options={userOptions}
             showSearch
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
@@ -183,7 +214,7 @@ const ProjectForm = ({ onSubmit, onCancel, form }) => {
           <Select
             size="large"
             placeholder="Select CX Admin"
-            options={users}
+            options={userOptions}
             showSearch
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())

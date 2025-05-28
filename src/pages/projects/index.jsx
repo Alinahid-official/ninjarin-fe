@@ -75,6 +75,7 @@ const Projects = () => {
           onSubmit={handleProjectSubmit}
           onCancel={handleDrawerClose}
           form={form}
+          isAdmin
         />
       </CommonDrawer>
     </Layout>
