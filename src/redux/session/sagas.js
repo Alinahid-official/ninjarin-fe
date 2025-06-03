@@ -19,8 +19,11 @@ function* REQUEST_LOGIN(action) {
   const token = result.data.token;
   localStorage.setItem("accessToken", token);
   localStorage.setItem("userDetails", JSON.stringify(userDetails));
+  console.log("userDetails", userDetails);
   if (userDetails?.role === "admin") {
     router.navigate(`/`);
+  } else if (userDetails?.role === "employee") {
+    router.navigate("/employee/dashboard");
   } else {
     router.navigate("/home");
   }

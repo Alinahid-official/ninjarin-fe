@@ -11,6 +11,11 @@ import CXSkillArchitectureAssign from "@/pages/customers/customerManagement/CXSk
 import Inventory from "@/pages/customers/customerManagement/inventory"; // Add this import
 import User from "@/pages/customers/customerManagement/user";
 import CustomerProject from "@/pages/customers/customerManagement/project";
+import EmployeeDashboard from "@/pages/employee/dashboard";
+import EmployeeSkillsProfile from "@/pages/employee/skillsProfile";
+import ValidateSkill from "@/pages/employee/skillsProfile/validateSkill";
+import EmployeeSettings from "@/pages/employee/settings";
+import EmployeeSkillsMap from "@/pages/employee/skillsMap";
 
 export const router = createBrowserRouter([
   {
@@ -87,6 +92,26 @@ export const router = createBrowserRouter([
   {
     path: "/projects",
     element: <CustomerProject />,
+  },
+  {
+    path: "/employee/dashboard",
+    element: <EmployeeDashboard />,
+  },
+  {
+    path: "/employee/skills-profile",
+    element: <EmployeeSkillsProfile />,
+  },
+  {
+    path: "/employee/skills-profile/validate-skill",
+    element: <ValidateSkill />,
+  },
+  {
+    path: "/employee/settings",
+    element: <EmployeeSettings />,
+  },
+  {
+    path: "/employee/skills-map",
+    element: <EmployeeSkillsMap />,
   },
 ]);
 

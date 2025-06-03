@@ -1,0 +1,82 @@
+.user-profile-card-main {
+  border-radius: 12px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
+  padding: 24px; /* Adjust padding as needed */
+  background-color: #F9FAFB; /* Light background for the card */
+  margin-bottom: 24px; /* Space below this card */
+}
+
+.user-profile-header {
+  margin-bottom: 32px; /* Space below the avatar/name/button section */
+}
+
+.recommended-assignments-button {
+  background-color: #FFFFFF; /* White background */
+  border: 1px solid #D0D5DD; /* Light grey border */
+  color: #344054; /* Dark grey text */
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.recommended-assignments-button:hover,
+.recommended-assignments-button:focus {
+  background-color: #F9FAFB; /* Slightly off-white on hover */
+  border-color: #B0B8C4;
+  color: #344054;
+}
+
+.skill-progress-row {
+  margin-bottom: 32px; /* Space below the skill progress indicators */
+  display: flex;
+  justify-content: space-around; /* Distribute items */
+  flex-wrap: wrap;
+}
+
+.skill-progress-col {
+  text-align: center; /* Center align content within the column */
+  margin-bottom: 16px; /* Space below each skill item on smaller screens */
+}
+
+.skill-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.skill-title {
+  font-size: 12px;
+  color: #475467;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.skill-progress-circle .ant-progress-text {
+  font-size: 16px !important; /* Adjust percentage text size */
+  font-weight: 600 !important;
+  color: #101828 !important;
+}
+
+.skill-status {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.embedded-assessment-score-card .ant-card {
+  border: none !important; /* Remove border from the embedded card */
+  box-shadow: none !important; /* Remove shadow from the embedded card */
+  background-color: transparent !important; /* Make embedded card background transparent */
+  padding: 0 !important; /* Remove padding if it was set by cardStyle in AssessmentScoreCard */
+}
+
+/* If AssessmentScoreCard has its own specific padding/margin we want to override for embedding */
+.embedded-assessment-score-card > div > .ant-card-body {
+    padding: 0 !important; /* Example if AssessmentScoreCard uses Ant Card directly */
+} 
