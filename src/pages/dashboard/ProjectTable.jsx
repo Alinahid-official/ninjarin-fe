@@ -36,14 +36,14 @@ const ProjectTable = () => {
       dataIndex: "cxOwner",
       key: "cxOwner",
       width: 150,
-      render: (user) => `${user.firstName} ${user.lastName || ""}`,
+      render: (user) => `${user?.firstName} ${user?.lastName || ""}`,
     },
     {
       title: "Program Manager",
       dataIndex: "programManager",
       key: "programManager",
       width: 180,
-      render: (user) => `${user.firstName} ${user.lastName || ""}`,
+      render: (user) => `${user?.firstName} ${user?.lastName || ""}`,
     },
     {
       title: "Project Stage",
@@ -111,7 +111,7 @@ const ProjectTable = () => {
       dataIndex: "cxAdmin",
       key: "cxAdmin",
       width: 150,
-      render: (user) => `${user.firstName} ${user.lastName || ""}`,
+      render: (user) => `${user?.firstName} ${user?.lastName || ""}`,
     },
     {
       title: "Start Date",
