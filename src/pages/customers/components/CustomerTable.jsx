@@ -191,8 +191,8 @@ const CustomerTable = ({ handleAddCustomer }) => {
       key: "cxAdmin",
       render: (admin) => (
         <div>
-          <div>{admin.firstName}</div>
-          <div style={{ color: "#9e9e9e", fontSize: 12 }}>{admin.email}</div>
+          <div>{admin?.firstName}</div>
+          <div style={{ color: "#9e9e9e", fontSize: 12 }}>{admin?.email}</div>
         </div>
       ),
     },
