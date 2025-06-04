@@ -183,7 +183,7 @@ const ProjectTable = ({ handleAddProject }) => {
       title: "CX Owner",
       dataIndex: "cxOwner",
       key: "cxOwner",
-      render: (user) => `${user.firstName} ${user.lastName || ""}`,
+      render: (user) => `${user?.firstName} ${user?.lastName || ""}`,
       width: 150,
     },
     {
@@ -191,7 +191,7 @@ const ProjectTable = ({ handleAddProject }) => {
       dataIndex: "programManager",
       key: "programManager",
       width: 180,
-      render: (user) => `${user.firstName} ${user.lastName || ""}`,
+      render: (user) => `${user?.firstName} ${user?.lastName || ""}`,
     },
     {
       title: "Project Stage",
@@ -259,7 +259,7 @@ const ProjectTable = ({ handleAddProject }) => {
       dataIndex: "cxAdmin",
       key: "cxAdmin",
       width: 200,
-      render: (user) => `${user.firstName} ${user.lastName || ""}`,
+      render: (user) => `${user?.firstName} ${user?.lastName || ""}`,
     },
     {
       title: "Start Date",
