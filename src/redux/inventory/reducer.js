@@ -23,7 +23,7 @@ export default BaseReducer(initialState, {
     return {
       ...state,
       inventories: normalizeSchema(data.data, inventoryListSchema),
-      inventoryTypeCounts: data.inventoryTypeCounts,
+      pagination: data.pagination,
     };
   },
 

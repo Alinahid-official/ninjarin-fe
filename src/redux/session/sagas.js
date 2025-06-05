@@ -19,11 +19,13 @@ function* REQUEST_LOGIN(action) {
   const token = result.data.token;
   localStorage.setItem("accessToken", token);
   localStorage.setItem("userDetails", JSON.stringify(userDetails));
-  console.log("userDetails", userDetails);
+
   if (userDetails?.role === "admin") {
     router.navigate(`/`);
   } else if (userDetails?.role === "employee") {
-    router.navigate("/employee/dashboard");
+    console.log("userDetails", userDetails);
+    yield call(CustomerActions.getCustomer, userDetails?.customerId);
+    router.navigate("/employee/skills-map");
   } else {
     router.navigate("/home");
   }

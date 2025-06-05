@@ -40,6 +40,10 @@ class InventorySelectors {
   static getSelectedInventory(state) {
     return state.inventories.selectedInventory;
   }
+
+  static getPagination(state) {
+    return state.inventories.pagination;
+  }
 }
 
 export default InventorySelectors;

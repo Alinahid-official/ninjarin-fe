@@ -60,7 +60,7 @@ const StyledTableCard = styled(Card)`
   }
 `;
 
-const SkillTable = () => {
+const SkillTable = ({ isEmployee }) => {
   const dispatch = useDispatch();
   const [isUpdateDrawerOpen, setIsUpdateDrawerOpen] = useState(false);
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
@@ -226,13 +226,15 @@ const SkillTable = () => {
       >
         {text}
       </span>
-      <Dropdown
-        placement="bottomRight"
-        overlay={() => getMenuItems(record, dataIndex)}
-        trigger={["click"]}
-      >
-        <Button type="text" icon={<MoreOutlined />} size="small" />
-      </Dropdown>
+      {!isEmployee && (
+        <Dropdown
+          placement="bottomRight"
+          overlay={() => getMenuItems(record, dataIndex)}
+          trigger={["click"]}
+        >
+          <Button type="text" icon={<MoreOutlined />} size="small" />
+        </Dropdown>
+      )}
     </Flex>
   );
 
@@ -294,12 +296,22 @@ const SkillTable = () => {
                   Label
                 </div>
                 <div style={{ fontWeight: 600 }}>
-                  <EditableLabelField
+                  {isEmployee ? (
+                    value.label
+                  ) : (
+                    <EditableLabelField
+                      name={key}
+                      value={value.label}
+                      customerId={labels.customerId}
+                      labelId={labels._id}
+                    />
+                  )}
+                  {/* <EditableLabelField
                     name={key}
                     value={value.label}
                     customerId={labels.customerId}
                     labelId={labels._id}
-                  />
+                  /> */}
                 </div>
               </div>
             </Flex>
@@ -310,6 +322,7 @@ const SkillTable = () => {
             if (key === "assigned") {
               return (
                 <Button
+                  disabled={isEmployee}
                   onClick={() => {
                     router.navigate(
                       `/customers/${currentCustomer._id}/cx-skills-architecture/${record._id}/assign`
@@ -400,30 +413,42 @@ const SkillTable = () => {
         }}
       >
         <Title level={4} style={{ margin: 0 }}>
-          Ninjarin Skills Architecture
+          {isEmployee ? "Skills Map" : "Ninjarin Skills Architecture"}
         </Title>
-        <Flex gap={12}>
+        {isEmployee ? (
           <Button
-            onClick={handleUpdateDesign}
-            icon={<EditOutlined />}
             style={{
               background: "#FFFFFF",
               color: "#8C5BF2",
               borderColor: "#8C5BF2",
             }}
           >
-            Update
+            Suggest update?
           </Button>
-          <Button
-            onClick={handleOpenAddDesignDrawer}
-            style={{
-              color: "#8C5BF2",
-              borderColor: "#8C5BF2",
-            }}
-          >
-            Add Organization Design
-          </Button>
-        </Flex>
+        ) : (
+          <Flex gap={12}>
+            <Button
+              onClick={handleUpdateDesign}
+              icon={<EditOutlined />}
+              style={{
+                background: "#FFFFFF",
+                color: "#8C5BF2",
+                borderColor: "#8C5BF2",
+              }}
+            >
+              Update
+            </Button>
+            <Button
+              onClick={handleOpenAddDesignDrawer}
+              style={{
+                color: "#8C5BF2",
+                borderColor: "#8C5BF2",
+              }}
+            >
+              Add Organization Design
+            </Button>
+          </Flex>
+        )}
       </Flex>
 
       {/* Use the StyledTableCard here instead of the regular Card */}
@@ -441,7 +466,8 @@ const SkillTable = () => {
             body: {
               wrapper: (props) => (
                 <tbody {...props}>
-                  <AddRow />
+                  {!isEmployee && <AddRow />}
+
                   {props.children}
                 </tbody>
               ),

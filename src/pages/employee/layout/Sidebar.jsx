@@ -48,14 +48,14 @@ const EmployeeSidebar = () => {
   };
 
   const menuItems = [
-    {
-      key: "dashboard",
-      icon: <AppstoreOutlined />,
-      label: "Dashboard",
-      onClick: () => {
-        router.navigate("/employee/dashboard"); // Placeholder path
-      },
-    },
+    // {
+    //   key: "dashboard",
+    //   icon: <AppstoreOutlined />,
+    //   label: "Dashboard",
+    //   onClick: () => {
+    //     router.navigate("/employee/dashboard"); // Placeholder path
+    //   },
+    // },
     {
       key: "skills-map",
       icon: <HiOutlineShare />, // Using Share icon for Skills Map

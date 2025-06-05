@@ -1,4 +1,5 @@
 import { theme } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export const themeConfig = {
   algorithm: theme.defaultAlgorithm,

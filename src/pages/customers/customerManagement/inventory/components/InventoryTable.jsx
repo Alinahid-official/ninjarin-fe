@@ -16,6 +16,9 @@ import TableFooter from "@/pages/dashboard/TableFooter";
 import { formatToMonthDayYear } from "@/utilities/time";
 import { GoPencil } from "react-icons/go";
 import SkillArchitectureSelectors from "@/redux/skillArchitecture/selectors";
+import requestingSelector from "@/redux/requesting/requestingSelector";
+import { makeSelectErrorModel } from "@/redux/error/errorSelector";
+import AlertError from "@/components/error/AlertError";
 
 const { Title } = Typography;
 
@@ -27,38 +30,49 @@ const excludedKeys = [
   "__v",
   "assigned",
 ];
+const selectError = makeSelectErrorModel();
 const InventoryTable = () => {
   const dispatch = useDispatch();
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState("industry"); // Add state for selected type
+  const [selectedType, setSelectedType] = useState();
+  const loading = useSelector((state) =>
+    requestingSelector(state, [InventoryActions.GET_INVENTORIES])
+  );
+  const error = useSelector((state) =>
+    selectError(state, [InventoryActions.GET_INVENTORIES_FINISHED])
+  );
+  // Add state for selected type
   const inventories = useSelector(InventorySelectors.getInventories);
   const currentCustomer = useSelector(CustomerSelectors.getCurrentCustomer);
   const labels = useSelector(SkillArchitectureSelectors.getLabels);
   const selectedInventory = useSelector(
     InventorySelectors.getSelectedInventory
   );
+  const pagination = useSelector(InventorySelectors.getPagination);
   const columns = [
     {
       title: labels[selectedType]?.label || selectedType,
       dataIndex: "name",
       key: "name",
-      width: 150,
+      width: 200,
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
-      width: 500,
+      width: 300,
     },
     {
       title: "Creation Date",
       dataIndex: "createdAt",
       key: "creationDate",
+      width: 150,
       render: (date) => formatToMonthDayYear(date),
     },
     {
       title: "Actions",
       key: "actions",
+      width: 100,
       render: (_, record) => (
         <Flex gap={8}>
           <Button
@@ -122,6 +136,25 @@ const InventoryTable = () => {
     setIsAddDrawerOpen(false);
   };
 
+  const handlePageChange = (page) => {
+    dispatch(
+      InventoryActions.getInventories({
+        type: selectedType,
+        page,
+        limit: pagination?.limit,
+      })
+    );
+  };
+
+  const handlePageSizeChange = (pageSize) => {
+    dispatch(
+      InventoryActions.getInventories({
+        type: selectedType,
+        limit: pageSize,
+        page: pagination?.page,
+      })
+    );
+  };
   useEffect(() => {
     if (!inventories && currentCustomer) {
       dispatch(InventoryActions.getInventories({ type: selectedType }));
@@ -129,9 +162,15 @@ const InventoryTable = () => {
   }, [currentCustomer]);
 
   useEffect(() => {
-    dispatch(InventoryActions.getInventories({ type: selectedType }));
+    if (selectedType) {
+      dispatch(InventoryActions.getInventories({ type: selectedType }));
+    }
   }, [selectedType]);
-
+  useEffect(() => {
+    if (items?.length > 0) {
+      handleTabChange(items[0].key);
+    }
+  }, []);
   return (
     <div className="nz-border nz-border-radius">
       <Tabs
@@ -166,20 +205,31 @@ const InventoryTable = () => {
             </Button>
           </Flex>
         </Flex>
-
+        {error && <AlertError error={error} />}
         <Table
+          loading={loading}
           style={{ height: "70vh", display: "flex", flexDirection: "column" }}
           columns={columns}
           dataSource={inventories}
           pagination={false}
           scroll={{ y: "calc(70vh - 120px)" }}
-          footer={() => <TableFooter />}
+          footer={() => (
+            <TableFooter
+              onPageChange={handlePageChange}
+              onPageSizeChange={handlePageSizeChange}
+              totalItems={pagination?.total}
+              pageSize={pagination?.limit}
+              currentPage={pagination?.page}
+              pageCount={pagination?.pages}
+              name={labels[selectedType]?.label || selectedType}
+            />
+          )}
           className="inventory-table-with-footer"
           rowSelection={{ type: "checkbox" }}
         />
         <CommonDrawer
           title={`Add ${
-            selectedType.charAt(0).toUpperCase() + selectedType.slice(1)
+            selectedType?.charAt(0).toUpperCase() + selectedType?.slice(1)
           }`}
           subTitle={`Fill all the required field to add ${selectedType}.`}
           open={isAddDrawerOpen || selectedInventory}

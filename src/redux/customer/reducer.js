@@ -64,4 +64,11 @@ export default BaseReducer(initialState, {
       customers: updatedCustomers,
     };
   },
+  [CustomerActions.GET_CUSTOMER_FINISHED](state, action) {
+    const data = action.payload.data;
+    return {
+      ...state,
+      currentCustomer: data,
+    };
+  },
 });
