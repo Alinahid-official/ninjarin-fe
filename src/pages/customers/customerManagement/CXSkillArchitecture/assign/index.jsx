@@ -139,7 +139,6 @@ const CXSkillArchitectureAssign = () => {
     // },
   ];
   const handleRowSelection = (selectedRowKeys) => {
-    console.log("selectedRowKeys:", selectedRowKeys);
     setSelectedUsers(selectedRowKeys);
   };
 

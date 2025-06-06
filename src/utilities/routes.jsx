@@ -102,7 +102,7 @@ export const router = createBrowserRouter([
     element: <EmployeeSkillsProfile />,
   },
   {
-    path: "/employee/skills-profile/validate-skill",
+    path: "/employee/skills-profile/validate",
     element: <ValidateSkill />,
   },
   {

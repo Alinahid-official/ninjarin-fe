@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Table,
   Typography,
@@ -17,44 +17,55 @@ import {
   AppstoreOutlined,
 } from "@ant-design/icons";
 import UserProfileCard from "../dashboard/UserProfileCard"; // Adjusted path to dashboard directory
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import UserSelectors from "@/redux/user/selectors";
+import { useDispatch } from "react-redux";
+import UserActions from "@/redux/user/actions";
+import requestingSelector from "@/redux/requesting/requestingSelector";
+import { makeSelectErrorModel } from "@/redux/error/errorSelector";
+import FullAlertError from "@/components/error/FullAlertError";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
 const { TabPane } = Tabs;
-
+const selectError = makeSelectErrorModel();
 const AssignedSkillsTable = () => {
-  const userDetails = localStorage.getItem("userDetails");
-  const userDetailsData = userDetails ? JSON.parse(userDetails) : null;
-  const records = userDetailsData.skillArchitectureRecords;
-  const [skillMap, setSkillMap] = useState({});
-  const [allSkillsData, setAllSkillsData] = useState(records);
-  const [skillsData, setSkillsData] = useState([]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const loading = useSelector((state) =>
+    requestingSelector(state, [UserActions.GET_USER_SKILL_PROFILES])
+  );
+  const error = useSelector((state) =>
+    selectError(state, [UserActions.GET_USER_SKILL_PROFILES_FINISHED])
+  );
+  const skillProfiles = useSelector(UserSelectors.getUserSkillProfiles);
+
   const [activeTab, setActiveTab] = useState("all");
+  const [skillData, setSkillData] = useState({});
+  const [skillTabs, setSkillTabs] = useState([]);
 
   const handleTabChange = (key) => {
     setActiveTab(key);
-    if (key === "all") {
-      setSkillsData(allSkillsData);
-    } else if (skillMap[key]) {
-      const subSkillsForCategory = skillMap[key];
-      if (subSkillsForCategory && Array.isArray(subSkillsForCategory)) {
-        const filteredData = allSkillsData.filter((mainSkillItem) =>
-          subSkillsForCategory.includes(mainSkillItem.skill)
-        );
-        setSkillsData(filteredData);
-      } else {
-        setSkillsData([]);
-      }
-    } else {
-      setSkillsData([]);
-    }
   };
+
+  const formatProficiency = useCallback((assessment) => {
+    const proficiencyMap = {
+      not_applicable: "Not Applicable",
+      "1_basic": "Basic",
+      "2_intermediate": "Intermediate",
+      "3_proficient": "Proficient",
+      "4_advanced": "Advanced",
+      "5_mastery": "Mastery",
+    };
+    return proficiencyMap[assessment] || "Not Validated";
+  }, []);
 
   const columns = [
     {
-      title: "Skills",
-      dataIndex: "skill",
-      key: "skill",
+      title: "Sub Skills",
+      dataIndex: "subSkill",
+      key: "subSkill",
       render: (text) => (
         <Text style={{ color: "#475467", fontSize: "14px" }}>{text}</Text>
       ),
@@ -64,55 +75,74 @@ const AssignedSkillsTable = () => {
       dataIndex: "proficiency",
       key: "proficiency",
       align: "left",
-      render: (text) => (
-        <Text style={{ fontWeight: 500, color: "#101828", fontSize: "14px" }}>
-          {text}
-        </Text>
-      ),
+      render: (text) => {
+        const getStatusColor = (proficiency) => {
+          if (proficiency === "Not Validated") return "#6B7280";
+          if (proficiency === "Not Applicable") return "#6B7280";
+          if (proficiency === "Basic") return "#F59E0B";
+          if (proficiency === "Intermediate") return "#3B82F6";
+          if (proficiency === "Proficient") return "#10B981";
+          if (proficiency === "Advanced") return "#8B5CF6";
+          if (proficiency === "Mastery") return "#EF4444";
+          return "#6B7280";
+        };
+
+        return (
+          <Text
+            style={{
+              fontWeight: 500,
+              color: getStatusColor(text),
+              fontSize: "14px",
+            }}
+          >
+            {text}
+          </Text>
+        );
+      },
     },
-    // {
-    //   title: "Expected",
-    //   dataIndex: "expected",
-    //   key: "expected",
-    //   align: "left",
-    //   render: (text) => (
-    //     <Text style={{ fontWeight: 500, color: "#101828", fontSize: "14px" }}>
-    //       {text}
-    //     </Text>
-    //   ),
-    // },
-    // {
-    //   title: "Skills Match Status",
-    //   dataIndex: "status",
-    //   key: "status",
-    //   align: "left",
-    //   render: (text) => (
-    //     <Text style={{ color: "#475467", fontSize: "14px" }}>{text}</Text>
-    //   ),
-    // },
   ];
 
-  useEffect(() => {
-    const skillMap = records.reduce((acc, record) => {
-      const skill = record.skills;
-      const subSkill = record.subSkills;
+  // Get current tab data
+  const getCurrentTabData = () => {
+    return skillData[activeTab] || [];
+  };
 
-      if (skill && typeof subSkill === "string") {
-        // Ensure skill and subSkill are valid
-        if (!acc[skill]) {
-          acc[skill] = [];
+  useEffect(() => {
+    if (skillProfiles && skillProfiles.length > 0) {
+      const groupedSkills = {};
+      const allSkills = [];
+
+      skillProfiles.forEach((profile) => {
+        const skillName = profile.skill;
+
+        // Add to grouped skills
+        if (!groupedSkills[skillName]) {
+          groupedSkills[skillName] = [];
         }
-        if (!acc[skill].includes(subSkill)) {
-          acc[skill].push(subSkill);
-        }
-      }
-      return acc;
-    }, {});
-    setSkillMap(skillMap);
-    const allSkillsData = records.map((record) => record.skills);
-    setAllSkillsData(allSkillsData);
+
+        const processedProfile = {
+          key: profile._id,
+          subSkill: profile.subSkill,
+          proficiency: formatProficiency(profile.selfAssessment),
+          isValidated: profile.isValidated,
+          certifications: profile.certifications?.length || 0,
+          skillsExperience: profile.skillsExperience,
+          rawAssessment: profile.selfAssessment,
+        };
+
+        groupedSkills[skillName].push(processedProfile);
+        allSkills.push(processedProfile);
+      });
+
+      setSkillData({ all: allSkills, ...groupedSkills });
+      setSkillTabs(Object.keys(groupedSkills));
+    }
+  }, [skillProfiles, formatProficiency]);
+  useEffect(() => {
+    dispatch(UserActions.getUserSkillProfiles());
   }, []);
 
+  console.log("AssignedSkillsTable skillData", loading);
   return (
     <div className="assigned-skills-container">
       {/* {!isDashboard && (
@@ -183,6 +213,7 @@ const AssignedSkillsTable = () => {
               className="nz-no-shadow"
             />
             <Button
+              onClick={() => navigate("/employee/skills-profile/validate")}
               style={{
                 border: "1px solid #8C5BF2",
                 color: "#8C5BF2",
@@ -194,32 +225,30 @@ const AssignedSkillsTable = () => {
           </Space>
         </Col>
       </Row>
-
+      {error && <FullAlertError error={error} />}
       <Tabs
         defaultActiveKey="all"
         activeKey={activeTab}
         onChange={handleTabChange}
         className="nz-pink-tab"
       >
-        <TabPane tab="All Skills" key="all">
+        <TabPane tab="All" key="all">
           <Table
+            loading={loading}
             columns={columns}
-            dataSource={skillsData}
+            dataSource={getCurrentTabData()}
             pagination={false}
             className="assigned-skills-table"
             showHeader={true}
           />
         </TabPane>
-        {Object.keys(skillMap).map((skillCategory) => (
-          <TabPane tab={skillCategory} key={skillCategory}>
+
+        {skillTabs.map((skillName) => (
+          <TabPane tab={skillName} key={skillName}>
             <Table
+              loading={loading}
               columns={columns}
-              dataSource={skillsData.filter(
-                (record) =>
-                  record.skills === skillCategory ||
-                  (skillMap[skillCategory] &&
-                    skillMap[skillCategory].includes(record.subSkills))
-              )}
+              dataSource={skillData[skillName] || []}
               pagination={false}
               className="assigned-skills-table"
               showHeader={true}

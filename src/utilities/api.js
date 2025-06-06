@@ -9,4 +9,5 @@ export default {
   CUSTOMERS: `${API_BASE}/customers`,
   INVENTORIES: `${API_BASE}/inventories`,
   ADMIN_INVENTORIES: `${API_BASE}/admin-inventories`,
+  SKILL_PROFILES: `${API_BASE}/users/skill-profiles`,
 };

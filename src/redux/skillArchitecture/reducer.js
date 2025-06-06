@@ -74,8 +74,9 @@ export default BaseReducer(initialState, {
   },
   [SkillArchitectureActions.UPDATE_RECORD_FINISHED](state, action) {
     const updatedRecord = action.payload.data;
-    return produce(state, draft => {
-      draft.records.entities.SkillArchitectureRecords[updatedRecord._id] = updatedRecord;
+    return produce(state, (draft) => {
+      draft.records.entities.SkillArchitectureRecords[updatedRecord._id] =
+        updatedRecord;
     });
-  }
+  },
 });

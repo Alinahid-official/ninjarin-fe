@@ -40,6 +40,8 @@ const EmployeeSidebar = () => {
         return "skills-profile";
       case "settings":
         return "settings";
+      case "validate":
+        return "skills-profile"; // Assuming validate is a separate route
       default:
         // Determine a sensible default, perhaps 'dashboard'
         if (path.includes("/employee/dashboard")) return "dashboard";
