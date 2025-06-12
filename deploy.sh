@@ -11,7 +11,7 @@ function run() {
   echo "******** cleaning up ********"
   # yarn clean
   echo "******** building ********"
-  yarn build"-$1"
+  yarn build
   echo "******** uploading ********"
 
   bucket="s3://ninzarin.$1/"
