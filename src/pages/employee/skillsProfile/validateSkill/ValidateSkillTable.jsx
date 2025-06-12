@@ -14,6 +14,7 @@ import {
   Upload,
   Modal,
   Card,
+  Form,
 } from "antd";
 import {
   SearchOutlined,
@@ -27,6 +28,7 @@ import {
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import UserSelectors from "@/redux/user/selectors";
+import EditableSkillField from "./EditableSkillField";
 
 const { Title, Text, Link } = Typography;
 const { Option } = Select;
@@ -61,13 +63,44 @@ const proficiencyLevels = [
 
 const ValidateSkillTable = () => {
   const dataSource = useSelector(UserSelectors.getUserSkillProfiles);
-  const [uploadModalVisible, setUploadModalVisible] = useState(false);
-  const [selectedSkillForUpload, setSelectedSkillForUpload] = useState(null);
-  const [activityModalVisible, setActivityModalVisible] = useState(false);
-  const [selectedSkillForActivity, setSelectedSkillForActivity] =
-    useState(null);
-  const handleAssessmentChange = (key, value) => {
-    // TODO: Implement assessment update logic
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSkill, setSelectedSkill] = useState(null);
+  const [form] = Form.useForm();
+  const [fileList, setFileList] = useState([]);
+
+  const handleEditClick = (record) => {
+    setSelectedSkill(record);
+    form.setFieldsValue({
+      selfAssessment:
+        record.selfAssessment !== "select" ? record.selfAssessment : undefined,
+      years: record.skillsExperience?.years,
+      months: record.skillsExperience?.months,
+    });
+    setFileList(record.certifications || []);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedSkill(null);
+    form.resetFields();
+    setFileList([]);
+  };
+
+  const onFinish = (values) => {
+    const updatedSkillData = {
+      ...selectedSkill, // Preserve other skill data like _id
+      ...values, // Form values: selfAssessment, years, months
+      certifications: fileList, // Updated certifications
+      // Reconstruct skillsExperience object if your backend expects it structured
+      skillsExperience: {
+        years: values.years,
+        months: values.months,
+      },
+    };
+    console.log("Updated Skill Data:", updatedSkillData);
+    // TODO: Dispatch update action with updatedSkillData
+    handleModalClose();
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -75,87 +108,13 @@ const ValidateSkillTable = () => {
     // TODO: Implement experience update logic
   };
 
-  const handleUploadCertification = (record) => {
-    setSelectedSkillForUpload(record);
-    setUploadModalVisible(true);
-  };
+  const handleUploadCertification = (record) => {};
 
-  const handleViewActivity = (record) => {
-    setSelectedSkillForActivity(record);
-    setActivityModalVisible(true);
-  };
-
-  const handleUploadSubmit = (info) => {
-    // Handle file upload logic here
-    console.log("Upload info:", info);
-    setUploadModalVisible(false);
-    setSelectedSkillForUpload(null);
-  };
+  const handleViewActivity = (record) => {};
 
   const getCertificationCount = (record) => {
     return record.certifications?.length || 0;
   };
-
-  const renderCertificationUpload = () => (
-    <Upload
-      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-      beforeUpload={() => false} // Prevent auto upload
-      multiple
-      style={{ width: "100%" }}
-    >
-      <Button
-        type="dashed"
-        icon={<UploadOutlined style={{ fontSize: "16px" }} />}
-        style={{
-          width: "100%",
-          height: "80px",
-          borderColor: "#7F56D9",
-          color: "#7F56D9",
-          backgroundColor: "#FAFAFA",
-          borderRadius: "8px",
-          borderWidth: "2px",
-          borderStyle: "dashed",
-          fontSize: "14px",
-          fontWeight: 500,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "8px",
-          transition: "all 0.2s ease",
-          boxShadow: "0 1px 2px rgba(16, 24, 40, 0.05)",
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.backgroundColor = "#F9F5FF";
-          e.target.style.borderColor = "#6941C6";
-          e.target.style.transform = "translateY(-2px)";
-          e.target.style.boxShadow = "0 4px 6px rgba(127, 86, 217, 0.1)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.backgroundColor = "#FAFAFA";
-          e.target.style.borderColor = "#7F56D9";
-          e.target.style.transform = "translateY(0)";
-          e.target.style.boxShadow = "0 1px 2px rgba(16, 24, 40, 0.05)";
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "4px",
-          }}
-        >
-          <span style={{ fontSize: "14px", fontWeight: 600 }}>
-            Upload Files
-          </span>
-          <span style={{ fontSize: "12px", color: "#667085", fontWeight: 400 }}>
-            Drag & drop or click to browse
-          </span>
-        </div>
-      </Button>
-    </Upload>
-  );
 
   const columns = [
     {
@@ -171,27 +130,12 @@ const ValidateSkillTable = () => {
       key: "selfAssessment",
       width: "20%",
       render: (text, record) => (
-        <Select
-          value={
-            record.selfAssessment === "select"
-              ? undefined
-              : record.selfAssessment
-          }
+        <EditableSkillField
+          name={"selfAssessment"}
+          value={text}
           placeholder="Select"
-          style={{ width: "100%", ...commonInputStyle }}
-          onChange={(value) => handleAssessmentChange(record.key, value)}
-        >
-          {record.selfAssessment === "select" && (
-            <Option key="select_placeholder" value="select" disabled>
-              Select
-            </Option>
-          )}
-          {proficiencyLevels.map((level) => (
-            <Option key={level.value} value={level.value}>
-              {level.label}
-            </Option>
-          ))}
-        </Select>
+          skillId={record._id}
+        />
       ),
     },
     {
@@ -200,21 +144,18 @@ const ValidateSkillTable = () => {
       width: "20%",
       render: (text, record) => (
         <Space>
-          <InputNumber
+          <EditableSkillField
+            name={"skillsExperience.years"}
+            value={record.skillsExperience?.years}
             placeholder="YY"
-            style={{ ...commonInputStyle, width: "70px" }}
-            min={0}
-            max={50}
-            value={record.expYY}
-            onChange={(value) => handleExpChange(record.key, "expYY", value)}
+            skillId={record._id}
           />
-          <InputNumber
+
+          <EditableSkillField
+            name={"skillsExperience.months"}
+            value={record.skillsExperience?.months}
             placeholder="MM"
-            style={{ ...commonInputStyle, width: "70px" }}
-            min={0}
-            max={11}
-            value={record.expMM}
-            onChange={(value) => handleExpChange(record.key, "expMM", value)}
+            skillId={record._id}
           />
         </Space>
       ),
@@ -283,6 +224,7 @@ const ValidateSkillTable = () => {
               type="link"
               icon={<EditOutlined style={{ fontSize: "14px" }} />}
               size="small"
+              onClick={() => handleEditClick(record)}
             >
               Edit
             </Button>
@@ -362,584 +304,149 @@ const ValidateSkillTable = () => {
         columns={columns}
         dataSource={dataSource}
         pagination={false}
-        rowKey="key"
+        rowKey="_id" // Assuming _id is the unique key for skills
       />
-
-      {/* Certification Upload Modal */}
       <Modal
-        title={
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "4px 0",
-            }}
-          >
-            <div
-              style={{
-                backgroundColor: "#F9F5FF",
-                padding: "8px",
-                borderRadius: "8px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <FileTextOutlined
-                style={{ color: "#7F56D9", fontSize: "16px" }}
-              />
-            </div>
-            <div>
-              <div
-                style={{ fontSize: "18px", fontWeight: 600, color: "#101828" }}
-              >
-                Upload Certifications
-              </div>
-              <div
-                style={{ fontSize: "14px", color: "#667085", marginTop: "2px" }}
-              >
-                {selectedSkillForUpload?.subSkill}
-              </div>
-            </div>
-          </div>
-        }
-        open={uploadModalVisible}
-        onCancel={() => {
-          setUploadModalVisible(false);
-          setSelectedSkillForUpload(null);
-        }}
-        style={{ top: "20px" }}
-        bodyStyle={{
-          padding: "32px",
-          backgroundColor: "#FAFAFA",
-          borderRadius: "8px",
-        }}
+        title={selectedSkill ? selectedSkill.subSkill : "Edit Skill"}
+        visible={isModalOpen}
+        onCancel={handleModalClose}
+        destroyOnClose
+        width={450}
         footer={[
-          <Button
-            key="cancel"
-            onClick={() => {
-              setUploadModalVisible(false);
-              setSelectedSkillForUpload(null);
-            }}
-            style={{
-              backgroundColor: "#FFFFFF",
-              color: "#344054",
-              borderColor: "#D0D5DD",
-              fontWeight: 500,
-              borderRadius: "8px",
-              height: "40px",
-              padding: "0 20px",
-              fontSize: "14px",
-              boxShadow: "0 1px 2px rgba(16, 24, 40, 0.05)",
-              transition: "all 0.2s ease",
-            }}
-          >
+          <Button key="cancel" onClick={handleModalClose}>
             Cancel
           </Button>,
-          <Button
-            key="upload"
-            type="primary"
-            onClick={handleUploadSubmit}
-            style={{
-              backgroundColor: "#7F56D9",
-              borderColor: "#7F56D9",
-              color: "#FFFFFF",
-              fontWeight: 600,
-              borderRadius: "8px",
-              height: "40px",
-              padding: "0 20px",
-              fontSize: "14px",
-              boxShadow: "0 1px 2px rgba(127, 86, 217, 0.1)",
-              transition: "all 0.2s ease",
-            }}
-          >
-            Upload & Save
+          <Button key="submit" type="primary" onClick={() => form.submit()}>
+            Update
           </Button>,
         ]}
-        width={600}
       >
-        <div style={{ padding: "20px 0" }}>
-          <div
-            style={{
-              backgroundColor: "#F8F9FA",
-              padding: "20px",
-              borderRadius: "8px",
-              border: "1px solid #E9ECEF",
-              marginBottom: "24px",
-            }}
+        {selectedSkill && (
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={onFinish}
+            initialValues={
+              {
+                // Initial values are now set via form.setFieldsValue in handleEditClick
+              }
+            }
           >
-            <Text
-              style={{
-                color: "#475467",
-                marginBottom: "16px",
-                display: "block",
-                fontSize: "14px",
-                lineHeight: "20px",
-              }}
+            <Form.Item
+              label="Self Assessment"
+              name="selfAssessment"
+              rules={[
+                { required: true, message: "Self Assessment is required" },
+              ]}
             >
-              Upload certification documents for this skill. Supported formats:
-              <strong> PDF, DOC, DOCX, JPG, PNG</strong>
-            </Text>
-            <div
-              style={{
-                backgroundColor: "#FFFFFF",
-                padding: "16px",
-                borderRadius: "6px",
-                border: "2px dashed #D0D5DD",
-                textAlign: "center",
-              }}
-            >
-              {renderCertificationUpload()}
-            </div>
-          </div>
+              <Select
+                placeholder="Select proficiency level"
+                style={{ width: "100%", ...commonInputStyle }}
+                options={proficiencyLevels}
+              />
+            </Form.Item>
 
-          {/* Show existing certifications if any */}
-          {selectedSkillForUpload?.certifications?.length > 0 && (
-            <div style={{ marginTop: "32px" }}>
-              <Text
-                strong
-                style={{
-                  marginBottom: "16px",
-                  display: "block",
-                  fontSize: "16px",
-                  color: "#101828",
-                  fontWeight: 600,
+            <Form.Item label="Skills Experience">
+              <Space align="baseline">
+                <Form.Item
+                  name="years"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Years of experience is required",
+                    },
+                  ]}
+                  style={{ marginBottom: 0 }}
+                >
+                  <InputNumber
+                    placeholder="00"
+                    style={{ ...commonInputStyle, width: "80px" }}
+                    min={0}
+                  />
+                </Form.Item>
+                <Text
+                  style={{
+                    margin: "0 8px",
+                    fontSize: "14px",
+                    color: "#475467",
+                  }}
+                >
+                  /
+                </Text>
+                <Form.Item
+                  name="months"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Months of experience is required",
+                    },
+                    {
+                      type: "number",
+                      min: 0,
+                      max: 11,
+                      message: "Months must be between 0 and 11",
+                    },
+                  ]}
+                  style={{ marginBottom: 0 }}
+                >
+                  <InputNumber
+                    placeholder="00"
+                    style={{ ...commonInputStyle, width: "80px" }}
+                    min={0}
+                    max={11}
+                  />
+                </Form.Item>
+              </Space>
+            </Form.Item>
+
+            <Form.Item label="Certification">
+              <Upload
+                style={{ width: "100%" }}
+                fileList={fileList}
+                onChange={({ fileList: newFileList }) =>
+                  setFileList(newFileList)
+                }
+                beforeUpload={(file) => {
+                  return false; // Prevent antd's default upload behavior
                 }}
+                onRemove={(file) => {
+                  setFileList((currentFileList) =>
+                    currentFileList.filter((item) => item.uid !== file.uid)
+                  );
+                }}
+                multiple
+                listType="text"
               >
-                Existing Certifications:
-              </Text>
-              <Space
-                direction="vertical"
-                style={{ width: "100%" }}
-                size="medium"
-              >
-                {selectedSkillForUpload.certifications.map((cert, index) => (
-                  <Card
-                    key={index}
-                    size="small"
-                    style={{
-                      backgroundColor: "#FFFFFF",
-                      border: "1px solid #EAECF0",
-                      borderRadius: "8px",
-                      boxShadow: "0 1px 2px rgba(16, 24, 40, 0.05)",
-                    }}
-                    bodyStyle={{ padding: "16px" }}
-                    actions={[
-                      <Tooltip title="Download certificate">
-                        <Button
-                          type="text"
-                          icon={<DownloadOutlined />}
-                          style={{
-                            color: "#7F56D9",
-                            border: "none",
-                            backgroundColor: "transparent",
-                          }}
-                        />
-                      </Tooltip>,
-                      <Tooltip title="Delete certificate">
-                        <Button
-                          type="text"
-                          icon={<DeleteOutlined />}
-                          style={{
-                            color: "#EF4444",
-                            border: "none",
-                            backgroundColor: "transparent",
-                          }}
-                        />
-                      </Tooltip>,
-                    ]}
-                  >
-                    <Card.Meta
-                      avatar={
-                        <div
-                          style={{
-                            backgroundColor: "#F9F5FF",
-                            padding: "8px",
-                            borderRadius: "6px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <FileTextOutlined
-                            style={{ color: "#7F56D9", fontSize: "16px" }}
-                          />
-                        </div>
-                      }
-                      title={
-                        <span
-                          style={{
-                            fontSize: "14px",
-                            fontWeight: 600,
-                            color: "#101828",
-                          }}
-                        >
-                          {cert.fileName}
-                        </span>
-                      }
-                      description={
-                        <span style={{ fontSize: "12px", color: "#667085" }}>
-                          Uploaded:{" "}
-                          {new Date(cert.uploadDate).toLocaleDateString()}
-                        </span>
-                      }
-                    />
-                  </Card>
-                ))}
-              </Space>
-            </div>
-          )}
-        </div>
-      </Modal>
-
-      {/* Activity Modal */}
-      <Modal
-        title={
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "4px 0",
-            }}
-          >
-            <div
-              style={{
-                backgroundColor: "#F9F5FF",
-                padding: "8px",
-                borderRadius: "8px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <EyeOutlined style={{ color: "#7F56D9", fontSize: "16px" }} />
-            </div>
-            <div>
-              <div
-                style={{ fontSize: "18px", fontWeight: 600, color: "#101828" }}
-              >
-                Skill Activity
-              </div>
-              <div
-                style={{ fontSize: "14px", color: "#667085", marginTop: "2px" }}
-              >
-                {selectedSkillForActivity?.subSkill}
-              </div>
-            </div>
-          </div>
-        }
-        open={activityModalVisible}
-        onCancel={() => {
-          setActivityModalVisible(false);
-          setSelectedSkillForActivity(null);
-        }}
-        style={{ top: "20px" }}
-        bodyStyle={{
-          padding: "32px",
-          backgroundColor: "#FAFAFA",
-          borderRadius: "8px",
-        }}
-        footer={[
-          <Button
-            key="close"
-            type="primary"
-            onClick={() => {
-              setActivityModalVisible(false);
-              setSelectedSkillForActivity(null);
-            }}
-            style={{
-              backgroundColor: "#7F56D9",
-              borderColor: "#7F56D9",
-              color: "#FFFFFF",
-              fontWeight: 600,
-              borderRadius: "8px",
-              height: "40px",
-              padding: "0 24px",
-              fontSize: "14px",
-              boxShadow: "0 1px 2px rgba(127, 86, 217, 0.1)",
-              transition: "all 0.2s ease",
-            }}
-          >
-            Close
-          </Button>,
-        ]}
-        width={720}
-      >
-        <div style={{ padding: "20px 0" }}>
-          <Space direction="vertical" style={{ width: "100%" }} size="large">
-            <Card
-              title={
-                <span
+                <div
                   style={{
-                    fontSize: "16px",
-                    fontWeight: 600,
-                    color: "#101828",
+                    border: "2px dashed #D6BBFA",
+                    backgroundColor: "#F9F5FF",
+                    padding: "20px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    borderRadius: "8px",
+                    width: "100%",
                     display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                >
-                  <div
-                    style={{
-                      backgroundColor: "#EEF2FF",
-                      padding: "4px",
-                      borderRadius: "4px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <FileTextOutlined
-                      style={{ color: "#6366F1", fontSize: "14px" }}
-                    />
-                  </div>
-                  Current Status
-                </span>
-              }
-              style={{
-                backgroundColor: "#FFFFFF",
-                border: "1px solid #EAECF0",
-                borderRadius: "8px",
-                boxShadow: "0 1px 2px rgba(16, 24, 40, 0.05)",
-              }}
-              bodyStyle={{ padding: "24px" }}
-            >
-              <Row gutter={[24, 16]}>
-                <Col span={8}>
-                  <div style={{ textAlign: "center" }}>
-                    <Text
-                      strong
-                      style={{
-                        color: "#374151",
-                        fontSize: "14px",
-                        display: "block",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      Self Assessment
-                    </Text>
-                    <Badge
-                      status={
-                        selectedSkillForActivity?.selfAssessment
-                          ? "success"
-                          : "default"
-                      }
-                      text={
-                        <span
-                          style={{
-                            fontSize: "13px",
-                            fontWeight: 500,
-                            color: selectedSkillForActivity?.selfAssessment
-                              ? "#059669"
-                              : "#6B7280",
-                          }}
-                        >
-                          {selectedSkillForActivity?.selfAssessment ||
-                            "Not set"}
-                        </span>
-                      }
-                      style={{ display: "flex", justifyContent: "center" }}
-                    />
-                  </div>
-                </Col>
-                <Col span={8}>
-                  <div style={{ textAlign: "center" }}>
-                    <Text
-                      strong
-                      style={{
-                        color: "#374151",
-                        fontSize: "14px",
-                        display: "block",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      Experience
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        color: "#101828",
-                      }}
-                    >
-                      {selectedSkillForActivity?.skillsExperience?.years || 0}Y{" "}
-                      {selectedSkillForActivity?.skillsExperience?.months || 0}M
-                    </Text>
-                  </div>
-                </Col>
-                <Col span={8}>
-                  <div style={{ textAlign: "center" }}>
-                    <Text
-                      strong
-                      style={{
-                        color: "#374151",
-                        fontSize: "14px",
-                        display: "block",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      Validation Status
-                    </Text>
-                    <Badge
-                      status={
-                        selectedSkillForActivity?.isValidated
-                          ? "success"
-                          : "warning"
-                      }
-                      text={
-                        <span
-                          style={{
-                            fontSize: "13px",
-                            fontWeight: 500,
-                            color: selectedSkillForActivity?.isValidated
-                              ? "#059669"
-                              : "#D97706",
-                          }}
-                        >
-                          {selectedSkillForActivity?.isValidated
-                            ? "Validated"
-                            : "Pending"}
-                        </span>
-                      }
-                      style={{ display: "flex", justifyContent: "center" }}
-                    />
-                  </div>
-                </Col>
-              </Row>
-            </Card>
 
-            <Card
-              title={
-                <span
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: 600,
-                    color: "#101828",
-                    display: "flex",
                     alignItems: "center",
-                    gap: "8px",
+                    justifyContent: "center",
                   }}
                 >
-                  <div
-                    style={{
-                      backgroundColor: "#FEF3C7",
-                      padding: "4px",
-                      borderRadius: "4px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <EyeOutlined
-                      style={{ color: "#F59E0B", fontSize: "14px" }}
-                    />
-                  </div>
-                  Recent Activities
-                </span>
-              }
-              style={{
-                backgroundColor: "#FFFFFF",
-                border: "1px solid #EAECF0",
-                borderRadius: "8px",
-                boxShadow: "0 1px 2px rgba(16, 24, 40, 0.05)",
-              }}
-              bodyStyle={{ padding: "24px" }}
-            >
-              <Space
-                direction="vertical"
-                style={{ width: "100%" }}
-                size="medium"
-              >
-                <div
-                  style={{
-                    padding: "12px 16px",
-                    backgroundColor: "#F8FAFC",
-                    borderRadius: "6px",
-                    border: "1px solid #E2E8F0",
-                  }}
-                >
+                  <UploadOutlined style={{ fontSize: "18px", color: "#000" }} />
                   <Text
                     style={{
-                      color: "#475569",
-                      fontSize: "14px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
+                      marginTop: "8px",
+                      color: "#000",
+                      fontWeight: 500,
                     }}
                   >
-                    <div
-                      style={{
-                        width: "6px",
-                        height: "6px",
-                        backgroundColor: "#10B981",
-                        borderRadius: "50%",
-                      }}
-                    ></div>
-                    Skill added to profile - {new Date().toLocaleDateString()}
+                    Upload
                   </Text>
                 </div>
-                <div
-                  style={{
-                    padding: "12px 16px",
-                    backgroundColor: "#F8FAFC",
-                    borderRadius: "6px",
-                    border: "1px solid #E2E8F0",
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "#475569",
-                      fontSize: "14px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "6px",
-                        height: "6px",
-                        backgroundColor: "#3B82F6",
-                        borderRadius: "50%",
-                      }}
-                    ></div>
-                    Self assessment updated - {new Date().toLocaleDateString()}
-                  </Text>
-                </div>
-                <div
-                  style={{
-                    padding: "12px 16px",
-                    backgroundColor: "#F8FAFC",
-                    borderRadius: "6px",
-                    border: "1px solid #E2E8F0",
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "#475569",
-                      fontSize: "14px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "6px",
-                        height: "6px",
-                        backgroundColor: "#8B5CF6",
-                        borderRadius: "50%",
-                      }}
-                    ></div>
-                    Certification uploaded - {new Date().toLocaleDateString()}
-                  </Text>
-                </div>
-              </Space>
-            </Card>
-          </Space>
-        </div>
+              </Upload>
+            </Form.Item>
+          </Form>
+        )}
       </Modal>
     </div>
   );
