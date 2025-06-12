@@ -14,11 +14,11 @@ function run() {
   yarn build"-$1"
   echo "******** uploading ********"
 
-  bucket="s3://app.$1.growloc.farm/"
+  bucket="s3://ninzarin.$1/"
   distribution_id="E1X4E71O1583X8" # sandbox by default
 
   if [[ $1 == "prod" ]]; then
-      bucket="s3://prod.growloc.farm/"
+      bucket="s3://ninzarin.prod/"
       distribution_id="EP61S5PYU7FC9" # production
   fi
 

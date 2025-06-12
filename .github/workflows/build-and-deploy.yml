@@ -5,8 +5,8 @@ on:
     branches:
       # - "GROWLOC-*"
       # - "RELEASE-*"
-      # - dev
-      - "prod-*"
+      - sandbox
+      # - "prod-*"
       # - DEPLOY_BRANCH
 
 env:
