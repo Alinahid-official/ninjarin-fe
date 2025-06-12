@@ -15,7 +15,7 @@ function run() {
   echo "******** uploading ********"
 
   bucket="s3://ninzarin.$1/"
-  distribution_id="E1X4E71O1583X8" # sandbox by default
+  distribution_id="EXGOQ8IA6FTMP" # sandbox by default
 
   if [[ $1 == "prod" ]]; then
       bucket="s3://ninzarin.prod/"
