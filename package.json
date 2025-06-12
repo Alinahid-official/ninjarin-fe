@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy-sandbox": "./deploy.sh sandbox",
+    "deploy-prod": "./deploy.sh prod"
   },
   "dependencies": {
     "@ant-design/icons": "^6.0.0",

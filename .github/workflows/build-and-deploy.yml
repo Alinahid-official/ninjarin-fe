@@ -42,7 +42,7 @@ jobs:
 
       - name: Build and Deploy (prod)
         id: build_deploy_on_prod
-        run: yarn deploy-prod
+        run: yarn deploy-sandbox
 
   # generate_sentry_release:
   #   needs: [build]
